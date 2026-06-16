@@ -26,7 +26,7 @@ public class DebugCommand extends CommandBase {
     public DebugCommand(RitualGameManager gameManager, ScoreTracker scoreTracker,
                         FarmSessionManager farmSessionManager, MonsterSystem monsterSystem) {
         super("rae_debug", "Print Ritual Anomaly Extraction game state.");
-        this.setPermissionGroup(GameMode.Adventure);
+        this.setPermissionGroups("hytale:Adventurer");
         this.gameManager        = gameManager;
         this.scoreTracker       = scoreTracker;
         this.farmSessionManager = farmSessionManager;
