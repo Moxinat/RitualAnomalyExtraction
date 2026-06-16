@@ -1,0 +1,97 @@
+{
+  "triggers": [
+    {
+      "id": "entry_portal",
+      "shape": "sphere",
+      "radius": 2.5,
+      "anchorTag": "control_room_portal",
+      "events": ["enter"],
+      "activeOnGameState": "CONTROL_ROOM",
+      "notes": "Player walks into this sphere → onPlayerEnterEntryPortal() fires → round starts"
+    },
+
+    {
+      "id": "farm_a_extract_button",
+      "shape": "box",
+      "size": { "x": 2, "y": 3, "z": 2 },
+      "anchorTag": "farm_a_extract_panel",
+      "events": ["enter"],
+      "activeOnGameState": "IN_FARM",
+      "notes": "Player stands at the extract panel → onExtractPressed(). One per farm variant."
+    },
+    {
+      "id": "farm_b_extract_button",
+      "shape": "box",
+      "size": { "x": 2, "y": 3, "z": 2 },
+      "anchorTag": "farm_b_extract_panel",
+      "events": ["enter"],
+      "activeOnGameState": "IN_FARM"
+    },
+    {
+      "id": "farm_c_extract_button",
+      "shape": "box",
+      "size": { "x": 2, "y": 3, "z": 2 },
+      "anchorTag": "farm_c_extract_panel",
+      "events": ["enter"],
+      "activeOnGameState": "IN_FARM"
+    },
+
+    {
+      "id": "farm_a_anomaly_button",
+      "shape": "box",
+      "size": { "x": 2, "y": 3, "z": 2 },
+      "anchorTag": "farm_a_anomaly_panel",
+      "events": ["enter"],
+      "activeOnGameState": "IN_FARM",
+      "notes": "Player stands at the anomaly panel → onAnomalyPressed(). One per farm variant."
+    },
+    {
+      "id": "farm_b_anomaly_button",
+      "shape": "box",
+      "size": { "x": 2, "y": 3, "z": 2 },
+      "anchorTag": "farm_b_anomaly_panel",
+      "events": ["enter"],
+      "activeOnGameState": "IN_FARM"
+    },
+    {
+      "id": "farm_c_anomaly_button",
+      "shape": "box",
+      "size": { "x": 2, "y": 3, "z": 2 },
+      "anchorTag": "farm_c_anomaly_panel",
+      "events": ["enter"],
+      "activeOnGameState": "IN_FARM"
+    },
+
+    {
+      "id": "farm_a_player_spawn_zone",
+      "shape": "box",
+      "size": { "x": 4, "y": 4, "z": 4 },
+      "anchorTag": "farm_a_player_spawn",
+      "events": [],
+      "notes": "Teleport destination only, no event. Plugin teleports player here on round start."
+    },
+    {
+      "id": "farm_b_player_spawn_zone",
+      "shape": "box",
+      "size": { "x": 4, "y": 4, "z": 4 },
+      "anchorTag": "farm_b_player_spawn",
+      "events": []
+    },
+    {
+      "id": "farm_c_player_spawn_zone",
+      "shape": "box",
+      "size": { "x": 4, "y": 4, "z": 4 },
+      "anchorTag": "farm_c_player_spawn",
+      "events": []
+    },
+
+    {
+      "id": "control_room_spawn_zone",
+      "shape": "box",
+      "size": { "x": 6, "y": 4, "z": 6 },
+      "anchorTag": "control_room_spawn",
+      "events": [],
+      "notes": "Teleport destination only. Plugin returns player here after each round."
+    }
+  ]
+}

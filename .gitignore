@@ -9,3 +9,8 @@ run/
 .classpath
 .project
 .settings/
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+.env

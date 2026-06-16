@@ -1,0 +1,25 @@
+{
+  "id": "portal_shimmer",
+  "texture": "art/textures/particle_shimmer.png",
+  "blendMode": "additive",
+  "spawnRate": 30,
+  "particleLifetimeMs": 1200,
+  "emitShape": "ring",
+  "emitRadius": 1.0,
+  "emitHeight": 2.0,
+  "velocity": {
+    "base": { "x": 0.0, "y": 0.0, "z": 0.0 },
+    "inward": 0.3,
+    "randomOffset": { "x": 0.05, "y": 0.2, "z": 0.05 }
+  },
+  "sizeOverLife": [
+    { "t": 0.0, "size": 0.08 },
+    { "t": 0.5, "size": 0.20 },
+    { "t": 1.0, "size": 0.0 }
+  ],
+  "colorOverLife": [
+    { "t": 0.0, "color": "#aaddff", "alpha": 0.0 },
+    { "t": 0.3, "color": "#ffffff", "alpha": 0.9 },
+    { "t": 1.0, "color": "#4499ff", "alpha": 0.0 }
+  ]
+}

@@ -1,16 +1,23 @@
 {
-    "Group": "HytaleModding",
-    "Name": "ExamplePlugin",
+    "Group": "dev",
+    "Name": "RitualAnomalyExtraction",
     "Version": "0.0.0",
     "Description": "Description of your plugin",
     "Authors": [
         {
-            "Name": "Your_Name",
-            "Email": "your.email@example.com",
-            "Url": "https://your-website.com"
+            "Name": "Moxinat"
+        },
+        {
+            "Name": "McCal"
+        },
+        {
+            "Name": "N0C7U4"
+        },
+        {
+            "Name": "DEL"
         }
     ],
-    "Website": "https://your-plugin-website.com",
+    "Website": "",
     "DisabledByDefault": false,
     "IncludesAssetPack": true,
     "Dependencies": {
@@ -20,7 +27,7 @@
         
     },
     "ServerVersion": ">=0.5.3 <0.6.0",
-    "Main": "dev.hytalemodding.ExamplePlugin",
+    "Main": "dev.ritualanomalyextraction.RitualAnomalyPlugin",
     "UpdateChecker": {
         "CurseForge": ""
     }
