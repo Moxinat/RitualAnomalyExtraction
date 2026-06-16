@@ -39,6 +39,7 @@
     }
   },
   "DeleteOnRemove": true,
+  "DisabledFluidTickers": [],
   "ResourceStorage": {
     "Type": "Hytale"
   },
