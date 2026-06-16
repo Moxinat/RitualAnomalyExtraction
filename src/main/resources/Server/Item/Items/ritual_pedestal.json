@@ -26,12 +26,22 @@
     "BlockParticleSetId": "Stone",
     "Textures": [
       {
-        "All": "art/textures/ritual_pedestal.png"
+        "All": "BlockTextures/ritual_pedestal.png"
       }
     ],
     "ParticleColor": "#aeae8c",
     "BlockSoundSetId": "Stone",
-    "BlockBreakingDecalId": "Breaking_Decals_Rock"
+    "BlockBreakingDecalId": "Breaking_Decals_Rock",
+    "Interactions": {
+      "Use" : {
+        "Interactions": [
+          {
+            "Type": "Simple"
+          }
+        ]
+      }
+
+    }
   },
   "ResourceTypes": [
     {
