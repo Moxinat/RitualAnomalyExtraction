@@ -4,47 +4,41 @@
     "$binary": "mk8vvBPZS7uaKgWlAENkXw==",
     "$type": "04"
   },
-  "Seed": 1781624817143,
+  "Seed": 1234567890123,
   "WorldGen": {
     "Type": "HytaleGenerator",
     "WorldStructure": "RAE_Instance"
   },
-  "WorldMap": {
-    "Type": "WorldGen"
-  },
   "ChunkStorage": {
     "Type": "Hytale"
   },
-  "ChunkConfig": {},
   "IsTicking": true,
   "IsBlockTicking": true,
   "IsPvpEnabled": false,
   "IsFallDamageEnabled": true,
   "IsGameTimePaused": false,
   "GameTime": "0001-01-01T05:30:00Z",
-  "ClientEffects": {
-    "SunHeightPercent": 100.0,
-    "SunAngleDegrees": 0.0,
-    "BloomIntensity": 0.30000001192092896,
-    "BloomPower": 8.0,
-    "SunIntensity": 0.25,
-    "SunshaftIntensity": 0.30000001192092896,
-    "SunshaftScaleFactor": 4.0
-  },
-  "RequiredPlugins": {},
-  "IsSpawningNPC": true,
+  "IsSpawningNPC": false,
   "IsSpawnMarkersEnabled": true,
+  "GameTime": "0001-01-01T07:00:00Z",
   "IsAllNPCFrozen": false,
   "GameplayConfig": "Default",
   "IsCompassUpdating": true,
-  "IsSavingPlayers": false,
-  "IsSavingChunks": false,
-  "SaveNewChunks": false,
-  "IsUnloadingChunks": true,
   "IsObjectiveMarkersEnabled": true,
-  "DeleteOnUniverseStart": false,
+    "IsSavingChunks": true,
+  "IsSavingPlayers": true,
+  "SpawnProvider": {
+    "Id": "Global",
+    "SpawnPoint": {
+      "X": 0.5,
+      "Y": 200,
+      "Z": 0.5,
+      "Pitch": 0,
+      "Yaw": 180,
+      "Roll": 0.0
+    }
+  },
   "DeleteOnRemove": true,
-  "DisabledFluidTickers": [],
   "ResourceStorage": {
     "Type": "Hytale"
   },
