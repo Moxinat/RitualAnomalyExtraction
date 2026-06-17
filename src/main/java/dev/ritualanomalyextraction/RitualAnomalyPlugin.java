@@ -1,14 +1,12 @@
 package dev.ritualanomalyextraction;
 
 import com.hypixel.hytale.logger.HytaleLogger;
-import com.hypixel.hytale.server.core.event.events.ecs.BreakBlockEvent;
-import com.hypixel.hytale.server.core.event.events.ecs.DropItemEvent;
-import com.hypixel.hytale.server.core.event.events.ecs.PlaceBlockEvent;
 import com.hypixel.hytale.server.core.event.events.ecs.UseBlockEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import dev.ritualanomalyextraction.commands.DebugCommand;
+import dev.ritualanomalyextraction.commands.SpawnObjectsCommand;
 import dev.ritualanomalyextraction.listeners.PlayerReadyListener;
 import dev.ritualanomalyextraction.systems.*;
 
@@ -48,6 +46,10 @@ public class RitualAnomalyPlugin extends JavaPlugin {
 
         this.getCommandRegistry().registerCommand(
             new DebugCommand(gameManager, scoreTracker, farmSessionManager, monsterSystem)
+        );
+
+        this.getCommandRegistry().registerCommand(
+                new SpawnObjectsCommand("rae", "Ritual Anomaly Extraction debug commands")
         );
 
         monsterSystem.setOnCaughtCallback(decisionSystem::onPlayerCaught);
