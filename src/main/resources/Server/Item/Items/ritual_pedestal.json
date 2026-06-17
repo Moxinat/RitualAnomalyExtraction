@@ -1,7 +1,7 @@
 {
   "TranslationProperties": {
-    "Name": "items.ritual_pedestal.name",
-    "Description": "items.ritual_pedestal.description"
+    "Name": "server.items.ritual_pedestal.name",
+    "Description": "server.items.ritual_pedestal.description"
   },
   "Id": "Ritual_Pedestal",
   "MaxStack": 100,
@@ -9,7 +9,6 @@
   "Categories": [
     "Blocks.Rocks"
   ],
-
   "PlayerAnimationsId": "Block",
   "Set": "Rock_Stone",
   "BlockType": {
@@ -33,14 +32,13 @@
     "BlockSoundSetId": "Stone",
     "BlockBreakingDecalId": "Breaking_Decals_Rock",
     "Interactions": {
-      "Use" : {
+      "Use": {
         "Interactions": [
           {
             "Type": "Simple"
           }
         ]
       }
-
     }
   },
   "ResourceTypes": [
