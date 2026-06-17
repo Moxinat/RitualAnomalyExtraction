@@ -1,2 +1,3 @@
-Ritual_Pedestal.name = Ritual Pedestal
-Ritual_Pedestal.description = For the ritual
+### Items ###
+items.ritual_pedestal.name = Ritual Pedestal
+items.ritual_pedestal.description = For the ritual
