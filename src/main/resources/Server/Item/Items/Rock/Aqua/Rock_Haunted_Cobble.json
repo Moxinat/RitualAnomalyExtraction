@@ -1,0 +1,54 @@
+{
+  "TranslationProperties": {
+    "Name": "server.items.Soil_Haunted_Cobble.name"
+  },
+  "ItemLevel": 10,
+  "MaxStack": 100,
+  "Icon": "Icons/ItemsGenerated/Rock_Haunted_Cobble.png",
+  "Categories": [
+    "Blocks.Rocks"
+  ],
+  "PlayerAnimationsId": "Block",
+  "Set": "Rock_Stone",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Cube",
+    "Group": "Cobble",
+    "BlockParticleSetId": "Stone",
+    "Textures": [
+      {
+        "All": "BlockTextures/Rock_Aqua_Cobble.png"
+      }
+    ],
+    "ParticleColor": "#234335",
+    "BlockSoundSetId": "Stone",
+    "PhysicalMaterialId": "Stone",
+    "TransitionToGroups": [
+      "Stone"
+    ],
+    "Tint": [
+      "#8e8e8e"
+    ]
+  },
+  "Tags": {
+    "Type": [
+      "Rock"
+    ],
+    "Family": [
+      "Stone"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Stone",
+  "IconProperties": {
+    "Scale": 0.4,
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ],
+    "Translation": [
+      0,
+      -15
+    ]
+  }
+}
