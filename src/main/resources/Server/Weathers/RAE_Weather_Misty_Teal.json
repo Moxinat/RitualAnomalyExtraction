@@ -71,7 +71,7 @@
   "SkyBottomColors": [
     {
       "Hour": 0,
-      "Color": "#200f45ff"
+      "Color": "#2f0983ff"
     }
   ],
   "SunScales": [
@@ -99,44 +99,38 @@
   "WaterTints": [
     {
       "Hour": 0,
-      "Color": "#183625"
+      "Color": "#10472f"
     }
   ],
   "FogDensities": [
     {
       "Hour": 0,
-      "Value": 1
+      "Value": 1.1
     }
   ],
   "Stars": "Sky/Stars.png",
   "FogHeightFalloffs": [
     {
       "Hour": 0,
-      "Value": 2
+      "Value": 3
     }
   ],
   "SkyTopColors": [
     {
       "Hour": 0,
-      "Color": "#9f0fe5ff"
+      "Color": "#60008fff"
     }
   ],
   "SunlightColors": [
     {
       "Hour": 0,
-      "Color": "#717171"
+      "Color": "#ffffff"
     }
   ],
   "SunGlowColors": [
     {
       "Hour": 0,
       "Color": "#ffffff00"
-    }
-  ],
-  "SunlightDampingMultipliers": [
-    {
-      "Hour": 0,
-      "Value": 1
     }
   ],
   "SunColors": [
@@ -166,6 +160,12 @@
     {
       "Hour": 0,
       "Color": "#fa00007d"
+    }
+  ],
+  "SunlightDampingMultipliers": [
+    {
+      "Hour": 0,
+      "Value": 0.2
     }
   ]
 }
