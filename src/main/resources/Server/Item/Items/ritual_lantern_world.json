@@ -33,7 +33,8 @@
           }
         ]
       }
-    }
+    },
+    "InteractionHint": "server.interactionHints.ritual_item.pickup"
   },
   "Utility": {
     "Usable": true
