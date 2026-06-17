@@ -1,0 +1,19 @@
+{
+  "TranslationProperties": {
+    "Name": "items.ritual_effigy.name",
+    "Description": "items.ritual_effigy.description"
+  },
+  "Id": "ritual_effigy",
+  "MaxStack": 1,
+  "Icon": "Icons/ItemsGenerated/ritual_pedestal.png",
+  "Categories": [
+    "Items.Misc"
+  ],
+  "PlayerAnimationsId": "Item",
+  "Tags": {
+    "Type": [
+      "RitualObject"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Default"
+}

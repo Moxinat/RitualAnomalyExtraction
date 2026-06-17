@@ -2,6 +2,7 @@ package dev.ritualanomalyextraction;
 
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.event.events.ecs.BreakBlockEvent;
+import com.hypixel.hytale.server.core.event.events.ecs.DropItemEvent;
 import com.hypixel.hytale.server.core.event.events.ecs.PlaceBlockEvent;
 import com.hypixel.hytale.server.core.event.events.ecs.UseBlockEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
@@ -57,8 +58,9 @@ public class RitualAnomalyPlugin extends JavaPlugin {
         atmosphereSystem.register(this);
 
         this.getEntityStoreRegistry().registerWorldEventType(UseBlockEvent.Post.class);
+        this.getEntityStoreRegistry().registerSystem(new RitualObjectPickupSystem());
+        this.getEntityStoreRegistry().registerSystem(new RitualObjectPickupSystem.DropRequestListener());
         this.getEntityStoreRegistry().registerSystem(new PedestalSystem());
-        this.getEntityStoreRegistry().registerSystem(new PedestalSystem.PlaceListener());
         this.getEntityStoreRegistry().registerSystem(new PedestalSystem.BreakListener());
 
         LOGGER.atInfo().log("RitualAnomalyExtraction setup complete.");
