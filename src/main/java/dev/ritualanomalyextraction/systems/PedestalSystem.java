@@ -188,7 +188,11 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
             );
             if (giveTransaction.succeeded()) {
                 removeVisualItemEntity(commandBuffer, pedestal);
+
+                RitualProgressTracker.onObjectRemoved(player, pedestal.getPlacedItemId());
+
                 pedestal.clear();
+
             }
             return;
         }
@@ -227,6 +231,8 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
 
         pedestal.setPlacedItemId(itemId);
         pedestal.setVisualItemEntity(visualItemEntity);
+
+        RitualProgressTracker.onObjectPlaced(player, itemId);
 
         if (RitualObjectPickupSystem.isRitualObjectItemId(itemId)) {
             RitualObjectPickupSystem.clearCarriedRitualObjectIfMatches(player, itemId);
