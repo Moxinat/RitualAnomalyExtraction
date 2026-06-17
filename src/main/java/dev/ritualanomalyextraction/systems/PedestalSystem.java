@@ -27,9 +27,6 @@ import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.transaction.ItemStackTransaction;
 import com.hypixel.hytale.server.core.inventory.transaction.ItemStackSlotTransaction;
 import com.hypixel.hytale.server.core.modules.entity.component.*;
-import com.hypixel.hytale.server.core.modules.entity.item.ItemComponent;
-import com.hypixel.hytale.server.core.modules.entity.item.PreventItemMerging;
-import com.hypixel.hytale.server.core.modules.entity.item.PreventPickup;
 import com.hypixel.hytale.server.core.modules.entity.tracker.NetworkId;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
@@ -38,6 +35,7 @@ import dev.ritualanomalyextraction.components.RitualPedestalComponent;
 import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import org.joml.Vector3i;
 import org.joml.Vector3d;
 
@@ -95,7 +93,12 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
 
         Holder<EntityStore> holder = EntityStore.REGISTRY.newHolder();
 
-        ModelAsset modelAsset = ModelAsset.getAssetMap().getAsset(resolveDisplayModelId(itemId));
+        ModelAsset modelAsset = ModelAsset.getAssetMap().getAsset(modelId);
+        if (modelAsset == null) {
+            LOGGER.at(Level.WARNING).log("ModelAsset not found for item '" + itemId + "': " + modelId);
+            return null;
+        }
+
         Model model = Model.createScaledModel(modelAsset, 0.45F);
 
         holder.addComponent(
@@ -118,10 +121,13 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
                 new EntityScaleComponent(0.45F)
         );
 
-        holder.addComponent(
-                BoundingBox.getComponentType(),
-                new BoundingBox(model.getBoundingBox())
-        );
+        Box boundingBox = model.getBoundingBox();
+        if (boundingBox != null) {
+            holder.addComponent(
+                    BoundingBox.getComponentType(),
+                    new BoundingBox(boundingBox)
+            );
+        }
 
         holder.addComponent(
                 NetworkId.getComponentType(),
