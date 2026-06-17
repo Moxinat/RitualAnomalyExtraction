@@ -77,7 +77,6 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
 
         return switch (itemId) {
             // TODO: Replace these example ritual object IDs with the final item IDs.
-            case "ritual_skull" -> "RitualSkullDisplay";
             case "ritual_candle" -> "RitualCandleDisplay";
             case "ritual_bone" -> "RitualBoneDisplay";
             case "ritual_orb" -> "RitualOrbDisplay";
@@ -179,10 +178,7 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
             return;
         }
 
-        RitualPedestalComponent pedestal = getPedestal(toBlockPosition(event.getTargetBlock()));
-        if (pedestal == null) {
-            return;
-        }
+        RitualPedestalComponent pedestal = getOrCreatePedestal(toBlockPosition(event.getTargetBlock()));
 
         if (pedestal.hasItem()) {
             ItemStackTransaction giveTransaction = Player.giveItem(
@@ -232,40 +228,10 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
         pedestal.setPlacedItemId(itemId);
         pedestal.setVisualItemEntity(visualItemEntity);
 
-    }
-
-    public static class PlaceListener extends EntityEventSystem<EntityStore, PlaceBlockEvent> {
-
-
-
-        public PlaceListener() {
-            super(PlaceBlockEvent.class);
+        if (RitualObjectPickupSystem.isRitualObjectItemId(itemId)) {
+            RitualObjectPickupSystem.clearCarriedRitualObjectIfMatches(player, itemId);
         }
 
-        @Override
-        public @Nonnull Query<EntityStore> getQuery() {
-            return Player.getComponentType();
-        }
-
-        @Override
-        public void handle(int index,
-                           @Nonnull ArchetypeChunk<EntityStore> chunk,
-                           @Nonnull Store<EntityStore> store,
-                           @Nonnull CommandBuffer<EntityStore> commandBuffer,
-                           @Nonnull PlaceBlockEvent event) {
-            ItemStack itemInHand = event.getItemInHand();
-            if (itemInHand == null || !RITUAL_PEDESTAL_ID.equalsIgnoreCase(itemInHand.getItemId())) {
-                return;
-            }
-
-            Ref<EntityStore> entity = chunk.getReferenceTo(index);
-            PlayerRef player = store.getComponent(entity, PlayerRef.getComponentType());
-            if (player == null) {
-                return;
-            }
-
-            PedestalSystem.getOrCreatePedestal(toBlockPosition(event.getTargetBlock()));
-        }
     }
 
     public static class BreakListener extends EntityEventSystem<EntityStore, BreakBlockEvent> {
