@@ -1,3 +1,7 @@
 ### Items ###
 items.ritual_pedestal.name = Ritual Pedestal
 items.ritual_pedestal.description = For the ritual
+
+### InteractionHints ###
+
+interactionHints.pedestal.place_or_get_item = Place or get Ritual Item with [{key}]

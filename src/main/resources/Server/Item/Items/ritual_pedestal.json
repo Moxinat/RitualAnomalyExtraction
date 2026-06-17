@@ -39,7 +39,8 @@
           }
         ]
       }
-    }
+    },
+    "InteractionHint": "server.interactionHints.pedestal.place_or_get_item"
   },
   "ResourceTypes": [
     {
