@@ -47,5 +47,8 @@
     {
       "Id": "Rock"
     }
-  ]
+  ],
+  "Utility": {
+    "Usable": true
+  }
 }

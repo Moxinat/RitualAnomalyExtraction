@@ -1,0 +1,19 @@
+{
+  "Model": "Items/art/models/RitualItemTest.blockymodel",
+  "Texture": "Items/art/textures/RitualItemTest.png",
+  "EyeHeight": 0.5,
+  "HitBox": {
+    "Max": {
+      "X": 0.14,
+      "Y": 0.45,
+      "Z": 0.14
+    },
+    "Min": {
+      "X": -0.14,
+      "Y": 0,
+      "Z": -0.14
+    }
+  },
+  "MinScale": 1.0,
+  "MaxScale": 1.0
+}
