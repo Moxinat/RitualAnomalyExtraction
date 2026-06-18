@@ -21,7 +21,7 @@ public class RaeConfig {
 
     private boolean setLobbyAsDefaultWorld = true;
     private boolean createLobbyUponServerStart = true;
-    private String lobbyWorldName;
+    private String lobbyWorldName = InstanceUtil.DEFAULT_LOBBY_NAME;
 
 
 

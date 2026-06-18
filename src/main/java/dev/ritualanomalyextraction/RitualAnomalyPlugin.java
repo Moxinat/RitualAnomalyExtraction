@@ -6,11 +6,9 @@ import com.hypixel.hytale.server.core.event.events.ecs.UseBlockEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
-import com.hypixel.hytale.server.core.universe.world.events.AddWorldEvent;
 import com.hypixel.hytale.server.core.util.Config;
 import dev.ritualanomalyextraction.commands.SpawnObjectsCommand;
 import dev.ritualanomalyextraction.listeners.PlayerReadyListener;
-import dev.ritualanomalyextraction.listeners.RaeLobbyCreationListener;
 import dev.ritualanomalyextraction.systems.*;
 import dev.ritualanomalyextraction.utils.RaeConfig;
 
@@ -34,10 +32,6 @@ public class RitualAnomalyPlugin extends JavaPlugin {
     protected void setup() {
         instance = this;
         CONFIG.save();
-        /*this.getEventRegistry().registerGlobal(
-                AddWorldEvent.class,
-                RaeLobbyCreationListener::onWorldAdded
-        );*/
         this.getEventRegistry().registerGlobal(
             PlayerReadyEvent.class,
             event -> PlayerReadyListener.onPlayerReady(event, gameManager)
