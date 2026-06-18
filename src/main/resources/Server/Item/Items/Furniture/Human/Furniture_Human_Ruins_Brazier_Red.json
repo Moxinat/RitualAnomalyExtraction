@@ -1,0 +1,110 @@
+{
+  "TranslationProperties": {
+    "Name": "server.items.Furniture_Human_Ruins_Brazier.name"
+  },
+  "PlayerAnimationsId": "Block",
+  "Categories": [
+    "Furniture.Lighting"
+  ],
+  "Set": "Furniture_Human_Ruins",
+  "Icon": "Icons/ItemsGenerated/Furniture_Human_Ruins_Brazier.png",
+  "BlockType": {
+    "BlockParticleSetId": "Metal",
+    "CustomModel": "Blocks/Decorative_Sets/Human_Ruins/Brazier.blockymodel",
+    "CustomModelAnimation": "Blocks/Animations/Fire/Fire_Burn.blockyanim",
+    "CustomModelTexture": [
+      {
+        "Texture": "Blocks/Decorative_Sets/Human_Ruins/Brazier_Texture.png",
+        "Weight": 1
+      }
+    ],
+    "DrawType": "Model",
+    "Flags": {},
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Rocks"
+      }
+    },
+    "HitboxType": "Brazier_Large",
+    "Light": {
+      "Color": "#9ba"
+    },
+    "Material": "Solid",
+    "Opacity": "Transparent",
+    "Support": {
+      "Down": [
+        {
+          "FaceType": "Full"
+        }
+      ]
+    },
+    "BlockSoundSetId": "Brazier",
+    "PhysicalMaterialId": "Stone",
+    "Looping": true,
+    "Particles": [
+      {
+        "SystemId": "Fluid_Fire",
+        "Scale": 1.1,
+        "PositionOffset": {
+          "Y": 0.1
+        },
+        "TargetNodeName": "Flame-Emitter"
+      }
+    ],
+    "AmbientSoundEventId": "SFX_Campfire_Default_Loop",
+    "InteractionSoundEventId": "SFX_Flame_Ignite",
+    "ParticleColor": "#333839",
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          {
+            "Type": "ChangeState",
+            "Changes": {
+              "default": "Off",
+              "Off": "default"
+            }
+          }
+        ]
+      }
+    },
+    "State": {
+      "Definitions": {
+        "On": {
+          "AmbientSoundEventId": "SFX_Campfire_Default_Loop",
+          "InteractionSoundEventId": "SFX_Flame_Ignite"
+        },
+        "Off": {
+          "InteractionHint": "server.interactionHints.turnon",
+          "Light": null,
+          "Particles": null,
+          "InteractionSoundEventId": "SFX_Torch_Off",
+          "AmbientSoundEventId": null,
+          "BlockSoundSetId": "Stone"
+        }
+      }
+    },
+    "InteractionHint": "server.interactionHints.turnoff",
+    "TextureComputedColor": "#324143"
+  },
+  "Tags": {
+    "Type": [
+      "Furniture"
+    ],
+    "Family": [
+      "Temple"
+    ]
+  },
+  "IconProperties": {
+    "Scale": 0.58823,
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ],
+    "Translation": [
+      0,
+      -13.5
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Wood"
+}
