@@ -19,7 +19,6 @@ import com.hypixel.hytale.server.core.asset.type.model.config.ModelAsset;
 import com.hypixel.hytale.server.core.entity.UUIDComponent;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.event.events.ecs.BreakBlockEvent;
-import com.hypixel.hytale.server.core.event.events.ecs.PlaceBlockEvent;
 import com.hypixel.hytale.server.core.event.events.ecs.UseBlockEvent;
 import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 import com.hypixel.hytale.server.core.inventory.InventoryUtils;
@@ -31,6 +30,7 @@ import com.hypixel.hytale.server.core.modules.entity.tracker.NetworkId;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.ritualanomalyextraction.components.RitualPedestalComponent;
+import com.hypixel.hytale.server.core.Message;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -181,19 +181,31 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
         RitualPedestalComponent pedestal = getOrCreatePedestal(toBlockPosition(event.getTargetBlock()));
 
         if (pedestal.hasItem()) {
+            String placedItemId = pedestal.getPlacedItemId();
+
+            if (RitualObjectPickupSystem.isRitualObjectItemId(placedItemId)
+                    && RitualObjectPickupSystem.isCarryingRitualObject(player)) {
+
+                player.sendMessage(Message.raw("You are already carrying a ritual object."));
+                return;
+            }
+
             ItemStackTransaction giveTransaction = Player.giveItem(
-                new ItemStack(pedestal.getPlacedItemId(), 1),
-                entity,
-                store
+                    new ItemStack(placedItemId, 1),
+                    entity,
+                    store
             );
+
             if (giveTransaction.succeeded()) {
                 removeVisualItemEntity(commandBuffer, pedestal);
 
-                RitualProgressTracker.onObjectRemoved(player, pedestal.getPlacedItemId());
+                RitualProgressTracker.onObjectRemoved(player, placedItemId);
 
                 pedestal.clear();
 
+                RitualObjectPickupSystem.setCarriedRitualObjectIfEmpty(player, placedItemId);
             }
+
             return;
         }
 

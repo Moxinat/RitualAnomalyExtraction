@@ -1,23 +1,35 @@
 package dev.ritualanomalyextraction.listeners;
 
 import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.ritualanomalyextraction.RitualGameManager;
-import dev.ritualanomalyextraction.systems.ControlRoomSystem;
 
 public class PlayerReadyListener {
 
     public static void onPlayerReady(PlayerReadyEvent event,
-                                     RitualGameManager gameManager,
-                                     ControlRoomSystem controlRoomSystem) {
+                                     RitualGameManager gameManager) {
+
         Ref<EntityStore> playerEntityRef = event.getPlayerRef();
-        PlayerRef player = playerEntityRef.getStore().getComponent(playerEntityRef, PlayerRef.getComponentType());
+
+        if (!playerEntityRef.isValid()) {
+            return;
+        }
+
+        PlayerRef player = playerEntityRef.getStore()
+                .getComponent(playerEntityRef, PlayerRef.getComponentType());
+
+        if (player == null) {
+            return;
+        }
 
         if (gameManager.getState() == RitualGameManager.GameState.IDLE) {
             gameManager.onPlayerReady();
-            controlRoomSystem.onPlayerFirstReady(player);
+
+            player.sendMessage(Message.raw("Ritual Anomaly Extraction started."));
+            player.sendMessage(Message.raw("Find the ritual objects and place them on the pedestals."));
         }
     }
 }

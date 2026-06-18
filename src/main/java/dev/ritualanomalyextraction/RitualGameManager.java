@@ -1,48 +1,94 @@
 package dev.ritualanomalyextraction;
 
-import dev.ritualanomalyextraction.systems.DecisionSystem.DecisionOutcome;
-import dev.ritualanomalyextraction.systems.ScoreTracker;
+import com.hypixel.hytale.logger.HytaleLogger;
+
+import java.util.logging.Level;
 
 public class RitualGameManager {
 
+    private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
+
     public enum GameState {
-        IDLE,           // server started, no player yet
-        CONTROL_ROOM,   // player in hub, can enter portal
-        IN_FARM,        // player inside a farm — monster active
-        ROUND_RESULT,   // decision processed, brief pause before return
-        WIN             // 3 objects extracted
+        IDLE,
+        CONTROL_ROOM,
+        RITUAL_ACTIVE,
+        RITUAL_COMPLETE
     }
 
-    private GameState   state       = GameState.IDLE;
-    private int         roundNumber = 0;
-    private final ScoreTracker scoreTracker;
-
-    public RitualGameManager(ScoreTracker scoreTracker) {
-        this.scoreTracker = scoreTracker;
-    }
+    private GameState state = GameState.IDLE;
+    private long gameStartMs = 0;
 
     public void onPlayerReady() {
+        if (state != GameState.IDLE) {
+            return;
+        }
+
         state = GameState.CONTROL_ROOM;
-        scoreTracker.startGame();
+        gameStartMs = System.currentTimeMillis();
+
+        LOGGER.at(Level.INFO).log("Player ready. Game state changed to CONTROL_ROOM.");
+
+        // TODO: Spawn player in control room when teleport API is wired.
+        // TODO: Call RitualObjectSpawnManager from the real game start flow.
     }
 
-    public void onRoundStart() {
-        state = GameState.IN_FARM;
-        scoreTracker.startRound();
+    public void onRitualStarted() {
+        if (state == GameState.RITUAL_COMPLETE) {
+            return;
+        }
+
+        state = GameState.RITUAL_ACTIVE;
+
+        LOGGER.at(Level.INFO).log("Ritual started. Game state changed to RITUAL_ACTIVE.");
+
+        // TODO: Trigger ritual effects.
+        // TODO: Activate final portal / win condition / end sequence.
     }
 
-    public void onRoundResult(DecisionOutcome outcome) {
-        scoreTracker.recordOutcome(outcome);
-        roundNumber++;
-        state = scoreTracker.isWinConditionMet() ? GameState.WIN : GameState.ROUND_RESULT;
+    public void onRitualComplete() {
+        if (state == GameState.RITUAL_COMPLETE) {
+            return;
+        }
+
+        state = GameState.RITUAL_COMPLETE;
+
+        LOGGER.at(Level.INFO).log("Ritual complete. Game state changed to RITUAL_COMPLETE.");
+
+        // TODO: Show final win message / end screen.
     }
 
-    public void onReturnToControlRoom() {
-        if (state != GameState.WIN) state = GameState.CONTROL_ROOM;
+    public void reset() {
+        state = GameState.IDLE;
+        gameStartMs = 0;
+
+        LOGGER.at(Level.INFO).log("Game manager reset.");
+
+        // TODO: Reset RitualProgressTracker.
+        // TODO: Clear spawned ritual objects.
+        // TODO: Clear pedestal states if needed.
     }
 
-    public GameState getState()      { return state; }
-    public int       getRoundNumber(){ return roundNumber; }
-    public boolean   isInFarm()      { return state == GameState.IN_FARM; }
-    public long      getElapsedRoundMs() { return scoreTracker.getElapsedRoundMs(); }
+    public GameState getState() {
+        return state;
+    }
+
+    public boolean isInControlRoom() {
+        return state == GameState.CONTROL_ROOM;
+    }
+
+    public boolean isRitualActive() {
+        return state == GameState.RITUAL_ACTIVE;
+    }
+
+    public boolean isRitualComplete() {
+        return state == GameState.RITUAL_COMPLETE;
+    }
+
+    public long getElapsedGameMs() {
+        if (gameStartMs == 0) {
+            return 0;
+        }
+
+        return System.currentTimeMillis() - gameStartMs;
+    }
 }
