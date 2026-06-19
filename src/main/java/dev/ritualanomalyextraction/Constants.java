@@ -1,4 +1,60 @@
 package main.java.dev.ritualanomalyextraction;
 
+import com.hypixel.hytale.math.vector.Rotation3f;
+import com.hypixel.hytale.math.vector.Transform;
+import com.hypixel.hytale.server.core.universe.Universe;
+import com.hypixel.hytale.server.core.universe.world.World;
+import org.joml.Vector3i;
+
+import java.util.List;
+import java.util.Map;
+
 public class Constants {
+
+    //Initial spawn constants
+    public static final World spawnWorld = Universe.get().getWorld("RAE-Lobby");
+    public static final Transform spawnPos = new Transform(0.0, 130, 0.0);
+    public static final Rotation3f spawnRot = new Rotation3f(0, 0, 0);
+
+    //Control room constants
+    public static final World controlRoomWorld = Universe.get().getWorld("RAE-Instance");
+    public static final Transform controlRoomPos = new Transform(0.0, 130, 0.0);
+    public static final Rotation3f controlRoomRot = new Rotation3f(0, 0, 0);
+
+    //Ritual object spawn constants
+    public static final World ritualWorld = Universe.get().getWorld("RAE-Ritual");
+    public static final List<String> ritualObjectsWorldID = List.of(
+            "ritual_skull_world",
+            "ritual_lantern_world",
+            "ritual_effigy_world"
+    );
+    public static final List<Vector3i> ritualObjectSpawnSpots = List.of(
+            // TODO add actual coordinates
+            new Vector3i(-36, 130, 189),
+            new Vector3i(-38, 130, 195),
+            new Vector3i(-43, 130, 199),
+            new Vector3i(-49, 130, 199),
+            new Vector3i(-54, 130, 195),
+            new Vector3i(-56, 130, 189),
+            new Vector3i(-54, 130, 183),
+            new Vector3i(-49, 130, 179),
+            new Vector3i(-43, 130, 179),
+            new Vector3i(-38, 130, 183)
+    );
+
+    //Pickup system constants
+    public static final Map<String, String> ritualObjectsWorldToItem = Map.of(
+            "ritual_skull_world", "ritual_skull",
+            "ritual_lantern_world", "ritual_lantern",
+            "ritual_effigy_world", "ritual_effigy"
+    );
+
+    //Pedestal system constants
+    public static final String rituralPedestalID = "Ritual_Pedestal";
+
+    //Game time limit in seconds
+    public static final Integer gameTimeLimit = 600;
+
+    //Celebration time in seconds
+    public static final Integer celebrationTime = 20;
 }

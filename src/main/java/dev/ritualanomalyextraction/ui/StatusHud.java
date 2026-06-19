@@ -1,30 +1,39 @@
 package main.java.dev.ritualanomalyextraction.ui;
 
-import com.hypixel.hytale.protocol.packets.interface_.CustomHud;
-import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.entities.player.hud.CustomUIHud;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import main.java.dev.ritualanomalyextraction.Constants;
+import main.java.dev.ritualanomalyextraction.RitualGameManager;
 
 import javax.annotation.Nonnull;
-import java.util.concurrent.Executors;
-import java.util.concurrent.RunnableFuture;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.awt.*;
 
-public class TimerHud extends CustomUIHud {
+public class StatusHud extends CustomUIHud {
 
-    public TimerHud(@Nonnull PlayerRef playerRef, @Nonnull String key) {
+    private int gameTime;
+
+    public StatusHud(@Nonnull PlayerRef playerRef, @Nonnull String key, RitualGameManager gameTime) {
         super(playerRef, key);
+        this.gameTime = gameTime.getGameTimeLimit();
     }
 
     @Override
     protected void build(@Nonnull UICommandBuilder uiCommandBuilder) {
-        uiCommandBuilder.append("Hud/gameTimer.ui");
+        uiCommandBuilder.append("Hud/statusUI.ui");
         if (getKey().equals("spawn")) {
             uiCommandBuilder.set("#TextField.", Message.raw("To start the game type /start"));
+        }
+        if (getKey().equals("gameTimer")) {
+            int seconds = gameTime % 60;
+            int minutes = gameTime / 60;
+            uiCommandBuilder.set("#TextField.", Message.raw(String.format("%d:%02d", minutes, seconds)));
+        }
+        if (getKey().equals("endFail")) {
+            uiCommandBuilder.set("#TextField.", Message.raw("You failed!").color(Color.RED));
+        }
+        if (getKey().equals("endSuccess")) {
+            uiCommandBuilder.set("#TextField.", Message.raw("You won!").color(Color.GREEN));
         }
     }
 

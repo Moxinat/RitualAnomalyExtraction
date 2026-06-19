@@ -4,15 +4,16 @@ import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.AbstractCommand;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import main.java.dev.ritualanomalyextraction.RitualGameManager;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.concurrent.CompletableFuture;
 
-public class StartCommand extends AbstractCommand{
+public class ResetCommand extends AbstractCommand{
 
     RitualGameManager gameManager;
 
-    public StartCommand(String name, String description, RitualGameManager gameManager) {
+    public ResetCommand(String name, String description, RitualGameManager gameManager) {
         super(name, description);
         setAllowsExtraArguments(false);
         this.gameManager = gameManager;
@@ -27,7 +28,7 @@ public class StartCommand extends AbstractCommand{
             return CompletableFuture.completedFuture(null);
         }
 
-        gameManager.onPlayerReady();
+        gameManager.reset();
 
         return CompletableFuture.completedFuture(null);
     }
