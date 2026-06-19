@@ -115,7 +115,7 @@ public class InstanceUtil {
 
                     Teleport teleportComponent = Teleport.createForPlayer(toWorld, spawnPoint);
                     store.addComponent(playerRef, Teleport.getComponentType(), teleportComponent);
-                    LOGGER.atSevere().log("Teleport player to world!");
+                    LOGGER.atInfo().log("Teleport player to world!");
                 }
             });
         }else{

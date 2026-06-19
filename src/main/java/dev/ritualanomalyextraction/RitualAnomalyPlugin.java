@@ -1,7 +1,6 @@
 package dev.ritualanomalyextraction;
 
 import com.hypixel.hytale.logger.HytaleLogger;
-import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.event.events.ecs.UseBlockEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
@@ -53,7 +52,6 @@ public class RitualAnomalyPlugin extends JavaPlugin {
     @Override
     protected void shutdown(){
         CONFIG.save();
-        HytaleServer.get().getConfig().getDefaults().setWorld("default");
     }
 
     public static RitualAnomalyPlugin getInstance(){
