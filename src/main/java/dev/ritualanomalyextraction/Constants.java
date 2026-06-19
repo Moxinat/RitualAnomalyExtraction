@@ -50,7 +50,7 @@ public class Constants {
     );
 
     //Pedestal system constants
-    public static final String rituralPedestalID = "Ritual_Pedestal";
+    public static final String ritualPedestalID = "Ritual_Pedestal";
 
     //Game time limit in seconds
     public static final Integer gameTimeLimit = 600;

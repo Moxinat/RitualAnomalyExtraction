@@ -27,7 +27,7 @@ public class RitualGameManager {
         CONTROL_ROOM,
         RITUAL_ACTIVE,
         RITUAL_COMPLETE,
-        FAIL;
+        FAIL
     }
 
     private GameState state = GameState.IDLE;
@@ -63,7 +63,10 @@ public class RitualGameManager {
             return;
         }
 
-        RitualObjectSpawnManager.spawnRandomRitualObjects(Constants.ritualWorld);
+        Constants.ritualWorld.execute(() -> {
+            RitualObjectSpawnManager.spawnRandomRitualObjects(Constants.ritualWorld);
+        });
+
         updateGameTimer();
     }
 
@@ -114,7 +117,6 @@ public class RitualGameManager {
         RitualProgressTracker.reset();
         RitualObjectSpawnManager.clearSpawnedObjects(Constants.ritualWorld);
         // TODO: reset Pedestal
-        PedestalSystem.removePedestal(new BlockPosition(0,0,0));
         Constants.controlRoomWorld.execute( () -> {
             for (PlayerRef playerRef : Constants.controlRoomWorld.getPlayerRefs()) {
                 Player player = playerRef.getReference().getStore().getComponent(playerRef.getReference(), Player.getComponentType());

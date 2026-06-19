@@ -16,8 +16,11 @@ public final class RitualProgressTracker {
     private static boolean ritualStarted = false;
     private static RitualGameManager gameManager;
 
-    private RitualProgressTracker(RitualGameManager gameManager) {
-        this.gameManager = gameManager;
+    private RitualProgressTracker() {
+    }
+
+    public static void setGameManager(RitualGameManager manager) {
+        gameManager = manager;
     }
 
     public static void onObjectPlaced(PlayerRef player, String objectId) {

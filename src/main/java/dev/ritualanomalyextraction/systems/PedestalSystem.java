@@ -146,7 +146,7 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
             return;
         }
 
-        if (!Constants.rituralPedestalID.equalsIgnoreCase(blockId)){
+        if (!Constants.ritualPedestalID.equalsIgnoreCase(blockId)){
             return;
         }
 
@@ -239,7 +239,7 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
         public void handle(int index, @Nonnull ArchetypeChunk<EntityStore> chunk, @Nonnull Store<EntityStore> store, @Nonnull CommandBuffer<EntityStore> commandBuffer, @Nonnull BreakBlockEvent event) {
             String blockId = event.getBlockType().getId();
 
-            if (!Constants.rituralPedestalID.equalsIgnoreCase(blockId)) {
+            if (!Constants.ritualPedestalID.equalsIgnoreCase(blockId)) {
                 return;
             }
 
