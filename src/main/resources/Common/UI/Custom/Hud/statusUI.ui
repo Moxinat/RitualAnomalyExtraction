@@ -1,0 +1,5 @@
+Label #TextField {
+  Alignment: Center;
+  Anchor: (Bottom: 10, Left: 0, Right: 0);
+  Text: "00:00";
+}
