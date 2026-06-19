@@ -27,22 +27,22 @@ public class InstanceUtil {
     public static final String DEFAULT_MINIGAME_NAME = "RAE-Minigame";
     private static boolean alreadySetUpLobby = false;
 
-    public static boolean generateInstance(World fromWorld,String instanceName, Transform fromWorldSpawnPoint, Ref<EntityStore> playerRef){
-        LOGGER.atInfo().log("Trying to generate " + instanceName);
+    public static boolean generateInstance(World fromWorld,String instanceCreationName,String instanceFolderName, Transform returnPoint, Ref<EntityStore> playerRef){
+        LOGGER.atInfo().log("Trying to generate " + instanceCreationName);
         if(fromWorld == null){
             LOGGER.atSevere().log("Source World is null!");
             return false;
         }
-        java.util.concurrent.CompletableFuture<World> completableFuture= InstancesPlugin.get().spawnInstance(instanceName, instanceName,fromWorld,fromWorldSpawnPoint);
+        java.util.concurrent.CompletableFuture<World> completableFuture= InstancesPlugin.get().spawnInstance(instanceFolderName, instanceCreationName,fromWorld,returnPoint);
 
         completableFuture.thenRun(()-> {
             try {
                 teleportPlayerToWorld(playerRef,completableFuture.get());
             } catch (Exception e) {
-                LOGGER.atSevere().log("Failed to teleport player to %s! (Cause: Exception)",instanceName);
+                LOGGER.atSevere().log("Failed to teleport player to %s! (Cause: Exception)",instanceCreationName);
             }
         });
-        LOGGER.atInfo().log("Created %s for Ritual Anomaly Extraction!",instanceName);
+        LOGGER.atInfo().log("Created %s for Ritual Anomaly Extraction!",instanceCreationName);
         return true;
     }
 
@@ -60,7 +60,7 @@ public class InstanceUtil {
                     new Vector3d(0,200,0),
                     new Rotation3f(0,180,0)
             );
-            if(transformComponent != null && generateInstance(fromWorld, currentLobbyName,transformComponent.getTransform(),playerRef)){
+            if(transformComponent != null && generateInstance(fromWorld, currentLobbyName,DEFAULT_LOBBY_NAME,transformComponent.getTransform(),playerRef)){
                 if(raeConfig.shouldSetLobbyAsDefaultWorld()) HytaleServer.get().getConfig().getDefaults().setWorld(currentLobbyName);
                 alreadySetUpLobby = true;
             }else{
@@ -84,7 +84,7 @@ public class InstanceUtil {
                     new Rotation3f(0,180,0)
             );
             if(transformComponent == null) return;
-            if (!generateInstance(fromWorld, DEFAULT_MINIGAME_NAME, transformComponent.getTransform(), playerRef)) {
+            if (!generateInstance(fromWorld,DEFAULT_MINIGAME_NAME, DEFAULT_MINIGAME_NAME, transformComponent.getTransform(), playerRef)) {
                 LOGGER.atSevere().log("Failed creating the Minigame for Ritual Anomaly Extraction!");
             }else{
                 LOGGER.atInfo().log("Created the Minigame for Ritual Anomaly Extraction!");
