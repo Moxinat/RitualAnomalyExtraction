@@ -1,4 +1,4 @@
-package dev.ritualanomalyextraction.components;
+package main.java.dev.ritualanomalyextraction.components;
 
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;

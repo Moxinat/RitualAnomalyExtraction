@@ -1,4 +1,4 @@
-package dev.ritualanomalyextraction.systems;
+package main.java.dev.ritualanomalyextraction.systems;
 
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.AddReason;
@@ -29,7 +29,8 @@ import com.hypixel.hytale.server.core.modules.entity.component.*;
 import com.hypixel.hytale.server.core.modules.entity.tracker.NetworkId;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import dev.ritualanomalyextraction.components.RitualPedestalComponent;
+import main.java.dev.ritualanomalyextraction.Constants;
+import main.java.dev.ritualanomalyextraction.components.RitualPedestalComponent;
 import com.hypixel.hytale.server.core.Message;
 
 import javax.annotation.Nonnull;
@@ -41,7 +42,6 @@ import org.joml.Vector3d;
 
 public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent.Post> {
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
-    private static final String RITUAL_PEDESTAL_ID = "Ritual_Pedestal";
 
     public PedestalSystem() {
         super(UseBlockEvent.Post.class);
@@ -84,9 +84,7 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
         };
     }
 
-    private static Ref<EntityStore> spawnVisualItemEntity(CommandBuffer<EntityStore> commandBuffer,
-                                                          String itemId,
-                                                          Vector3i blockPosition) {
+    private static Ref<EntityStore> spawnVisualItemEntity(CommandBuffer<EntityStore> commandBuffer, String itemId, Vector3i blockPosition) {
 
         String modelId = resolveDisplayModelId(itemId);
 
@@ -100,46 +98,27 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
 
         Model model = Model.createScaledModel(modelAsset, 0.45F);
 
-        holder.addComponent(
-                TransformComponent.getComponentType(),
-                new TransformComponent(toVisualItemPosition(blockPosition), Rotation3f.IDENTITY)
-        );
+        holder.addComponent(TransformComponent.getComponentType(), new TransformComponent(toVisualItemPosition(blockPosition), Rotation3f.IDENTITY));
 
-        holder.addComponent(
-                PersistentModel.getComponentType(),
-                new PersistentModel(model.toReference())
-        );
+        holder.addComponent(PersistentModel.getComponentType(), new PersistentModel(model.toReference()));
 
-        holder.addComponent(
-                ModelComponent.getComponentType(),
-                new ModelComponent(model)
-        );
+        holder.addComponent(ModelComponent.getComponentType(), new ModelComponent(model));
 
-        holder.addComponent(
-                EntityScaleComponent.getComponentType(),
-                new EntityScaleComponent(0.45F)
-        );
+        holder.addComponent(EntityScaleComponent.getComponentType(), new EntityScaleComponent(0.45F));
 
         Box boundingBox = model.getBoundingBox();
         if (boundingBox != null) {
-            holder.addComponent(
-                    BoundingBox.getComponentType(),
-                    new BoundingBox(boundingBox)
-            );
+            holder.addComponent(BoundingBox.getComponentType(), new BoundingBox(boundingBox));
         }
 
-        holder.addComponent(
-                NetworkId.getComponentType(),
-                new NetworkId(commandBuffer.getExternalData().takeNextNetworkId())
-        );
+        holder.addComponent(NetworkId.getComponentType(), new NetworkId(commandBuffer.getExternalData().takeNextNetworkId()));
 
         holder.ensureComponent(UUIDComponent.getComponentType());
 
         return commandBuffer.addEntity(holder, AddReason.SPAWN);
     }
 
-    private static void removeVisualItemEntity(CommandBuffer<EntityStore> commandBuffer,
-                                               RitualPedestalComponent pedestal) {
+    private static void removeVisualItemEntity(CommandBuffer<EntityStore> commandBuffer, RitualPedestalComponent pedestal) {
         Ref<EntityStore> visualEntity = pedestal.getVisualItemEntity();
 
         if (visualEntity == null) {
@@ -167,7 +146,7 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
             return;
         }
 
-        if (!RITUAL_PEDESTAL_ID.equalsIgnoreCase(blockId)){
+        if (!Constants.rituralPedestalID.equalsIgnoreCase(blockId)){
             return;
         }
 
@@ -183,18 +162,12 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
         if (pedestal.hasItem()) {
             String placedItemId = pedestal.getPlacedItemId();
 
-            if (RitualObjectPickupSystem.isRitualObjectItemId(placedItemId)
-                    && RitualObjectPickupSystem.isCarryingRitualObject(player)) {
-
+            if (RitualObjectPickupSystem.isRitualObjectItemId(placedItemId) && RitualObjectPickupSystem.isCarryingRitualObject(player)) {
                 player.sendMessage(Message.raw("You are already carrying a ritual object."));
                 return;
             }
 
-            ItemStackTransaction giveTransaction = Player.giveItem(
-                    new ItemStack(placedItemId, 1),
-                    entity,
-                    store
-            );
+            ItemStackTransaction giveTransaction = Player.giveItem(new ItemStack(placedItemId, 1), entity, store);
 
             if (giveTransaction.succeeded()) {
                 removeVisualItemEntity(commandBuffer, pedestal);
@@ -228,8 +201,7 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
             return;
         }
 
-        ItemStackSlotTransaction transaction = hotbar.getInventory()
-            .removeItemStackFromSlot(activeSlot, itemInHand, 1);
+        ItemStackSlotTransaction transaction = hotbar.getInventory().removeItemStackFromSlot(activeSlot, itemInHand, 1);
         if (!transaction.succeeded()) {
             return;
         }
@@ -264,20 +236,19 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
         }
 
         @Override
-        public void handle(int index,
-                           @Nonnull ArchetypeChunk<EntityStore> chunk,
-                           @Nonnull Store<EntityStore> store,
-                           @Nonnull CommandBuffer<EntityStore> commandBuffer,
-                           @Nonnull BreakBlockEvent event) {
+        public void handle(int index, @Nonnull ArchetypeChunk<EntityStore> chunk, @Nonnull Store<EntityStore> store, @Nonnull CommandBuffer<EntityStore> commandBuffer, @Nonnull BreakBlockEvent event) {
             String blockId = event.getBlockType().getId();
-            if (!RITUAL_PEDESTAL_ID.equalsIgnoreCase(blockId)) {
+
+            if (!Constants.rituralPedestalID.equalsIgnoreCase(blockId)) {
                 return;
             }
 
             RitualPedestalComponent pedestal = PedestalSystem.getPedestal(toBlockPosition(event.getTargetBlock()));
+
             if (pedestal != null) {
                 PedestalSystem.removeVisualItemEntity(commandBuffer, pedestal);
             }
+
             PedestalSystem.removePedestal(toBlockPosition(event.getTargetBlock()));
         }
     }

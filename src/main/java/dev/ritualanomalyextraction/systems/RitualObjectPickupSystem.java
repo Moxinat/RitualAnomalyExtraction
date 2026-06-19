@@ -1,4 +1,4 @@
-package dev.ritualanomalyextraction.systems;
+package main.java.dev.ritualanomalyextraction.systems;
 
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
@@ -21,6 +21,7 @@ import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
+import main.java.dev.ritualanomalyextraction.Constants;
 import org.joml.Vector3i;
 
 import javax.annotation.Nonnull;
@@ -31,12 +32,6 @@ import java.util.logging.Level;
 
 public class RitualObjectPickupSystem extends EntityEventSystem<EntityStore, UseBlockEvent.Post> {
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
-
-    private static final Map<String, String> WORLD_BLOCK_TO_CARRY_ITEM = Map.of(
-            "ritual_skull_world", "ritual_skull",
-            "ritual_lantern_world", "ritual_lantern",
-            "ritual_effigy_world", "ritual_effigy"
-    );
 
     private static final Map<PlayerRef, String> carriedRitualObjects = new HashMap<>();
 
@@ -57,21 +52,13 @@ public class RitualObjectPickupSystem extends EntityEventSystem<EntityStore, Use
     public static void clearCarriedRitualObject(PlayerRef player) {
         String removedObjectId = carriedRitualObjects.remove(player);
 
-        LOGGER.at(Level.INFO).log(
-                "Cleared carried ritual object for player '%s'. Removed object: '%s'.",
-                player,
-                removedObjectId
-        );
+        LOGGER.at(Level.INFO).log("Cleared carried ritual object for player '%s'. Removed object: '%s'.", player, removedObjectId);
     }
 
     private static void setCarriedRitualObject(PlayerRef player, String itemId) {
         carriedRitualObjects.put(player, itemId);
 
-        LOGGER.at(Level.INFO).log(
-                "Set carried ritual object for player '%s' to '%s'.",
-                player,
-                itemId
-        );
+        LOGGER.at(Level.INFO).log("Set carried ritual object for player '%s' to '%s'.", player, itemId);
     }
 
     private static String normalizeId(String id) {
@@ -112,7 +99,7 @@ public class RitualObjectPickupSystem extends EntityEventSystem<EntityStore, Use
         }
 
         String normalized = normalizeId(itemId);
-        return WORLD_BLOCK_TO_CARRY_ITEM.containsValue(normalized);
+        return Constants.ritualObjectsWorldToItem.containsValue(normalized);
     }
 
     public static void clearCarriedRitualObjectIfMatches(PlayerRef player, String itemId) {
@@ -163,7 +150,7 @@ public class RitualObjectPickupSystem extends EntityEventSystem<EntityStore, Use
         String rawWorldBlockId = event.getBlockType().getId();
         String worldBlockId = normalizeId(rawWorldBlockId);
 
-        String carryItemId = WORLD_BLOCK_TO_CARRY_ITEM.get(worldBlockId);
+        String carryItemId = Constants.ritualObjectsWorldToItem.get(worldBlockId);
 
         if (carryItemId == null) {
             return;

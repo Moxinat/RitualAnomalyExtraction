@@ -1,4 +1,4 @@
-package dev.ritualanomalyextraction.commands;
+package main.java.dev.ritualanomalyextraction.commands;
 
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.server.core.Message;
@@ -6,7 +6,7 @@ import com.hypixel.hytale.server.core.command.system.AbstractCommand;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import dev.ritualanomalyextraction.systems.RitualObjectSpawnManager;
+import main.java.dev.ritualanomalyextraction.systems.RitualObjectSpawnManager;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -54,21 +54,10 @@ public class SpawnObjectsCommand extends AbstractCommand{
         world.execute(() -> {
             try {
                 RitualObjectSpawnManager.spawnRandomRitualObjects(world);
-
-                context.sendMessage(Message.raw(
-                        "Spawned ritual objects: "
-                                + RitualObjectSpawnManager.getSpawnedPositions().size()
-                ));
-
+                context.sendMessage(Message.raw("Spawned ritual objects: " + RitualObjectSpawnManager.getSpawnedPositions().size()));
                 future.complete(null);
             } catch (Exception exception) {
-                context.sendMessage(Message.raw(
-                        "Failed to spawn ritual objects: "
-                                + exception.getClass().getSimpleName()
-                                + ": "
-                                + exception.getMessage()
-                ));
-
+                context.sendMessage(Message.raw("Failed to spawn ritual objects: " + exception.getClass().getSimpleName() + ": " + exception.getMessage()));
                 future.complete(null);
             }
         });
@@ -98,17 +87,10 @@ public class SpawnObjectsCommand extends AbstractCommand{
 
                 future.complete(null);
             } catch (Exception exception) {
-                context.sendMessage(Message.raw(
-                        "Failed to clear ritual objects: "
-                                + exception.getClass().getSimpleName()
-                                + ": "
-                                + exception.getMessage()
-                ));
-
+                context.sendMessage(Message.raw("Failed to clear ritual objects: " + exception.getClass().getSimpleName() + ": " + exception.getMessage()));
                 future.complete(null);
             }
         });
-
         return future;
     }
 
