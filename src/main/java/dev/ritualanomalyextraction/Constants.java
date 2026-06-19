@@ -22,7 +22,7 @@ public class Constants {
     public static final Rotation3f controlRoomRot = new Rotation3f(0, 0, 0);
 
     //Ritual object spawn constants
-    public static final World ritualWorld = Universe.get().getWorld("RAE-Ritual");
+    public static final World ritualWorld = Universe.get().getWorld("RAE-Instance");
     public static final List<String> ritualObjectsWorldID = List.of(
             "ritual_skull_world",
             "ritual_lantern_world",

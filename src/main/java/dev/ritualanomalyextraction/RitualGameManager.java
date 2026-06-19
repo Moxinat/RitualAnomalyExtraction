@@ -53,6 +53,7 @@ public class RitualGameManager {
         Constants.controlRoomWorld.execute( () -> {
             for (PlayerRef playerRef : Constants.controlRoomWorld.getPlayerRefs()) {
                 playerRef.updatePosition(Constants.controlRoomWorld, Constants.controlRoomPos, Constants.controlRoomRot);
+                //TODO make player respawn on controlRoomPos after death
                 playerRef.sendMessage(Message.raw("Ritual Anomaly Extraction started."));
                 playerRef.sendMessage(Message.raw("Find the ritual objects and place them on the pedestals."));
             }
