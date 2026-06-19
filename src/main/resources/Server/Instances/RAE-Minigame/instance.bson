@@ -1,0 +1,46 @@
+{
+  "Version": 4,
+  "UUID": {
+    "$binary": "mk8vvBPZS7uaKgWlAENkXw==",
+    "$type": "04"
+  },
+  "Seed": 1234567890123,
+  "WorldGen": {
+    "Type": "HytaleGenerator",
+    "WorldStructure": "RAE_Instance"
+  },
+  "ChunkStorage": {
+    "Type": "Hytale"
+  },
+  "IsTicking": true,
+  "IsBlockTicking": true,
+  "IsPvpEnabled": false,
+  "IsFallDamageEnabled": true,
+  "IsGameTimePaused": false,
+  "GameTime": "0001-01-01T05:30:00Z",
+  "IsSpawningNPC": false,
+  "IsSpawnMarkersEnabled": true,
+  "IsAllNPCFrozen": false,
+  "GameplayConfig": "Default",
+  "IsCompassUpdating": true,
+  "IsObjectiveMarkersEnabled": true,
+  "IsSavingChunks": true,
+  "IsSavingPlayers": true,
+  "SpawnProvider": {
+    "Id": "Global",
+    "SpawnPoint": {
+      "X": 0.5,
+      "Y": 200,
+      "Z": 0.5,
+      "Pitch": 0,
+      "Yaw": 180,
+      "Roll": 0.0
+    }
+  },
+  "DeleteOnRemove": false,
+  "DisabledFluidTickers": [],
+  "ResourceStorage": {
+    "Type": "Hytale"
+  },
+  "Plugin": {}
+}

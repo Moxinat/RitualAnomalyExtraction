@@ -1,0 +1,63 @@
+{
+  "TranslationProperties": {
+    "Name": "server.items.Soil_Grass_Haunted.name"
+  },
+  "ItemLevel": 3,
+  "Icon": "Icons/ItemsGenerated/Soil_Grass_Haunted.png",
+  "Categories": [
+    "Blocks.Soils"
+  ],
+  "SubCategory": "GrassAndDirt",
+  "PlayerAnimationsId": "Block",
+  "Set": "Grass",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Cube",
+    "Group": "Grass",
+    "BlockParticleSetId": "Grass_Earth",
+    "Textures": [
+      {
+        "Down": "BlockTextures/Soil_Dirt_Cold.png",
+        "Sides": "BlockTextures/Soil_Grass_Cold_Side.png",
+        "Up": "BlockTextures/Soil_Grass_Cold_Top.png",
+        "Weight": 1
+      }
+    ],
+    "BlockSoundSetId": "Grass",
+    "PhysicalMaterialId": "Foliage",
+    "TextureSideMask": "BlockTextures/Soil_Grass_Cold_Side_GS.png",
+    "TransitionTexture": "BlockTextures/Transition_Grass_Winter.png",
+    "TransitionToGroups": [
+      "Stone",
+      "Dirt",
+      "Dirt_Dark",
+      "Sand",
+      "Sand_White",
+      "Gravel",
+      "Wood",
+      "Cobble"
+    ],
+    "ParticleColor": "#054621",
+    "Tint": [
+      "#00492e"
+    ]
+  },
+  "Tags": {
+    "Type": [
+      "Soil"
+    ]
+  },
+  "IconProperties": {
+    "Scale": 0.3,
+    "Rotation": [
+      339.295,
+      229.107,
+      337.792
+    ],
+    "Translation": [
+      0,
+      -16
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Soft"
+}

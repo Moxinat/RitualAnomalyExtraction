@@ -9,6 +9,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.ritualanomalyextraction.Constants;
 import dev.ritualanomalyextraction.RitualGameManager;
 import dev.ritualanomalyextraction.ui.StatusHud;
+import dev.ritualanomalyextraction.utils.InstanceUtil;
 
 import java.util.logging.Level;
 
@@ -25,8 +26,9 @@ public class PlayerReadyListener {
         if (!playerEntityRef.isValid()) {
             return;
         }
+        InstanceUtil.trySetUpLobby(event.getPlayer().getWorld(), playerEntityRef);
 
-        if (playerRef == null) {
+        if (player == null) {
             return;
         }
 
