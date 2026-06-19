@@ -89,7 +89,6 @@ public class RitualGameManager {
         Constants.controlRoomWorld.execute( () -> {
             for (PlayerRef playerRef : Constants.controlRoomWorld.getPlayerRefs()) {
                 Player player = playerRef.getReference().getStore().getComponent(playerRef.getReference(), Player.getComponentType());
-                player.getHudManager().resetUserInterface(playerRef);
                 player.getHudManager().addCustomHud(playerRef, new StatusHud(playerRef,"endSuccess", getGameManager()));
             }
         });

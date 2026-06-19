@@ -22,18 +22,22 @@ public class StatusHud extends CustomUIHud {
     protected void build(@Nonnull UICommandBuilder uiCommandBuilder) {
         uiCommandBuilder.append("Hud/statusUI.ui");
         if (getKey().equals("spawn")) {
-            uiCommandBuilder.set("#TextField.Text", Message.raw("To start the game type /start"));
+            uiCommandBuilder.set("#TextField.Text", "To start the game type /start");
+            uiCommandBuilder.set("#TextField.Style.TextColor", "#ffffff");
         }
         if (getKey().equals("gameTimer")) {
             int seconds = gameTime % 60;
             int minutes = gameTime / 60;
-            uiCommandBuilder.set("#TextField.Text", Message.raw(String.format("%d:%02d", minutes, seconds)));
+            uiCommandBuilder.set("#TextField.Text", String.format("%d:%02d", minutes, seconds));
+            uiCommandBuilder.set("#TextField.Style.TextColor", "#ffffff");
         }
         if (getKey().equals("endFail")) {
-            uiCommandBuilder.set("#TextField.Text", Message.raw("You failed!").color(Color.RED));
+            uiCommandBuilder.set("#TextField.Text", "You failed!");
+            uiCommandBuilder.set("#TextField.Style.TextColor", "#ff3333");
         }
         if (getKey().equals("endSuccess")) {
-            uiCommandBuilder.set("#TextField.Text", Message.raw("You won!").color(Color.GREEN));
+            uiCommandBuilder.set("#TextField.Text", "You won!");
+            uiCommandBuilder.set("#TextField.Style.TextColor", "##33ff66");
         }
     }
 

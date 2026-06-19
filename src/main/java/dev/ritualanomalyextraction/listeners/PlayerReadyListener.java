@@ -39,12 +39,10 @@ public class PlayerReadyListener {
 
         assert player != null;
         if (gameManager.getState() == RitualGameManager.GameState.IDLE || gameManager.getState() == RitualGameManager.GameState.RITUAL_COMPLETE || gameManager.getState() == RitualGameManager.GameState.FAIL) {
-            player.getHudManager().resetUserInterface(playerRef);
             player.getHudManager().addCustomHud(playerRef, new StatusHud(playerRef, "spawn", gameManager));
             playerRef.updatePosition(Constants.spawnWorld, Constants.spawnPos, Constants.spawnRot);
         }
         if (gameManager.getState() == RitualGameManager.GameState.CONTROL_ROOM) {
-            player.getHudManager().resetUserInterface(playerRef);
             player.getHudManager().addCustomHud(playerRef, new StatusHud(playerRef, "gameTimer", gameManager));
             assert Constants.controlRoomWorld != null;
             playerRef.updatePosition(Constants.controlRoomWorld, Constants.controlRoomPos, Constants.controlRoomRot);

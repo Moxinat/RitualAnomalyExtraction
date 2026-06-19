@@ -17,12 +17,12 @@ public class Constants {
     public static final Rotation3f spawnRot = new Rotation3f(0, 0, 0);
 
     //Control room constants
-    public static final World controlRoomWorld = Universe.get().getWorld("RAE-Instance");
+    public static final World controlRoomWorld = Universe.get().getWorld("RAE-Minigame");
     public static final Transform controlRoomPos = new Transform(0.0, 130, 0.0);
     public static final Rotation3f controlRoomRot = new Rotation3f(0, 0, 0);
 
     //Ritual object spawn constants
-    public static final World ritualWorld = Universe.get().getWorld("RAE-Instance");
+    public static final World ritualWorld = Universe.get().getWorld("RAE-Minigame");
     public static final List<String> ritualObjectsWorldID = List.of(
             "ritual_skull_world",
             "ritual_lantern_world",
