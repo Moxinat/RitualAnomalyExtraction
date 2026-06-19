@@ -53,6 +53,7 @@ public class RitualAnomalyPlugin extends JavaPlugin {
     @Override
     protected void shutdown(){
         CONFIG.save();
+        HytaleServer.get().getConfig().getDefaults().setWorld("default");
     }
 
     public static RitualAnomalyPlugin getInstance(){

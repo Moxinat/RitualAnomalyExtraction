@@ -1,7 +1,6 @@
 package dev.ritualanomalyextraction.listeners;
 
 import com.hypixel.hytale.component.Ref;
-import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
@@ -19,10 +18,10 @@ public class PlayerReadyListener {
         if (!playerEntityRef.isValid()) {
             return;
         }
+        InstanceUtil.trySetUpLobby(event.getPlayer().getWorld(), playerEntityRef);
 
-        Store<EntityStore> store = playerEntityRef.getStore();
 
-        PlayerRef player = store.getComponent(playerEntityRef, PlayerRef.getComponentType());
+        PlayerRef player = playerEntityRef.getStore().getComponent(playerEntityRef, PlayerRef.getComponentType());
 
         if (player == null) {
             return;
@@ -34,7 +33,5 @@ public class PlayerReadyListener {
             player.sendMessage(Message.raw("Ritual Anomaly Extraction started."));
             player.sendMessage(Message.raw("Find the ritual objects and place them on the pedestals."));
         }
-
-        InstanceUtil.trySetUpLobby(event.getPlayer().getWorld(), playerEntityRef, store);
     }
 }
