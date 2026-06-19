@@ -1,11 +1,11 @@
-package main.java.dev.ritualanomalyextraction.systems;
+package dev.ritualanomalyextraction.systems;
 
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
-import main.java.dev.ritualanomalyextraction.Constants;
+import dev.ritualanomalyextraction.Constants;
 import org.joml.Vector3i;
 
 import java.util.ArrayList;

@@ -1,9 +1,9 @@
-package main.java.dev.ritualanomalyextraction.systems;
+package dev.ritualanomalyextraction.systems;
 
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import main.java.dev.ritualanomalyextraction.RitualGameManager;
+import dev.ritualanomalyextraction.RitualGameManager;
 
 import java.util.logging.Level;
 

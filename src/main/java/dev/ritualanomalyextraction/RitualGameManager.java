@@ -1,4 +1,4 @@
-package main.java.dev.ritualanomalyextraction;
+package dev.ritualanomalyextraction;
 
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.protocol.BlockPosition;
@@ -7,10 +7,10 @@ import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.io.ServerManager;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import main.java.dev.ritualanomalyextraction.systems.PedestalSystem;
-import main.java.dev.ritualanomalyextraction.systems.RitualObjectSpawnManager;
-import main.java.dev.ritualanomalyextraction.systems.RitualProgressTracker;
-import main.java.dev.ritualanomalyextraction.ui.StatusHud;
+import dev.ritualanomalyextraction.systems.PedestalSystem;
+import dev.ritualanomalyextraction.systems.RitualObjectSpawnManager;
+import dev.ritualanomalyextraction.systems.RitualProgressTracker;
+import dev.ritualanomalyextraction.ui.StatusHud;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

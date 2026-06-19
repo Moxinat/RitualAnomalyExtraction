@@ -1,10 +1,10 @@
-package main.java.dev.ritualanomalyextraction.ui;
+package dev.ritualanomalyextraction.ui;
 
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.entities.player.hud.CustomUIHud;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import main.java.dev.ritualanomalyextraction.RitualGameManager;
+import dev.ritualanomalyextraction.RitualGameManager;
 
 import javax.annotation.Nonnull;
 import java.awt.*;

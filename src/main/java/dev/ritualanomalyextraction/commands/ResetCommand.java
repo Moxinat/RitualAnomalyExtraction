@@ -1,9 +1,9 @@
-package main.java.dev.ritualanomalyextraction.commands;
+package dev.ritualanomalyextraction.commands;
 
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.AbstractCommand;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
-import main.java.dev.ritualanomalyextraction.RitualGameManager;
+import dev.ritualanomalyextraction.RitualGameManager;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

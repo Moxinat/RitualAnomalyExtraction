@@ -1,4 +1,4 @@
-package main.java.dev.ritualanomalyextraction.listeners;
+package dev.ritualanomalyextraction.listeners;
 
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
@@ -14,9 +14,9 @@ import com.hypixel.hytale.server.core.modules.entity.damage.DeathSystems;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import main.java.dev.ritualanomalyextraction.Constants;
-import main.java.dev.ritualanomalyextraction.RitualGameManager;
-import main.java.dev.ritualanomalyextraction.ui.StatusHud;
+import dev.ritualanomalyextraction.Constants;
+import dev.ritualanomalyextraction.RitualGameManager;
+import dev.ritualanomalyextraction.ui.StatusHud;
 
 import javax.annotation.Nonnull;
 import java.util.logging.Level;

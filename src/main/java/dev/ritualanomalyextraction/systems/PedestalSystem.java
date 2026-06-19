@@ -1,4 +1,4 @@
-package main.java.dev.ritualanomalyextraction.systems;
+package dev.ritualanomalyextraction.systems;
 
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.AddReason;
@@ -29,8 +29,8 @@ import com.hypixel.hytale.server.core.modules.entity.component.*;
 import com.hypixel.hytale.server.core.modules.entity.tracker.NetworkId;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import main.java.dev.ritualanomalyextraction.Constants;
-import main.java.dev.ritualanomalyextraction.components.RitualPedestalComponent;
+import dev.ritualanomalyextraction.Constants;
+import dev.ritualanomalyextraction.components.RitualPedestalComponent;
 import com.hypixel.hytale.server.core.Message;
 
 import javax.annotation.Nonnull;

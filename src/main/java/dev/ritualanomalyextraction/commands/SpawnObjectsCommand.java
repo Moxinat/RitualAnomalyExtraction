@@ -1,4 +1,4 @@
-package main.java.dev.ritualanomalyextraction.commands;
+package dev.ritualanomalyextraction.commands;
 
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.server.core.Message;
@@ -6,7 +6,7 @@ import com.hypixel.hytale.server.core.command.system.AbstractCommand;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import main.java.dev.ritualanomalyextraction.systems.RitualObjectSpawnManager;
+import dev.ritualanomalyextraction.systems.RitualObjectSpawnManager;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

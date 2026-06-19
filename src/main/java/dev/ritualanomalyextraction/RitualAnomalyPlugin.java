@@ -1,14 +1,14 @@
-package main.java.dev.ritualanomalyextraction;
+package dev.ritualanomalyextraction;
 
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.event.events.ecs.UseBlockEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
-import main.java.dev.ritualanomalyextraction.commands.SpawnObjectsCommand;
-import main.java.dev.ritualanomalyextraction.commands.StartCommand;
-import main.java.dev.ritualanomalyextraction.listeners.PlayerReadyListener;
-import main.java.dev.ritualanomalyextraction.systems.*;
+import dev.ritualanomalyextraction.commands.SpawnObjectsCommand;
+import dev.ritualanomalyextraction.commands.StartCommand;
+import dev.ritualanomalyextraction.listeners.PlayerReadyListener;
+import dev.ritualanomalyextraction.systems.*;
 
 import javax.annotation.Nonnull;
 

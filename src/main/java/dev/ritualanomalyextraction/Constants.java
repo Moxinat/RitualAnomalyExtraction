@@ -1,4 +1,4 @@
-package main.java.dev.ritualanomalyextraction;
+package dev.ritualanomalyextraction;
 
 import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.math.vector.Transform;
