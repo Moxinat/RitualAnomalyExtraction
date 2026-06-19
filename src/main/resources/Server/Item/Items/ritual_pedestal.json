@@ -1,7 +1,7 @@
 {
   "TranslationProperties": {
-    "Name": "server.items.ritual_pedestal.name",
-    "Description": "server.items.ritual_pedestal.description"
+    "Name": "items.ritual_pedestal.name",
+    "Description": "items.ritual_pedestal.description"
   },
   "Id": "Ritual_Pedestal",
   "MaxStack": 100,
