@@ -6,6 +6,7 @@ import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.ritualanomalyextraction.RitualGameManager;
+import dev.ritualanomalyextraction.utils.InstanceUtil;
 
 public class PlayerReadyListener {
 
@@ -17,9 +18,10 @@ public class PlayerReadyListener {
         if (!playerEntityRef.isValid()) {
             return;
         }
+        InstanceUtil.trySetUpLobby(event.getPlayer().getWorld(), playerEntityRef);
 
-        PlayerRef player = playerEntityRef.getStore()
-                .getComponent(playerEntityRef, PlayerRef.getComponentType());
+
+        PlayerRef player = playerEntityRef.getStore().getComponent(playerEntityRef, PlayerRef.getComponentType());
 
         if (player == null) {
             return;

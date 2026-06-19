@@ -1,0 +1,41 @@
+{
+  "$Comment": "The lobby for the Ritual Anomaly Extraction Minigame",
+  "RequiredPlugins": {},
+  "ChunkStorage": {
+    "Type": "Hytale"
+  },
+  "IsPvpEnabled": false,
+  "IsSpawningNPC": false,
+  "GameTime": "0001-01-01T07:00:00Z",
+  "UUID": {
+    "$binary": "AZKxiVAMQfWIS0qBsBfjzQ==",
+    "$type": "04"
+  },
+  "GameplayConfig": "RAE_Lobby",
+  "IsCompassUpdating": true,
+  "IsTicking": false,
+  "IsGameTimePaused": true,
+  "IsObjectiveMarkersEnabled": true,
+  "IsAllNPCFrozen": false,
+  "IsSavingPlayers": true,
+  "WorldGen": {
+    "Type": "HytaleGenerator",
+    "WorldStructure": "Default_Void"
+  },
+  "SpawnProvider": {
+    "Id": "Global",
+    "SpawnPoint": {
+      "X": 0.5,
+      "Y": 80,
+      "Z": 0.5,
+      "Pitch": 0,
+      "Yaw": 180,
+      "Roll": 0.0
+    }
+  },
+  "Plugin":{},
+  "IsSpawnMarkersEnabled": true,
+  "DeleteOnRemove": false,
+  "ForcedWeather": "RAE_Weather_Bloody",
+  "Version": 4
+}

@@ -1,0 +1,24 @@
+{
+  "World": {
+    "AllowBlockBreaking": false,
+    "AllowBlockGathering": false,
+    "AllowBlockPlacement": false
+  },
+  "WorldMap": {
+    "DisplaySpawn": false,
+    "DisplayHome": false,
+    "DisplayWarps": true,
+    "DisplayDeathMarker": false,
+    "DisplayPlayers": true,
+    "UserMapMarkers": {
+      "AllowCreatingMarkers": false,
+      "AllowDeletingOtherPlayersSharedMarkers": false
+    }
+  },
+  "Death": {
+    "ItemsLossMode": "None",
+    "RespawnController": {
+      "Type": "WorldSpawnPoint"
+    }
+  }
+}
