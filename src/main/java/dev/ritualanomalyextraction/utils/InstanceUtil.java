@@ -5,7 +5,6 @@ import com.hypixel.hytale.builtin.teleport.components.TeleportHistory;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
-import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.math.vector.Transform;
 import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.modules.entity.component.HeadRotation;
@@ -17,6 +16,8 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.Config;
 import dev.ritualanomalyextraction.RitualAnomalyPlugin;
 import org.joml.Vector3d;
+
+import javax.annotation.Nonnull;
 
 
 public class InstanceUtil {
@@ -33,11 +34,12 @@ public class InstanceUtil {
             LOGGER.atSevere().log("Source World is null!");
             return false;
         }
+
         java.util.concurrent.CompletableFuture<World> completableFuture= InstancesPlugin.get().spawnInstance(instanceFolderName, instanceCreationName,fromWorld,returnPoint);
 
         completableFuture.thenRun(()-> {
             try {
-                teleportPlayerToWorld(playerRef,completableFuture.get());
+                teleportPlayerToInstance(playerRef,completableFuture.get());
             } catch (Exception e) {
                 LOGGER.atSevere().log("Failed to teleport player to %s! (Cause: Exception)",instanceCreationName);
             }
@@ -52,16 +54,16 @@ public class InstanceUtil {
         if(alreadySetUpLobby) return;
         Config<RaeConfig> config = RitualAnomalyPlugin.getInstance().getConfig();
         RaeConfig raeConfig = config.get();
-        String currentLobbyName = raeConfig.getLobbyWorldName();
         //Should it create the lobby, if it doesn't already exist
-        if(raeConfig.shouldCreateLobbyUponServerStart() && Universe.get().getWorld(currentLobbyName) == null){
-            //TransformComponent transformComponent = playerRef.getStore().getComponent(playerRef,TransformComponent.getComponentType()); doesn't seam to work like I want, thus creating a placeholder
-            TransformComponent transformComponent = new TransformComponent(
-                    new Vector3d(0,200,0),
-                    new Rotation3f(0,180,0)
-            );
-            if(transformComponent != null && generateInstance(fromWorld, currentLobbyName,DEFAULT_LOBBY_NAME,transformComponent.getTransform(),playerRef)){
-                if(raeConfig.shouldSetLobbyAsDefaultWorld()) HytaleServer.get().getConfig().getDefaults().setWorld(currentLobbyName);
+        if(raeConfig.shouldCreateLobbyUponServerStart() && Universe.get().getWorld(DEFAULT_LOBBY_NAME) == null){
+            if(generateInstance(fromWorld,
+                    DEFAULT_LOBBY_NAME,
+                    DEFAULT_LOBBY_NAME,
+                    fromWorld.getWorldConfig().getSpawnProvider().getSpawnPoint(
+                            playerRef,
+                            playerRef.getStore())
+                    ,playerRef)){
+                if(raeConfig.shouldSetLobbyAsDefaultWorld()) HytaleServer.get().getConfig().getDefaults().setWorld(DEFAULT_LOBBY_NAME);
                 alreadySetUpLobby = true;
             }else{
                 LOGGER.atSevere().log("Failed creating the lobby for Ritual Anomaly Extraction!");
@@ -78,23 +80,31 @@ public class InstanceUtil {
     //does not teleport the player to the Minigame world!
     public static void tryGenerateMinigameWorld(World fromWorld, Ref<EntityStore> playerRef){
         if(Universe.get().getWorld(DEFAULT_MINIGAME_NAME) == null){
-            //TransformComponent transformComponent = playerRef.getStore().getComponent(playerRef,TransformComponent.getComponentType()); doesn't seam to work like I want, thus creating a placeholder
-            TransformComponent transformComponent = new TransformComponent(
-                    new Vector3d(0,200,0),
-                    new Rotation3f(0,180,0)
-            );
-            if(transformComponent == null) return;
-            if (!generateInstance(fromWorld,DEFAULT_MINIGAME_NAME, DEFAULT_MINIGAME_NAME, transformComponent.getTransform(), playerRef)) {
-                LOGGER.atSevere().log("Failed creating the Minigame for Ritual Anomaly Extraction!");
-            }else{
+            if (generateInstance(
+                    fromWorld,
+                    DEFAULT_MINIGAME_NAME,
+                    DEFAULT_MINIGAME_NAME,
+                    fromWorld.getWorldConfig().getSpawnProvider().getSpawnPoint(
+                            playerRef,
+                            playerRef.getStore()),
+                    playerRef)) {
                 LOGGER.atInfo().log("Created the Minigame for Ritual Anomaly Extraction!");
+            }else{
+                LOGGER.atSevere().log("Failed creating the Minigame for Ritual Anomaly Extraction!");
             }
         }else{
             LOGGER.atInfo().log("Minigame world already exists!");
         }
     }
 
-    public static void teleportPlayerToWorld(Ref<EntityStore> playerRef, World toWorld){
+    public static void teleportPlayerToInstance(@Nonnull Ref<EntityStore> playerRef, @Nonnull World toWorld){
+        teleportPlayerToX(playerRef,toWorld,"Instance");
+    }
+    public static void teleportPlayerToWorld(@Nonnull Ref<EntityStore> playerRef, @Nonnull World toWorld){
+        teleportPlayerToX(playerRef,toWorld,"World");
+    }
+
+    private static void teleportPlayerToX(@Nonnull Ref<EntityStore> playerRef, @Nonnull World toWorld,@Nonnull String type){
         if(playerRef.isValid()){
 
             Store<EntityStore> store = playerRef.getStore();
@@ -110,16 +120,16 @@ public class InstanceUtil {
                                 worldFrom,
                                 new Vector3d(transformComponent.getPosition()),
                                 headRotationComponent.getRotation().clone(),
-                                "Instance '" + toWorld.getName() + "'");
+                                type+" '" + toWorld.getName() + "'");
                     }
 
                     Teleport teleportComponent = Teleport.createForPlayer(toWorld, spawnPoint);
                     store.addComponent(playerRef, Teleport.getComponentType(), teleportComponent);
-                    LOGGER.atInfo().log("Teleport player to world!");
+                    LOGGER.atInfo().log("Teleporting player to %s!",type);
                 }
             });
         }else{
-            LOGGER.atSevere().log("Failed to teleport player to world! (Cause: Invalid Ref)");
+            LOGGER.atSevere().log("Failed to teleport player to %s! (Cause: Invalid Ref)",type);
         }
     }
 }

@@ -6,7 +6,7 @@ import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import com.hypixel.hytale.server.core.util.Config;
-import dev.ritualanomalyextraction.commands.SpawnObjectsCommand;
+import dev.ritualanomalyextraction.commands.RaeGroupCommands;
 import dev.ritualanomalyextraction.listeners.PlayerReadyListener;
 import dev.ritualanomalyextraction.systems.*;
 import dev.ritualanomalyextraction.utils.RaeConfig;
@@ -37,7 +37,7 @@ public class RitualAnomalyPlugin extends JavaPlugin {
         );
 
         this.getCommandRegistry().registerCommand(
-                new SpawnObjectsCommand("rae", "Ritual Anomaly Extraction debug commands")
+                new RaeGroupCommands("rae", "Ritual Anomaly Extraction commands")
         );
 
         this.getEntityStoreRegistry().registerWorldEventType(UseBlockEvent.Post.class);
