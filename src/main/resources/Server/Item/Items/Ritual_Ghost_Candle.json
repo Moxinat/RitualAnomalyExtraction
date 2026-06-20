@@ -1,0 +1,61 @@
+{
+  "TranslationProperties": {
+    "Name": "items.ritual_ghost_candle.name",
+    "Description": "items.ritual_ghost_candle.description"
+  },
+  "Id": "ritual_soul_lantern",
+  "MaxStack": 1,
+  "Categories": [
+    "Items.Misc"
+  ],
+  "PlayerAnimationsId": "Item",
+  "Tags": {
+    "Type": [
+      "RitualObject"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Default",
+  "BlockType": {
+    "DrawType": "Model",
+    "CustomModel": "Items/RitualItems/ghost_candle.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Items/RitualItems/ghost_candle.png"
+      }
+    ],
+    "Light": {
+      "Color": "#478",
+      "Radius": 0
+    },
+    "Material": "Solid",
+    "Gathering": {
+      "Harvest": {}
+    },
+    "HitboxType": "Ritual_Ghost_Candle",
+    "Particles": [
+      {
+        "SystemId": "Ghost_Fire",
+        "TargetNodeName": "Flame-Emitter",
+        "Scale": 1.1,
+        "Color": "#0032ef"
+      }
+    ],
+    "BlockSoundSetId": "Soft"
+  },
+  "Interactions": {
+    "Secondary": "Block_Secondary"
+  },
+  "Icon": "Icons/ItemsGenerated/Ritual_Ghost_Candle.png",
+  "IconProperties": {
+    "Scale": 1,
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ],
+    "Translation": [
+      0,
+      -8
+    ]
+  }
+}

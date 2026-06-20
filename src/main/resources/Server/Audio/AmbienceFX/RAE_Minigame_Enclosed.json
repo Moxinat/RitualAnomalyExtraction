@@ -1,0 +1,15 @@
+{
+  "Conditions": {
+    "EnvironmentIds": [
+      "RAE_Instance"
+    ],
+    "Shelter": [
+      "Enclosed"
+    ]
+  },
+  "Priority": 40,
+  "AmbientBed": {
+    "Volume": 0,
+    "Track": "Sounds/alesiadavina-dark-demonic-atmosphere-drone-horror-ambience-sfx.ogg"
+  }
+}

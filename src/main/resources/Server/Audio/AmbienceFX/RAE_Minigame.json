@@ -1,0 +1,34 @@
+{
+  "Conditions": {
+    "EnvironmentIds": [
+      "RAE_Instance"
+    ],
+    "Shelter": [
+      "Open",
+      "Partial",
+      "Sheltered"
+    ]
+  },
+  "AmbientBed": {
+    "Track": "Sounds/Environments/Global/Weather/Sandstorm_Stereo_LOOP.ogg",
+    "Volume": 2.52
+  },
+  "Sounds": [
+    {
+      "SoundEventId": "RAE_Minigame_JumpScares",
+      "MaxBodiesPerEmitter": 1
+    },
+    {
+      "SoundEventId": "RAE_Minigame_Music",
+      "MaxBodiesPerEmitter": 1,
+      "Radius": {
+        "Max": 8
+      }
+    },
+    {
+      "SoundEventId": "RAE_Minigame_Drums",
+      "MaxBodiesPerEmitter": 1
+    }
+  ],
+  "Priority": 50
+}

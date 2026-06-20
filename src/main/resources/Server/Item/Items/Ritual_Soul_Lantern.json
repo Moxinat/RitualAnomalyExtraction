@@ -1,0 +1,81 @@
+{
+  "TranslationProperties": {
+    "Name": "items.ritual_soul_lantern.name",
+    "Description": "items.ritual_soul_lantern.description"
+  },
+  "Id": "ritual_soul_lantern",
+  "MaxStack": 1,
+  "Icon": "Icons/ItemsGenerated/Ritual_Soul_Lantern.png",
+  "Categories": [
+    "Items.Misc"
+  ],
+  "PlayerAnimationsId": "Item",
+  "Tags": {
+    "Type": [
+      "RitualObject"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Default",
+  "IconProperties": {
+    "Scale": 0.58823,
+    "Rotation": [
+      342,
+      187,
+      21
+    ],
+    "Translation": [
+      -5,
+      -13.5
+    ]
+  },
+  "BlockType": {
+    "DrawType": "Model",
+    "CustomModel": "Items/RitualItems/soul_lantern.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Items/RitualItems/soul_lantern.png"
+      }
+    ],
+    "CustomModelAnimation": "Items/RitualItems/ritual_lantern_soul.blockyanim",
+    "Particles": [
+      {
+        "SystemId": "Ritual_Soul",
+        "TargetNodeName": "Flame1"
+      },
+      {
+        "SystemId": "Ritual_Soul",
+        "TargetNodeName": "Flame2"
+      },
+      {
+        "SystemId": "Ritual_Soul",
+        "TargetNodeName": "Flame3"
+      },
+      {
+        "SystemId": "Ritual_Soul",
+        "TargetNodeName": "Flame4"
+      },
+      {
+        "SystemId": "Ritual_Soul",
+        "TargetNodeName": "Flame5"
+      },
+      {
+        "SystemId": "Ritual_Soul",
+        "TargetNodeName": "Flame6"
+      }
+    ],
+    "Looping": true,
+    "Light": {
+      "Color": "#798",
+      "Radius": 0
+    },
+    "Material": "Solid",
+    "HitboxType": "Ritual_Soul_Lantern",
+    "Gathering": {
+      "Harvest": {}
+    },
+    "BlockSoundSetId": "Metal"
+  },
+  "Interactions": {
+    "Secondary": "Block_Secondary"
+  }
+}
