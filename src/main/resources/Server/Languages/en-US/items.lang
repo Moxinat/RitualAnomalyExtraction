@@ -19,3 +19,6 @@ ritual_effigy.name = Ritual Effigy
 ritual_effigy.description = Carry this to a ritual pedestal.
 ritual_effigy_world.name = Ritual Effigy World Object
 ritual_effigy_world.description = Map/test pickup object. Interact to collect.
+
+Button_Block.name = Button Block
+Button_Block.description = A ritual button block.

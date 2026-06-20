@@ -1,0 +1,111 @@
+{
+  "TranslationProperties": {
+    "Name": "items.Button_Block.name",
+    "Description": "items.Button_Block.description"
+  },
+  "ItemLevel": 10,
+  "MaxStack": 100,
+  "Icon": "Icons/ItemsGenerated/ritual_pedestal.png",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Material": "Solid",
+    "DrawType": "Model",
+    "Opacity": "Transparent",
+    "CustomModel": "Blocks/Button/Button.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "BlockTextures/ritual_pedestal.png",
+        "Weight": 1
+      }
+    ],
+    "Group": "Wood",
+    "Flags": {
+      "IsUsable": true
+    },
+    "State": {
+      "Definitions": {
+        "Pressed": {
+          "CustomModel": "Blocks/Button/Button.blockymodel",
+          "CustomModelAnimation": "Blocks/Button/button_press.blockyanim",
+          "CustomModelTexture": [
+            {
+              "Texture": "BlockTextures/ritual_pedestal.png",
+              "Weight": 1
+            }
+          ]
+        },
+        "PressedAlt": {
+          "CustomModel": "Blocks/Button/Button.blockymodel",
+          "CustomModelAnimation": "Blocks/Button/button_press.blockyanim",
+          "CustomModelTexture": [
+            {
+              "Texture": "BlockTextures/ritual_pedestal.png",
+              "Weight": 1
+            }
+          ]
+        }
+      }
+    },
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Woods"
+      }
+    },
+    "BlockParticleSetId": "Wood",
+    "ParticleColor": "#bba58b",
+    "BlockSoundSetId": "Wood",
+    "Aliases": [
+      "Button_Block"
+    ],
+    "BlockBreakingDecalId": "Breaking_Decals_Wood",
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          {
+            "Type": "ChangeState",
+            "Changes": {
+              "default": "Pressed",
+              "Pressed": "PressedAlt",
+              "PressedAlt": "Pressed"
+            }
+          }
+        ]
+      }
+    },
+    "Support": {
+      "Down": [
+        {
+          "FaceType": "Full"
+        }
+      ]
+    },
+    "PlacementSettings": {
+      "PlaceInEmptyBlocks": true
+    }
+  },
+  "Tags": {
+    "Type": [
+      "Wood"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Blocks_Wood",
+  "Recipe": {
+    "PrimaryOutput": {
+      "ItemId": "Button_Block"
+    },
+    "Input": [
+      {
+        "ResourceTypeId": "Wood_All"
+      }
+    ],
+    "BenchRequirement": [
+      {
+        "Type": "Crafting",
+        "Id": "Workbench",
+        "Categories": [
+          "Workbench_Tinkering"
+        ]
+      }
+    ]
+  }
+}

@@ -45,6 +45,7 @@ public class RitualAnomalyPlugin extends JavaPlugin {
         this.getEntityStoreRegistry().registerSystem(new RitualObjectPickupSystem.DropRequestListener());
         this.getEntityStoreRegistry().registerSystem(new PedestalSystem());
         this.getEntityStoreRegistry().registerSystem(new PedestalSystem.BreakListener());
+        this.getEntityStoreRegistry().registerSystem(new StartButtonSystem(gameManager));
 
         LOGGER.atInfo().log("RitualAnomalyExtraction setup complete.");
     }
