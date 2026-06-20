@@ -11,6 +11,7 @@ import dev.ritualanomalyextraction.commands.SpawnObjectsCommand;
 import dev.ritualanomalyextraction.commands.StartCommand;
 import dev.ritualanomalyextraction.listeners.PlayerReadyListener;
 import dev.ritualanomalyextraction.systems.*;
+import dev.ritualanomalyextraction.utils.InstanceUtil;
 import dev.ritualanomalyextraction.utils.RaeConfig;
 
 import javax.annotation.Nonnull;
