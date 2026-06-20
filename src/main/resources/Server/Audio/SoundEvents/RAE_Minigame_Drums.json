@@ -1,0 +1,12 @@
+{
+  "Layers": [
+    {
+      "Files": [
+        "Sounds/dragon-studio-creepy-drum-ambience.ogg"
+      ],
+      "Probability": 50
+    }
+  ],
+  "MaxInstance": 1,
+  "MaxDistance": 128
+}

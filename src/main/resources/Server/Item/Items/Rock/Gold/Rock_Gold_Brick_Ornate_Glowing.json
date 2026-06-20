@@ -1,0 +1,64 @@
+{
+  "TranslationProperties": {
+    "Name": "server.items.Rock_Gold_Brick_Ornate.name"
+  },
+  "Icon": "Icons/ItemsGenerated/Rock_Gold_Brick_Ornate.png",
+  "Categories": [
+    "Blocks.Metal"
+  ],
+  "Set": "Metal_Gold",
+  "Recipe": {
+    "Input": [
+      {
+        "ResourceTypeId": "Rock_Gold_Brick",
+        "Quantity": 1
+      }
+    ],
+    "BenchRequirement": [
+      {
+        "Id": "Builders",
+        "Type": "StructuralCrafting",
+        "Categories": [
+          "Ornate"
+        ]
+      }
+    ],
+    "OutputQuantity": 1,
+    "TimeSeconds": 0
+  },
+  "BlockType": {
+    "Gathering": {
+      "Breaking": {
+        "GatherType": "Rocks"
+      }
+    },
+    "RandomRotation": "YawStep90",
+    "BlockParticleSetId": "Metal",
+    "Textures": [
+      {
+        "All": "BlockTextures/Rock_Gold_Ornate.png",
+        "Weight": 1
+      }
+    ],
+    "BlockSoundSetId": "Metal",
+    "PhysicalMaterialId": "Metal",
+    "ParticleColor": "#feb03f",
+    "TextureComputedColor": "#88743E",
+    "CubeShadingMode": "Fullbright"
+  },
+  "Tags": {
+    "Family": [
+      "Gold"
+    ],
+    "Type": [
+      "Rock"
+    ]
+  },
+  "Parent": "Rock_Gold_Brick",
+  "ResourceTypes": [
+    {
+      "Id": "Rock_Gold_Brick"
+    }
+  ],
+  "ItemSoundSetId": "ISS_Items_Metal"
+}

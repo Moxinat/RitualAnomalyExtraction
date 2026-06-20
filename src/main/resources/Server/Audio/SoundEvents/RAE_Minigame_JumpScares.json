@@ -1,0 +1,21 @@
+{
+  "Layers": [
+    {
+      "Probability": 90,
+      "Files": [
+        "Sounds/dragon-studio-heavy-object-falling.ogg",
+        "Sounds/dragon-studio-creepy-whisper.ogg"
+      ],
+      "RoundRobinHistorySize": 2,
+      "RandomSettings": {
+        "MinPitch": -2.592,
+        "MaxPitch": 0.384,
+        "MinVolume": 0
+      }
+    }
+  ],
+  "SpatialBlend": 0.8,
+  "Volume": -4,
+  "MaxDistance": 32,
+  "PreventSoundInterruption": true
+}

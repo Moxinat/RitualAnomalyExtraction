@@ -44,5 +44,18 @@
   },
   "Interactions": {
     "Secondary": "Block_Secondary"
+  },
+  "Icon": "Icons/ItemsGenerated/Ritual_Ghost_Candle.png",
+  "IconProperties": {
+    "Scale": 1,
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ],
+    "Translation": [
+      0,
+      -8
+    ]
   }
 }
