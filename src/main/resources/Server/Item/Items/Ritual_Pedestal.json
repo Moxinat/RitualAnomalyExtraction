@@ -1,11 +1,11 @@
 {
   "TranslationProperties": {
-    "Name": "server.items.ritual_pedestal.name",
-    "Description": "server.items.ritual_pedestal.description"
+    "Name": "items.ritual_pedestal.name",
+    "Description": "items.ritual_pedestal.description"
   },
   "Id": "Ritual_Pedestal",
   "MaxStack": 100,
-  "Icon": "Icons/ItemsGenerated/ritual_pedestal.png",
+  "Icon": "Icons/ItemsGenerated/Ritual_Pedestal.png",
   "Categories": [
     "Blocks.Rocks"
   ],
@@ -13,7 +13,13 @@
   "Set": "Rock_Stone",
   "BlockType": {
     "Material": "Solid",
-    "DrawType": "Cube",
+    "DrawType": "Model",
+    "CustomModel": "Items/RitualItems/ritual_pedestal.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Items/RitualItems/ritual_pedestal.png"
+      }
+    ],
     "Group": "Stone",
     "Flags": {},
     "Gathering": {
@@ -23,11 +29,6 @@
       }
     },
     "BlockParticleSetId": "Stone",
-    "Textures": [
-      {
-        "All": "BlockTextures/ritual_pedestal.png"
-      }
-    ],
     "ParticleColor": "#aeae8c",
     "BlockSoundSetId": "Stone",
     "BlockBreakingDecalId": "Breaking_Decals_Rock",
@@ -40,7 +41,8 @@
         ]
       }
     },
-    "InteractionHint": "server.interactionHints.pedestal.place_or_get_item"
+    "InteractionHint": "server.interactionHints.pedestal.place_or_get_item",
+    "HitboxType": "Ritual_Pedestal"
   },
   "ResourceTypes": [
     {
@@ -49,5 +51,17 @@
   ],
   "Utility": {
     "Usable": true
+  },
+  "IconProperties": {
+    "Scale": 0.7,
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ],
+    "Translation": [
+      0,
+      -9
+    ]
   }
 }

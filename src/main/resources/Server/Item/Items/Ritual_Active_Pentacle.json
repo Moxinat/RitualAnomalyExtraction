@@ -1,0 +1,51 @@
+{
+  "TranslationProperties": {
+    "Name": "items.ritual_active_pentacle.name",
+    "Description": "items.ritual_active_pentacle.description"
+  },
+  "Id": "ritual_active_pentacle",
+  "MaxStack": 1,
+  "Categories": [
+    "Items.Misc"
+  ],
+  "PlayerAnimationsId": "Item",
+  "Tags": {
+    "Type": [
+      "RitualObject"
+    ]
+  },
+  "ItemSoundSetId": "ISS_Default",
+  "BlockType": {
+    "DrawType": "Model",
+    "CustomModel": "Items/RitualItems/active_pentacle.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Items/RitualItems/active_pentacle.png"
+      }
+    ],
+    "Material": "Solid",
+    "Gathering": {
+      "Harvest": {}
+    },
+    "CustomModelAnimation": "Items/RitualItems/active_pentacle.blockyanim",
+    "Looping": true,
+    "HitboxType": "Ritual_Active_Pentacle",
+    "BlockSoundSetId": "Clay_Pot_Small"
+  },
+  "Interactions": {
+    "Secondary": "Block_Secondary"
+  },
+  "Icon": "Icons/ItemsGenerated/Ritual_Active_Pentacle.png",
+  "IconProperties": {
+    "Scale": 1,
+    "Rotation": [
+      22.5,
+      45,
+      22.5
+    ],
+    "Translation": [
+      0,
+      -1
+    ]
+  }
+}
