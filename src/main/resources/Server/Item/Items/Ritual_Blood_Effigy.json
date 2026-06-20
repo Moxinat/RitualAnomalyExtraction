@@ -1,0 +1,51 @@
+{
+  "TranslationProperties": {
+    "Name": "items.ritual_blood_effigy.name",
+    "Description": "items.ritual_blood_effigy.description"
+  },
+  "Id": "ritual_blood_effigy",
+  "MaxStack": 1,
+  "Categories": [
+    "Items.Misc"
+  ],
+  "PlayerAnimationsId": "Item",
+  "Tags": {
+    "Type": [
+      "RitualObject"
+    ]
+  },
+  "BlockType": {
+    "DrawType": "Model",
+    "CustomModel": "Items/RitualItems/blood_effigy.blockymodel",
+    "CustomModelTexture": [
+      {
+        "Texture": "Items/RitualItems/blood_effigy.png"
+      }
+    ],
+    "Material": "Solid",
+    "Gathering": {
+      "Harvest": {}
+    },
+    "VariantRotation": "NESW",
+    "RotationYawPlacementOffset": "OneEighty",
+    "HitboxType": "Ritual_Blood_Effigy",
+    "BlockSoundSetId": "Stone"
+  },
+  "Interactions": {
+    "Secondary": "Block_Secondary"
+  },
+  "Icon": "Icons/ItemsGenerated/Ritual_Blood_Effigy.png",
+  "IconProperties": {
+    "Scale": 0.8,
+    "Rotation": [
+      346,
+      176,
+      0
+    ],
+    "Translation": [
+      1,
+      -16
+    ]
+  },
+  "Set": ""
+}

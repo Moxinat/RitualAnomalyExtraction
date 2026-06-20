@@ -1,0 +1,26 @@
+{
+  "Spawners": [
+    {
+      "SpawnerId": "Ghost_Candle_Center",
+      "FixedRotation": true,
+      "PositionOffset": {
+        "Y": 0.07
+      }
+    },
+    {
+      "SpawnerId": "Ghost_Candle_Black",
+      "FixedRotation": true,
+      "PositionOffset": {
+        "Y": 0.05
+      }
+    },
+    {
+      "SpawnerId": "Ghost_Candle_Start",
+      "PositionOffset": {
+        "Y": 0.05
+      }
+    }
+  ],
+  "$Comment": "Candidate to stay Cartoon",
+  "CullDistance": 100
+}
