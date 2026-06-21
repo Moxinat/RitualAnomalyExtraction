@@ -147,11 +147,12 @@ public class RitualObjectPickupSystem extends EntityEventSystem<EntityStore, Use
         }
 
         String rawWorldBlockId = event.getBlockType().getId();
-        //String worldBlockId = normalizeId(rawWorldBlockId);
-
-        //String carryItemId = Constants.ritualObjectsWorldToItem.get(worldBlockId);
 
         if (rawWorldBlockId == null) {
+            return;
+        }
+
+        if (!Constants.ritualObjectsWorldToItem.contains(rawWorldBlockId)) {
             return;
         }
 
