@@ -36,7 +36,9 @@ public class PlayerReadyListener {
             return;
         }
 
-        assert player != null;
+        if(!InstanceUtil.shouldForceTp()){
+            return;
+        }
         if (gameManager.getState() == RitualGameManager.GameState.IDLE || gameManager.getState() == RitualGameManager.GameState.RITUAL_COMPLETE || gameManager.getState() == RitualGameManager.GameState.FAIL) {
             player.getHudManager().resetHud(playerRef);
             player.getHudManager().addCustomHud(playerRef, new StatusHud(playerRef, "spawn", gameManager));

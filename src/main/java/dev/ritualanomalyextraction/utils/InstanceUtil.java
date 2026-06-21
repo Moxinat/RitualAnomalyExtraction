@@ -7,7 +7,6 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.math.vector.Transform;
-import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.modules.entity.component.HeadRotation;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
@@ -20,6 +19,7 @@ import dev.ritualanomalyextraction.RitualAnomalyPlugin;
 import dev.ritualanomalyextraction.RitualGameManager;
 import org.joml.Vector3d;
 
+import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 
 public class InstanceUtil {
@@ -76,9 +76,6 @@ public class InstanceUtil {
         if (Universe.get().getWorld(DEFAULT_MINIGAME_NAME) == null) {
             World fromWorld = Universe.get().getDefaultWorld();
             TransformComponent transformComponent = new TransformComponent(new Vector3d(0,200,0), new Rotation3f(0,180,0));
-            if (transformComponent == null) {
-                return;
-            }
             if (!generateInstance(fromWorld,DEFAULT_MINIGAME_NAME, DEFAULT_MINIGAME_NAME, transformComponent.getTransform())) {
                 LOGGER.atSevere().log("Failed creating the Minigame for Ritual Anomaly Extraction!");
             } else {
@@ -90,8 +87,18 @@ public class InstanceUtil {
     }
 
     public static void teleportPlayerToWorld(Ref<EntityStore> playerRef, World toWorld) {
+
         if (!playerRef.isValid()) {
             LOGGER.atSevere().log("Failed to teleport player to world! (Cause: Invalid Ref)");
+        }
+
+        //for correct teleport history
+        String worldType;
+        String[] files = toWorld.getSavePath().toFile().list();
+        if(files != null && Arrays.stream(files).toList().contains("instance.bson")){
+            worldType = "Instance";
+        }else{
+            worldType = "World";
         }
 
             Store<EntityStore> store = playerRef.getStore();
@@ -111,7 +118,7 @@ public class InstanceUtil {
 
                     if (transformComponent != null && headRotationComponent != null) {
                         TeleportHistory teleportHistoryComponent = store.ensureAndGetComponent(playerRef, TeleportHistory.getComponentType());
-                        teleportHistoryComponent.append(worldFrom, new Vector3d(transformComponent.getPosition()), headRotationComponent.getRotation().clone(),"Instance '" + toWorld.getName() + "'");
+                        teleportHistoryComponent.append(worldFrom, new Vector3d(transformComponent.getPosition()), headRotationComponent.getRotation().clone(),worldType +" '" + toWorld.getName() + "'");
                     }
 
                     Teleport teleportComponent = Teleport.createForPlayer(toWorld, spawnPoint);
@@ -119,6 +126,10 @@ public class InstanceUtil {
                     LOGGER.atInfo().log("Teleport player to %s", toWorld.getName());
                 }
             });
+    }
+
+    public static boolean shouldForceTp(){
+        return RitualAnomalyPlugin.getInstance().getConfig().get().shouldForceTP();
     }
 }
 

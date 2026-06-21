@@ -13,11 +13,15 @@ public class RaeConfig {
             .append(new KeyedCodec<>("CreateLobbyUponServerStart",Codec.BOOLEAN),
                     (config, createLobbyUponServerStart) -> config.createLobbyUponServerStart = createLobbyUponServerStart,
                     config -> config.createLobbyUponServerStart ).add()
+            .append(new KeyedCodec<>("ForceTP",Codec.BOOLEAN),
+                    (config, forceTP) -> config.forceTP = forceTP,
+                    config -> config.forceTP ).add()
             .build();
 
 
     private boolean setLobbyAsDefaultWorld = true;
     private boolean createLobbyUponServerStart = true;
+    private boolean forceTP = true;
 
     public boolean shouldCreateLobbyUponServerStart() {
         return createLobbyUponServerStart;
@@ -33,5 +37,13 @@ public class RaeConfig {
 
     public void setSetLobbyAsDefaultWorld(boolean setLobbyAsDefaultWorld) {
         this.setLobbyAsDefaultWorld = setLobbyAsDefaultWorld;
+    }
+
+    public boolean shouldForceTP() {
+        return forceTP;
+    }
+
+    public void setForceTP(boolean forceTP) {
+        this.forceTP = forceTP;
     }
 }

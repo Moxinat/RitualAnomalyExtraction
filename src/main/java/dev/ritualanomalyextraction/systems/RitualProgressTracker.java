@@ -11,7 +11,7 @@ public final class RitualProgressTracker {
 
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
-    private static final int REQUIRED_OBJECTS = 3;
+    private static final int REQUIRED_OBJECTS = 4;
     private static int placedObjectCount = 0;
     private static boolean ritualStarted = false;
     private static RitualGameManager gameManager;

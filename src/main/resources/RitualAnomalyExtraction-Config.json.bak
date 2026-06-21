@@ -1,5 +1,0 @@
-{
-  "SetLobbyAsDefaultWorld": true,
-  "CreateLobbyUponServerStart": true,
-  "LobbyWorldName": "RAE-Lobby"
-}
