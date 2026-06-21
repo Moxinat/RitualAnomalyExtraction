@@ -23,16 +23,20 @@
       }
     ],
     "Material": "Solid",
-    "Gathering": {
-      "Harvest": {}
-    },
     "VariantRotation": "NESW",
     "RotationYawPlacementOffset": "OneEighty",
     "HitboxType": "Ritual_Blood_Effigy",
-    "BlockSoundSetId": "Stone"
-  },
-  "Interactions": {
-    "Secondary": "Block_Secondary"
+    "BlockSoundSetId": "Stone",
+    "InteractionHint": "server.interactionHints.ritual_item.pickup",
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          {
+            "Type": "Simple"
+          }
+        ]
+      }
+    }
   },
   "Icon": "Icons/ItemsGenerated/Ritual_Blood_Effigy.png",
   "IconProperties": {

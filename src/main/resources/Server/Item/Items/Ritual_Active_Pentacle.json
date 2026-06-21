@@ -24,16 +24,20 @@
       }
     ],
     "Material": "Solid",
-    "Gathering": {
-      "Harvest": {}
-    },
     "CustomModelAnimation": "Items/RitualItems/active_pentacle.blockyanim",
     "Looping": true,
     "HitboxType": "Ritual_Active_Pentacle",
-    "BlockSoundSetId": "Clay_Pot_Small"
-  },
-  "Interactions": {
-    "Secondary": "Block_Secondary"
+    "BlockSoundSetId": "Clay_Pot_Small",
+    "InteractionHint": "server.interactionHints.ritual_item.pickup",
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          {
+            "Type": "Simple"
+          }
+        ]
+      }
+    }
   },
   "Icon": "Icons/ItemsGenerated/Ritual_Active_Pentacle.png",
   "IconProperties": {

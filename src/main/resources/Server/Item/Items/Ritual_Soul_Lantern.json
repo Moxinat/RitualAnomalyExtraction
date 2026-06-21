@@ -70,12 +70,16 @@
     },
     "Material": "Solid",
     "HitboxType": "Ritual_Soul_Lantern",
-    "Gathering": {
-      "Harvest": {}
-    },
-    "BlockSoundSetId": "Metal"
-  },
-  "Interactions": {
-    "Secondary": "Block_Secondary"
+    "BlockSoundSetId": "Metal",
+    "InteractionHint": "server.interactionHints.ritual_item.pickup",
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          {
+            "Type": "Simple"
+          }
+        ]
+      }
+    }
   }
 }

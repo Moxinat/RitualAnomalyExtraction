@@ -14,7 +14,6 @@ import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.Config;
-import dev.ritualanomalyextraction.Constants;
 import dev.ritualanomalyextraction.RitualAnomalyPlugin;
 import dev.ritualanomalyextraction.RitualGameManager;
 import org.joml.Vector3d;
@@ -110,11 +109,13 @@ public class InstanceUtil {
 
                     TransformComponent transformComponent = store.getComponent(playerRef, TransformComponent.getComponentType());
                     HeadRotation headRotationComponent = store.getComponent(playerRef, HeadRotation.getComponentType());
-                    if (toWorld.getName().equals("RAE-Minigame")) {
+
+                    //not needed, since i've set the world spawn point- noc
+                    /*if (toWorld.getName().equals("RAE-Minigame")) {
                         transformComponent = new TransformComponent(Constants.controlRoomPos.getPosition(), Constants.controlRoomRot);
                         headRotationComponent = new HeadRotation(Constants.controlRoomRot);
                         spawnPoint = new Transform(transformComponent.getPosition(), headRotationComponent.getRotation());
-                    }
+                    }*/
 
                     if (transformComponent != null && headRotationComponent != null) {
                         TeleportHistory teleportHistoryComponent = store.ensureAndGetComponent(playerRef, TeleportHistory.getComponentType());
