@@ -35,11 +35,11 @@ public class RaeLobbyCommand extends AbstractPlayerCommand {
 
 
         if (commandContext.get(this.generateLobby)) {
-            if(lobbyExists){
+            if (lobbyExists) {
                 commandContext.sendMessage(Message.raw(
                         "RAE Lobby already exists! Skipping creation..."
                 ));
-                InstanceUtil.teleportPlayerToInstance(ref,lobbyWorld);
+                InstanceUtil.teleportPlayerToWorld(ref,lobbyWorld);
                 return;
             }
         }
@@ -67,7 +67,7 @@ public class RaeLobbyCommand extends AbstractPlayerCommand {
         }
 
         if (lobbyExists) {
-            InstanceUtil.teleportPlayerToInstance(ref, lobbyWorld);
+            InstanceUtil.teleportPlayerToWorld(ref, lobbyWorld);
             return;
         }
 

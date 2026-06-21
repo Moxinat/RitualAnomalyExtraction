@@ -19,10 +19,6 @@ public class RaeConfig {
     private boolean setLobbyAsDefaultWorld = true;
     private boolean createLobbyUponServerStart = true;
 
-
-
-
-
     public boolean shouldCreateLobbyUponServerStart() {
         return createLobbyUponServerStart;
     }

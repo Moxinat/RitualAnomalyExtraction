@@ -5,7 +5,7 @@
   },
   "Id": "Ritual_Pedestal",
   "MaxStack": 100,
-  "Icon": "Icons/ItemsGenerated/Ritual_Pedestal.png",
+  "Icon": "Icons/ItemsGenerated/ritual_pedestal.png",
   "Categories": [
     "Blocks.Rocks"
   ],

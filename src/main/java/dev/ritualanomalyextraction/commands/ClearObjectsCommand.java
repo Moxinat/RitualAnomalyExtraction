@@ -22,14 +22,8 @@ public class ClearObjectsCommand extends AbstractWorldCommand {
                 RitualObjectSpawnManager.clearSpawnedObjects(world);
                 context.sendMessage(Message.raw("Cleared spawned ritual objects."));
             } catch (Exception exception) {
-                context.sendMessage(Message.raw(
-                        "Failed to clear ritual objects: "
-                                + exception.getClass().getSimpleName()
-                                + ": "
-                                + exception.getMessage()
-                ));
+                context.sendMessage(Message.raw("Failed to clear ritual objects: " + exception.getClass().getSimpleName() + ": " + exception.getMessage()));
             }
         });
     }
-
 }

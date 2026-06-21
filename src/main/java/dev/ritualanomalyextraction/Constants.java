@@ -13,7 +13,7 @@ public class Constants {
 
     //Initial spawn constants
     public static final World lobbyWorld = Universe.get().getWorld("RAE-Lobby");
-    public static final Transform lobbyPos = new Transform(0.0, 130, 0.0);
+    public static final Transform lobbyPos = new Transform(0.0, 80, 0.0);
     public static final Rotation3f lobbyRot = new Rotation3f(0, 0, 0);
 
     //Control room constants

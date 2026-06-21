@@ -55,10 +55,9 @@ public class InstanceUtil {
         }
         Config<RaeConfig> config = RitualAnomalyPlugin.getInstance().getConfig();
         RaeConfig raeConfig = config.get();
-        String currentLobbyName = raeConfig.getLobbyWorldName();
         World fromWorld = Universe.get().getDefaultWorld();
 
-        if (raeConfig.shouldCreateLobbyUponServerStart() && Universe.get().getWorld(currentLobbyName) == null) {
+        if (raeConfig.shouldCreateLobbyUponServerStart() && Universe.get().getWorld(DEFAULT_LOBBY_NAME) == null) {
             TransformComponent transformComponent = new TransformComponent(new Vector3d(0,200,0), new Rotation3f(0,180,0));
             if (generateInstance(fromWorld, DEFAULT_LOBBY_NAME, DEFAULT_LOBBY_NAME, transformComponent.getTransform())) {
                 alreadySetUpLobby = true;
