@@ -2,6 +2,8 @@
 
 ritual_pedestal.name = Ritual Pedestal
 ritual_pedestal.description = For the ritual
+ritual_pedestal.name = Ritual Pedestal
+ritual_pedestal.description = For the ritual
 
 ritual_skull.name = Ritual Skull
 ritual_skull.description = Carry this to a ritual pedestal.
@@ -9,21 +11,14 @@ ritual_skull_world.name = Ritual Skull World Object
 ritual_skull_world.description = Map/test pickup object. Interact to collect.
 
 ritual_lantern.name = Ritual Lantern
-ritual_soul_lantern.name = Ritual Lantern
 ritual_lantern.description = Carry this to a ritual pedestal.
-ritual_soul_lantern.description = Carry this to a ritual pedestal.
 ritual_lantern_world.name = Ritual Lantern World Object
 ritual_lantern_world.description = Map/test pickup object. Interact to collect.
 
 ritual_effigy.name = Ritual Effigy
-ritual_blood_effigy.name = Ritual Effigy
 ritual_effigy.description = Carry this to a ritual pedestal.
-ritual_blood_effigy.description = Carry this to a ritual pedestal.
 ritual_effigy_world.name = Ritual Effigy World Object
 ritual_effigy_world.description = Map/test pickup object. Interact to collect.
 
-ritual_ghost_candle.name = Ghost Candle
-ritual_ghost_candle.description = Carry this to a ritual pedestal.
-
-ritual_active_pentacle.name = Active Pentacle
-ritual_active_pentacle.description = Carry this to a ritual pedestal.
+Button_Block.name = Button Block
+Button_Block.description = A ritual button block.

@@ -1,0 +1,5 @@
+Label #TextField {
+  Anchor: (Bottom: 180, Left: 0, Right: 0, Height: 30);
+  Text: "00:00";
+  Style: (FontSize: 18, HorizontalAlignment: Center, TextColor: #ffffff);
+}

@@ -42,9 +42,9 @@ repositories {
 }
 
 // Uncomment if you are using IntelliJ.
-// idea {
-//     module {
-//         isDownloadSources = true
-//         isDownloadJavadoc = true
-//     }
-// }
+//idea {
+//    module {
+//        isDownloadSources = true
+//        isDownloadJavadoc = true
+//    }
+//}

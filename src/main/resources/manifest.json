@@ -1,20 +1,20 @@
 {
     "Group": "dev",
     "Name": "RitualAnomalyExtraction",
-    "Version": "0.0.0",
+    "Version": "0.0.1",
     "Description": "Cooperative Hytale ritual anomaly extraction plugin.",
     "Authors": [
         {
             "Name": "Moxinat"
         },
         {
-            "Name": "McCal"
-        },
-        {
             "Name": "N0C7U4"
         },
         {
             "Name": "DEL"
+        },
+        {
+            "Name": "Countdown"
         }
     ],
     "Website": "",

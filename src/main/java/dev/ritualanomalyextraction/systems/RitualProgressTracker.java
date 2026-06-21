@@ -3,6 +3,7 @@ package dev.ritualanomalyextraction.systems;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import dev.ritualanomalyextraction.RitualGameManager;
 
 import java.util.logging.Level;
 
@@ -11,11 +12,15 @@ public final class RitualProgressTracker {
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
     private static final int REQUIRED_OBJECTS = 3;
-
     private static int placedObjectCount = 0;
     private static boolean ritualStarted = false;
+    private static RitualGameManager gameManager;
 
     private RitualProgressTracker() {
+    }
+
+    public static void setGameManager(RitualGameManager manager) {
+        gameManager = manager;
     }
 
     public static void onObjectPlaced(PlayerRef player, String objectId) {
@@ -25,17 +30,14 @@ public final class RitualProgressTracker {
 
         placedObjectCount = Math.min(REQUIRED_OBJECTS, placedObjectCount + 1);
 
-        LOGGER.at(Level.INFO).log(
-                "Ritual object placed: '%s'. Progress: %s/%s",
-                objectId,
-                placedObjectCount,
-                REQUIRED_OBJECTS
-        );
+        LOGGER.at(Level.INFO).log("Ritual object placed: '%s'. Progress: %s/%s", objectId, placedObjectCount, REQUIRED_OBJECTS);
 
         sendProgressMessage(player);
 
         if (placedObjectCount >= REQUIRED_OBJECTS) {
-            startRitual(player);
+            ritualStarted = true;
+            LOGGER.at(Level.INFO).log("Ritual started.");
+            gameManager.onRitualCelebrationStart();
         }
     }
 
@@ -46,27 +48,9 @@ public final class RitualProgressTracker {
 
         placedObjectCount = Math.max(0, placedObjectCount - 1);
 
-        LOGGER.at(Level.INFO).log(
-                "Ritual object removed: '%s'. Progress: %s/%s",
-                objectId,
-                placedObjectCount,
-                REQUIRED_OBJECTS
-        );
+        LOGGER.at(Level.INFO).log("Ritual object removed: '%s'. Progress: %s/%s", objectId, placedObjectCount, REQUIRED_OBJECTS);
 
         sendProgressMessage(player);
-    }
-
-    private static void startRitual(PlayerRef player) {
-        if (ritualStarted) {
-            return;
-        }
-
-        ritualStarted = true;
-
-        LOGGER.at(Level.INFO).log("Ritual started.");
-        sendMessage(player, "Ritual complete. The ritual has started.");
-
-        // TODO: Trigger ritual effects, portal, win state, monster phase, etc.
     }
 
     private static void sendProgressMessage(PlayerRef player) {
@@ -77,7 +61,6 @@ public final class RitualProgressTracker {
         if (player == null) {
             return;
         }
-
         player.sendMessage(Message.raw(text));
     }
 
