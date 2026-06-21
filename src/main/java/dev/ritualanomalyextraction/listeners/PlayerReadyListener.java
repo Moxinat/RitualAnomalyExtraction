@@ -26,26 +26,27 @@ public class PlayerReadyListener {
         if (!playerEntityRef.isValid()) {
             return;
         }
-        InstanceUtil.trySetUpLobby(event.getPlayer().getWorld(), playerEntityRef);
 
         if (player == null) {
             return;
         }
 
-        if (Constants.spawnWorld == null) {
+        if (Constants.lobbyWorld == null) {
             LOGGER.at(Level.WARNING).log("Spawn world is null");
             return;
         }
 
         assert player != null;
         if (gameManager.getState() == RitualGameManager.GameState.IDLE || gameManager.getState() == RitualGameManager.GameState.RITUAL_COMPLETE || gameManager.getState() == RitualGameManager.GameState.FAIL) {
+            player.getHudManager().resetHud(playerRef);
             player.getHudManager().addCustomHud(playerRef, new StatusHud(playerRef, "spawn", gameManager));
-            playerRef.updatePosition(Constants.spawnWorld, Constants.spawnPos, Constants.spawnRot);
+            InstanceUtil.teleportPlayerToWorld(playerRef.getReference(), Constants.lobbyWorld);
         }
         if (gameManager.getState() == RitualGameManager.GameState.CONTROL_ROOM) {
+            player.getHudManager().resetHud(playerRef);
             player.getHudManager().addCustomHud(playerRef, new StatusHud(playerRef, "gameTimer", gameManager));
             assert Constants.controlRoomWorld != null;
-            playerRef.updatePosition(Constants.controlRoomWorld, Constants.controlRoomPos, Constants.controlRoomRot);
+            InstanceUtil.teleportPlayerToWorld(playerRef.getReference(), Constants.ritualWorld);
         }
     }
 }

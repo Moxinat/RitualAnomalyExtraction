@@ -52,14 +52,20 @@ public class RitualAnomalyPlugin extends JavaPlugin {
     }
 
     @Override
+    protected void start() {
+        InstanceUtil.trySetUpLobby();
+        InstanceUtil.tryGenerateMinigameWorld();
+    }
+
+    @Override
     protected void shutdown(){
         CONFIG.save();
     }
 
     public static RitualAnomalyPlugin getInstance(){
         return instance;
-
     }
+
     public Config<RaeConfig> getConfig(){
         return CONFIG;
     }

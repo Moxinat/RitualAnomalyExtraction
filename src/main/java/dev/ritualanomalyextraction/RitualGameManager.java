@@ -1,26 +1,25 @@
 package dev.ritualanomalyextraction;
 
 import com.hypixel.hytale.logger.HytaleLogger;
-import com.hypixel.hytale.protocol.BlockPosition;
 import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.entities.Player;
-import com.hypixel.hytale.server.core.io.ServerManager;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import dev.ritualanomalyextraction.systems.PedestalSystem;
+import com.hypixel.hytale.server.core.universe.Universe;
+import com.hypixel.hytale.server.core.universe.world.World;
 import dev.ritualanomalyextraction.systems.RitualObjectSpawnManager;
 import dev.ritualanomalyextraction.systems.RitualProgressTracker;
 import dev.ritualanomalyextraction.ui.StatusHud;
+import dev.ritualanomalyextraction.utils.InstanceUtil;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.logging.Level;
 
 public class RitualGameManager {
 
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
+    private static CompletableFuture<World> lobbyWorld;
+    private static CompletableFuture<World> miniGameWorld;
 
     public enum GameState {
         IDLE,
@@ -51,9 +50,8 @@ public class RitualGameManager {
         }
 
         Constants.controlRoomWorld.execute( () -> {
-            for (PlayerRef playerRef : Constants.controlRoomWorld.getPlayerRefs()) {
-                playerRef.updatePosition(Constants.controlRoomWorld, Constants.controlRoomPos, Constants.controlRoomRot);
-                //TODO make player respawn on controlRoomPos after death
+            for (PlayerRef playerRef : Universe.get().getPlayers()) {
+                InstanceUtil.teleportPlayerToWorld(playerRef.getReference(), Constants.controlRoomWorld);
                 playerRef.sendMessage(Message.raw("Ritual Anomaly Extraction started."));
                 playerRef.sendMessage(Message.raw("Find the ritual objects and place them on the pedestals."));
             }
@@ -82,12 +80,12 @@ public class RitualGameManager {
         // TODO: Trigger ritual Celebration effects.
 
         HytaleServer.SCHEDULED_EXECUTOR.schedule(() -> {
-            assert Constants.spawnWorld != null;
-            Constants.spawnWorld.execute(this::onRitualCelebrationComplete);
+            assert Constants.lobbyWorld != null;
+            Constants.lobbyWorld.execute(this::onRitualCelebrationComplete);
         }, Constants.celebrationTime, TimeUnit.SECONDS);
 
         Constants.controlRoomWorld.execute( () -> {
-            for (PlayerRef playerRef : Constants.controlRoomWorld.getPlayerRefs()) {
+            for (PlayerRef playerRef : Universe.get().getPlayers()) {
                 Player player = playerRef.getReference().getStore().getComponent(playerRef.getReference(), Player.getComponentType());
                 player.getHudManager().addCustomHud(playerRef, new StatusHud(playerRef,"endSuccess", getGameManager()));
             }
@@ -118,13 +116,29 @@ public class RitualGameManager {
         RitualObjectSpawnManager.clearSpawnedObjects(Constants.ritualWorld);
         // TODO: reset Pedestal
         Constants.controlRoomWorld.execute( () -> {
-            for (PlayerRef playerRef : Constants.controlRoomWorld.getPlayerRefs()) {
+            for (PlayerRef playerRef : Universe.get().getPlayers()) {
                 Player player = playerRef.getReference().getStore().getComponent(playerRef.getReference(), Player.getComponentType());
                 assert player != null;
-                player.getHudManager().resetUserInterface(playerRef);
+                player.getHudManager().resetHud(playerRef);
                 player.getHudManager().addCustomHud(playerRef, new StatusHud(playerRef,"spawn", getGameManager()));
             }
         });
+    }
+
+    public static void setLobbyWorld(CompletableFuture<World> world) {
+        lobbyWorld = world;
+    }
+
+    public static CompletableFuture<World> getLobbyWorld() {
+        return lobbyWorld;
+    }
+
+    public static void setMiniGameWorld(CompletableFuture<World> world) {
+        miniGameWorld = world;
+    }
+
+    public static CompletableFuture<World> getMiniGameWorld() {
+        return miniGameWorld;
     }
 
     public GameState getState() {
@@ -163,7 +177,6 @@ public class RitualGameManager {
         return this;
     }
 
-    //It might be better to place this inside the HUD class so that we aren't repeatedly resetting player HUDs
     private void updateGameTimer() {
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
@@ -175,7 +188,7 @@ public class RitualGameManager {
                         for (PlayerRef playerRef : Constants.controlRoomWorld.getPlayerRefs()) {
                             Player player = playerRef.getReference().getStore().getComponent(playerRef.getReference(), Player.getComponentType());
                             assert player != null;
-                            player.getHudManager().resetUserInterface(playerRef);
+                            player.getHudManager().resetHud(playerRef);
                             player.getHudManager().addCustomHud(playerRef, new StatusHud(playerRef,"gameTimer", getGameManager()));
                         }
                     });
@@ -185,7 +198,7 @@ public class RitualGameManager {
                         for (PlayerRef playerRef : Constants.controlRoomWorld.getPlayerRefs()) {
                             Player player = playerRef.getReference().getStore().getComponent(playerRef.getReference(), Player.getComponentType());
                             assert player != null;
-                            player.getHudManager().resetUserInterface(playerRef);
+                            player.getHudManager().resetHud(playerRef);
                             player.getHudManager().addCustomHud(playerRef, new StatusHud(playerRef,"endFail", getGameManager()));
                         }
                     });
