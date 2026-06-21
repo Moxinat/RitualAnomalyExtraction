@@ -1,12 +1,16 @@
 package dev.ritualanomalyextraction;
 
 import com.hypixel.hytale.logger.HytaleLogger;
+import com.hypixel.hytale.protocol.SoundCategory;
 import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.Message;
+import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
+import com.hypixel.hytale.server.core.universe.world.SoundUtil;
 import com.hypixel.hytale.server.core.universe.world.World;
+import dev.ritualanomalyextraction.systems.RitualAnimationManager;
 import dev.ritualanomalyextraction.systems.RitualObjectSpawnManager;
 import dev.ritualanomalyextraction.systems.RitualProgressTracker;
 import dev.ritualanomalyextraction.ui.StatusHud;
@@ -78,18 +82,19 @@ public class RitualGameManager {
         LOGGER.at(Level.INFO).log("Ritual started. Game state changed to RITUAL_ACTIVE.");
 
         // TODO: Trigger ritual Celebration effects.
-
+        RitualAnimationManager.play();
         HytaleServer.SCHEDULED_EXECUTOR.schedule(() -> {
             assert Constants.lobbyWorld != null;
             Constants.lobbyWorld.execute(this::onRitualCelebrationComplete);
         }, Constants.celebrationTime, TimeUnit.SECONDS);
 
-        Constants.controlRoomWorld.execute( () -> {
+        //commented bc it causes me to crash
+        /*Constants.controlRoomWorld.execute( () -> {
             for (PlayerRef playerRef : Universe.get().getPlayers()) {
                 Player player = playerRef.getReference().getStore().getComponent(playerRef.getReference(), Player.getComponentType());
                 player.getHudManager().addCustomHud(playerRef, new StatusHud(playerRef,"endSuccess", getGameManager()));
             }
-        });
+        });*/
     }
 
     public void onRitualCelebrationComplete() {
@@ -113,6 +118,7 @@ public class RitualGameManager {
         LOGGER.at(Level.INFO).log("Game manager reset.");
 
         RitualProgressTracker.reset();
+        RitualAnimationManager.reset();
         RitualObjectSpawnManager.clearSpawnedObjects(Constants.ritualWorld);
         // TODO: reset Pedestal
         Constants.controlRoomWorld.execute( () -> {
@@ -192,6 +198,11 @@ public class RitualGameManager {
                             player.getHudManager().addCustomHud(playerRef, new StatusHud(playerRef,"gameTimer", getGameManager()));
                         }
                     });
+                    if(gameTimeLimit == 60){
+                        int index = SoundEvent.getAssetMap().getIndex("RAE_Time");
+                        SoundUtil.playSoundEvent2d( index, SoundCategory.SFX,Constants.controlRoomWorld.getEntityStore().getStore());
+                    }
+
                     gameTimeLimit--;
                 } else {
                     Constants.controlRoomWorld.execute( () -> {

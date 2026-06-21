@@ -1,0 +1,11 @@
+{
+  "Layers": [
+    {
+      "Files": [
+        "Sounds/dragon-studio-clock-ticking-sfx.ogg"
+      ]
+    }
+  ],
+  "AudioCategory": "AudioCat_SFX",
+  "Volume": 2
+}

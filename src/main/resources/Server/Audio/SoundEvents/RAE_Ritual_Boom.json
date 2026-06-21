@@ -1,0 +1,14 @@
+{
+  "Layers": [
+    {
+      "Files": [
+        "Sounds/dragon-studio-large-underwater-explosion.ogg"
+      ],
+      "RandomSettings": {
+        "MaxVolume": 0
+      },
+      "Volume": 10
+    }
+  ],
+  "Volume": 10
+}

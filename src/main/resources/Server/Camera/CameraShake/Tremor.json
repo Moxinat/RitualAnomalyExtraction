@@ -1,0 +1,60 @@
+{
+  "FirstPerson": {
+    "Duration": 1,
+    "EaseIn": {
+      "Time": 0.1,
+      "Type": "Linear"
+    },
+    "EaseOut": {
+      "Time": 0.2,
+      "Type": "Linear"
+    },
+    "Offset": {
+      "X": [
+        {
+          "Frequency": 14,
+          "Amplitude": 1,
+          "Type": "Random",
+          "Seed": 1
+        }
+      ],
+      "Y": [
+        {
+          "Frequency": 14,
+          "Amplitude": 2,
+          "Type": "Random",
+          "Seed": 2
+        }
+      ]
+    }
+  },
+  "ThirdPerson": {
+    "Duration": 1,
+    "EaseIn": {
+      "Time": 0.1,
+      "Type": "Linear"
+    },
+    "EaseOut": {
+      "Time": 0.2,
+      "Type": "Linear"
+    },
+    "Offset": {
+      "X": [
+        {
+          "Frequency": 14,
+          "Amplitude": 1,
+          "Type": "Random",
+          "Seed": 1
+        }
+      ],
+      "Y": [
+        {
+          "Frequency": 14,
+          "Amplitude": 2,
+          "Type": "Random",
+          "Seed": 2
+        }
+      ]
+    }
+  }
+}

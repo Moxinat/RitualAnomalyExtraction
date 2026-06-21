@@ -1,0 +1,70 @@
+{
+  "Spawners": [
+    {
+      "SpawnerId": "Ritual_Animation_Attraction",
+      "PositionOffset": {
+        "X": -3,
+        "Z": -3,
+        "Y": -4.7
+      }
+    },
+    {
+      "SpawnerId": "Ritual_Animation_Attraction",
+      "PositionOffset": {
+        "X": 3,
+        "Z": -3,
+        "Y": -4.7
+      },
+      "RotationOffset": {
+        "Yaw": -90
+      }
+    },
+    {
+      "SpawnerId": "Ritual_Animation_Attraction",
+      "PositionOffset": {
+        "X": 3,
+        "Z": 3,
+        "Y": -4.7
+      },
+      "RotationOffset": {
+        "Yaw": -180
+      }
+    },
+    {
+      "SpawnerId": "Ritual_Animation_Attraction",
+      "PositionOffset": {
+        "X": -3,
+        "Z": 3,
+        "Y": -4.7
+      },
+      "RotationOffset": {
+        "Yaw": 90
+      }
+    },
+    {
+      "SpawnerId": "Ritual_Animation_Release",
+      "PositionOffset": {
+        "Y": 0.4
+      },
+      "StartDelay": 1.6
+    },
+    {
+      "SpawnerId": "Ritual_Animation_Release2",
+      "PositionOffset": {
+        "Y": 0.4
+      },
+      "StartDelay": 1.6
+    },
+    {
+      "SpawnerId": "Ritual_Animation_Sphere",
+      "PositionOffset": {
+        "Y": 0.4
+      },
+      "StartDelay": 1.6
+    },
+    {
+      "SpawnerId": "Ritual_Animation_Sphere_Explosion",
+      "StartDelay": 8
+    }
+  ]
+}
