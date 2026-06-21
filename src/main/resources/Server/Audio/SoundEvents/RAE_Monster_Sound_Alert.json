@@ -1,0 +1,23 @@
+{
+  "Volume": 0,
+  "Layers": [
+    {
+      "Files": [
+        "Sounds/dragon-studio-creepy-whisper.ogg"
+      ],
+      "RandomSettings": {
+        "MinPitch": -1.8240371213405997,
+        "MinVolume": -0.9151498112135024,
+        "MaxPitch": 1.6500422849992202
+      },
+      "StartDelay": 0.3,
+      "Volume": 6.0,
+      "Probability": 100
+    }
+  ],
+  "PreventSoundInterruption": true,
+  "AudioCategory": "AudioCat_NPC_Yeti",
+  "Parent": "SFX_Attn_Moderate",
+  "SpatialBlend": 0.5,
+  "MaxInstance": 3
+}

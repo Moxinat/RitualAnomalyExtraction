@@ -116,7 +116,7 @@ public class RitualGameManager {
         RitualObjectSpawnManager.clearSpawnedObjects(Constants.ritualWorld);
         // TODO: reset Pedestal
         Constants.controlRoomWorld.execute( () -> {
-            for (PlayerRef playerRef : Universe.get().getPlayers()) {
+            for (PlayerRef playerRef : Constants.controlRoomWorld.getPlayerRefs()) {
                 Player player = playerRef.getReference().getStore().getComponent(playerRef.getReference(), Player.getComponentType());
                 assert player != null;
                 player.getHudManager().resetHud(playerRef);
@@ -183,7 +183,7 @@ public class RitualGameManager {
         Runnable countdownTask = new Runnable() {
             @Override
             public void run() {
-                if (gameTimeLimit >= 0) {
+                if (gameTimeLimit >= 1) {
                     Constants.controlRoomWorld.execute( () -> {
                         for (PlayerRef playerRef : Constants.controlRoomWorld.getPlayerRefs()) {
                             Player player = playerRef.getReference().getStore().getComponent(playerRef.getReference(), Player.getComponentType());
