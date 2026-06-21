@@ -15,6 +15,7 @@ import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.Config;
+import dev.ritualanomalyextraction.Constants;
 import dev.ritualanomalyextraction.RitualAnomalyPlugin;
 import dev.ritualanomalyextraction.RitualGameManager;
 import org.joml.Vector3d;
@@ -89,16 +90,26 @@ public class InstanceUtil {
         }
     }
 
-    public static void teleportPlayerToWorld(Ref<EntityStore> playerRef, World toWorld){
-        if(playerRef.isValid()){
+    public static void teleportPlayerToWorld(Ref<EntityStore> playerRef, World toWorld) {
+        if (!playerRef.isValid()) {
+            LOGGER.atSevere().log("Failed to teleport player to world! (Cause: Invalid Ref)");
+        }
 
             Store<EntityStore> store = playerRef.getStore();
             World worldFrom = store.getExternalData().getWorld();
+
             worldFrom.execute(() -> {
                 Transform spawnPoint = toWorld.getWorldConfig().getSpawnProvider().getSpawnPoint(playerRef, store);
                 if (spawnPoint != null) {
+
                     TransformComponent transformComponent = store.getComponent(playerRef, TransformComponent.getComponentType());
                     HeadRotation headRotationComponent = store.getComponent(playerRef, HeadRotation.getComponentType());
+                    if (toWorld.getName().equals("RAE-Minigame")) {
+                        transformComponent = new TransformComponent(Constants.controlRoomPos.getPosition(), Constants.controlRoomRot);
+                        headRotationComponent = new HeadRotation(Constants.controlRoomRot);
+                        spawnPoint = new Transform(transformComponent.getPosition(), headRotationComponent.getRotation());
+                    }
+
                     if (transformComponent != null && headRotationComponent != null) {
                         TeleportHistory teleportHistoryComponent = store.ensureAndGetComponent(playerRef, TeleportHistory.getComponentType());
                         teleportHistoryComponent.append(worldFrom, new Vector3d(transformComponent.getPosition()), headRotationComponent.getRotation().clone(),"Instance '" + toWorld.getName() + "'");
@@ -106,11 +117,9 @@ public class InstanceUtil {
 
                     Teleport teleportComponent = Teleport.createForPlayer(toWorld, spawnPoint);
                     store.addComponent(playerRef, Teleport.getComponentType(), teleportComponent);
-                    LOGGER.atInfo().log("Teleport player to world!");
+                    LOGGER.atInfo().log("Teleport player to %s", toWorld.getName());
                 }
             });
-        }else{
-            LOGGER.atSevere().log("Failed to teleport player to world! (Cause: Invalid Ref)");
-        }
     }
 }
+
