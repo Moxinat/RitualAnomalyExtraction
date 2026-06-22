@@ -20,6 +20,7 @@ import dev.ritualanomalyextraction.RitualAnomalyPlugin;
 import dev.ritualanomalyextraction.RitualGameManager;
 import org.joml.Vector3d;
 
+import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 
 public class InstanceUtil {
@@ -79,8 +80,10 @@ public class InstanceUtil {
             if (transformComponent == null) {
                 return;
             }
-            if (!generateInstance(fromWorld, DEFAULT_MINIGAME_NAME, DEFAULT_MINIGAME_NAME, transformComponent.getTransform())) {
+            if (!generateInstance(fromWorld,DEFAULT_MINIGAME_NAME, DEFAULT_MINIGAME_NAME, transformComponent.getTransform())) {
                 LOGGER.atSevere().log("Failed creating the Minigame for Ritual Anomaly Extraction!");
+            } else {
+                LOGGER.atInfo().log("Created the Minigame for Ritual Anomaly Extraction!");
             }
         } else {
             LOGGER.atInfo().log("Minigame world already exists!");
@@ -88,6 +91,7 @@ public class InstanceUtil {
     }
 
     public static void teleportPlayerToWorld(Ref<EntityStore> playerRef, World toWorld) {
+
         if (!playerRef.isValid()) {
             LOGGER.atSevere().log("Failed to teleport player to world! (Cause: Invalid Ref)");
         }
@@ -117,6 +121,10 @@ public class InstanceUtil {
                     LOGGER.atInfo().log("Teleport player to %s", toWorld.getName());
                 }
             });
+    }
+
+    public static boolean shouldForceTp(){
+        return RitualAnomalyPlugin.getInstance().getConfig().get().shouldForceTP();
     }
 }
 

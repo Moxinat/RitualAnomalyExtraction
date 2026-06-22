@@ -8,7 +8,6 @@ import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import dev.ritualanomalyextraction.commands.ResetCommand;
 import com.hypixel.hytale.server.core.util.Config;
 import dev.ritualanomalyextraction.commands.RaeGroupCommands;
-import dev.ritualanomalyextraction.commands.SpawnObjectsCommand;
 import dev.ritualanomalyextraction.commands.StartCommand;
 import dev.ritualanomalyextraction.listeners.PlayerReadyListener;
 import dev.ritualanomalyextraction.systems.*;
@@ -40,7 +39,6 @@ public class RitualAnomalyPlugin extends JavaPlugin {
         this.getEventRegistry().registerGlobal(PlayerReadyEvent.class,event -> PlayerReadyListener.onPlayerReady(event, gameManager));
 
         this.getCommandRegistry().registerCommand(new RaeGroupCommands("rae", "Ritual Anomaly Extraction commands"));
-        this.getCommandRegistry().registerCommand(new SpawnObjectsCommand("rae", "Ritual Anomaly Extraction debug commands"));
         this.getCommandRegistry().registerCommand(new StartCommand("start", "Start the game", gameManager));
         this.getCommandRegistry().registerCommand(new ResetCommand("reset", "Reset the game", gameManager));
 

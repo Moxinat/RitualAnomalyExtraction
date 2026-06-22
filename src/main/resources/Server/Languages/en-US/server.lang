@@ -2,3 +2,4 @@
 
 interactionHints.pedestal.place_or_get_item = Place or get Ritual Item with [{key}]
 interactionHints.ritual_item.pickup = Pickup Ritual Item with [{key}]
+interactionHints.start_button = Start game with [{key}]

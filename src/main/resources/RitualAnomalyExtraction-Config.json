@@ -1,5 +1,5 @@
 {
   "SetLobbyAsDefaultWorld": true,
   "CreateLobbyUponServerStart": true,
-  "LobbyWorldName": "RAE-Lobby"
+  "ForceTP": true
 }

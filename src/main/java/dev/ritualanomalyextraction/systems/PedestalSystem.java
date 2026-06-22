@@ -67,7 +67,7 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
     }
 
     private static Vector3d toVisualItemPosition(Vector3i pos) {
-        return new Vector3d(pos.x + 0.5, pos.y + 1.2, pos.z + 0.5);
+        return new Vector3d(pos.x + 0.5, pos.y + 0.74, pos.z + 0.5);
     }
 
     private static String resolveDisplayModelId(String itemId) {
@@ -76,10 +76,10 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
         }
 
         return switch (itemId) {
-            // TODO: Replace these example ritual object IDs with the final item IDs.
-            case "ritual_candle" -> "RitualCandleDisplay";
-            case "ritual_bone" -> "RitualBoneDisplay";
-            case "ritual_orb" -> "RitualOrbDisplay";
+            case "Ritual_Active_Pentacle" -> "Ritual_Active_Pentacle_Display";
+            case "Ritual_Blood_Effigy" -> "Ritual_Blood_Effigy_Display";
+            case "Ritual_Ghost_Candle" -> "Ritual_Ghost_Candle_Display";
+            case "Ritual_Soul_Lantern" -> "Ritual_Soul_Lantern_Display";
             default -> "RitualItemTest";
         };
     }
@@ -96,7 +96,7 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
             return null;
         }
 
-        Model model = Model.createScaledModel(modelAsset, 0.45F);
+        Model model = Model.createScaledModel(modelAsset, 1F);
 
         holder.addComponent(TransformComponent.getComponentType(), new TransformComponent(toVisualItemPosition(blockPosition), Rotation3f.IDENTITY));
 
@@ -104,7 +104,7 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
 
         holder.addComponent(ModelComponent.getComponentType(), new ModelComponent(model));
 
-        holder.addComponent(EntityScaleComponent.getComponentType(), new EntityScaleComponent(0.45F));
+        holder.addComponent(EntityScaleComponent.getComponentType(), new EntityScaleComponent(1F));
 
         Box boundingBox = model.getBoundingBox();
         if (boundingBox != null) {

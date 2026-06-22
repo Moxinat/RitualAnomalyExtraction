@@ -26,7 +26,6 @@ import org.joml.Vector3i;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -61,13 +60,13 @@ public class RitualObjectPickupSystem extends EntityEventSystem<EntityStore, Use
         LOGGER.at(Level.INFO).log("Set carried ritual object for player '%s' to '%s'.", player, itemId);
     }
 
-    private static String normalizeId(String id) {
+    /*private static String normalizeId(String id) {
         if (id == null) {
             return "";
         }
 
         return id.toLowerCase(Locale.ROOT);
-    }
+    }*/
 
     private static BlockPosition toBlockPosition(org.joml.Vector3i pos) {
         return new BlockPosition(pos.x, pos.y, pos.z);
@@ -98,8 +97,8 @@ public class RitualObjectPickupSystem extends EntityEventSystem<EntityStore, Use
             return false;
         }
 
-        String normalized = normalizeId(itemId);
-        return Constants.ritualObjectsWorldToItem.containsValue(normalized);
+        // normalized = normalizeId(itemId);
+        return Constants.ritualObjectsWorldToItem.contains(itemId);
     }
 
     public static void clearCarriedRitualObjectIfMatches(PlayerRef player, String itemId) {
@@ -148,11 +147,12 @@ public class RitualObjectPickupSystem extends EntityEventSystem<EntityStore, Use
         }
 
         String rawWorldBlockId = event.getBlockType().getId();
-        String worldBlockId = normalizeId(rawWorldBlockId);
 
-        String carryItemId = Constants.ritualObjectsWorldToItem.get(worldBlockId);
+        if (rawWorldBlockId == null) {
+            return;
+        }
 
-        if (carryItemId == null) {
+        if (!Constants.ritualObjectsWorldToItem.contains(rawWorldBlockId)) {
             return;
         }
 
@@ -177,14 +177,14 @@ public class RitualObjectPickupSystem extends EntityEventSystem<EntityStore, Use
 
         try {
             giveTransaction = Player.giveItem(
-                    new ItemStack(carryItemId, 1),
+                    new ItemStack(rawWorldBlockId, 1),
                     entity,
                     store
             );
         } catch (Exception exception) {
             LOGGER.at(Level.SEVERE).withCause(exception).log(
                     "Exception while trying to give ritual object item '%s' to player '%s'. This likely means the item asset/json is missing or invalid.",
-                    carryItemId,
+                    rawWorldBlockId,
                     player
             );
             return;
@@ -193,7 +193,7 @@ public class RitualObjectPickupSystem extends EntityEventSystem<EntityStore, Use
         if (!giveTransaction.succeeded()) {
             LOGGER.at(Level.WARNING).log(
                     "Failed to give ritual object '%s' to player '%s'. Inventory may be full or item asset may be invalid.",
-                    carryItemId,
+                    rawWorldBlockId,
                     player
             );
             return;
@@ -206,19 +206,19 @@ public class RitualObjectPickupSystem extends EntityEventSystem<EntityStore, Use
         if (!removedBlock) {
             LOGGER.at(Level.WARNING).log(
                     "Player received ritual object '%s', but world block at %s could not be removed.",
-                    carryItemId,
+                    rawWorldBlockId,
                     targetBlock
             );
         }
 
-        setCarriedRitualObject(player, carryItemId);
+        setCarriedRitualObject(player, rawWorldBlockId);
 
         BlockPosition pickedUpPosition = toBlockPosition(event.getTargetBlock());
 
         LOGGER.at(Level.INFO).log(
                 "Picked up ritual object '%s' from block '%s' at %s. Current carry map size: %s",
-                carryItemId,
-                worldBlockId,
+                rawWorldBlockId,
+                rawWorldBlockId,
                 pickedUpPosition,
                 carriedRitualObjects.size()
         );

@@ -28,9 +28,6 @@
       "Radius": 0
     },
     "Material": "Solid",
-    "Gathering": {
-      "Harvest": {}
-    },
     "HitboxType": "Ritual_Ghost_Candle",
     "Particles": [
       {
@@ -40,10 +37,17 @@
         "Color": "#0032ef"
       }
     ],
-    "BlockSoundSetId": "Soft"
-  },
-  "Interactions": {
-    "Secondary": "Block_Secondary"
+    "BlockSoundSetId": "Soft",
+    "InteractionHint": "server.interactionHints.ritual_item.pickup",
+    "Interactions": {
+      "Use": {
+        "Interactions": [
+          {
+            "Type": "Simple"
+          }
+        ]
+      }
+    }
   },
   "Icon": "Icons/ItemsGenerated/Ritual_Ghost_Candle.png",
   "IconProperties": {
