@@ -225,7 +225,7 @@ public class RitualGameManager {
         Runnable countdownTask = new Runnable() {
             @Override
             public void run() {
-                if (gameTimeLimit >= 0) {
+                if (gameTimeLimit >= 1) {
                     Universe.get().getWorld(Constants.miniGameWorldName).execute( () -> {
                         for (PlayerRef playerRef : Universe.get().getWorld(Constants.miniGameWorldName).getPlayerRefs()) {
                             Player player = playerRef.getReference().getStore().getComponent(playerRef.getReference(), Player.getComponentType());
