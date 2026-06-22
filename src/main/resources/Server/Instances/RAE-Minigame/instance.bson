@@ -14,7 +14,7 @@
   },
   "IsTicking": true,
   "IsBlockTicking": true,
-  "IsPvpEnabled": false,
+  "IsPvpEnabled": true,
   "IsFallDamageEnabled": true,
   "IsGameTimePaused": false,
   "GameTime": "0001-01-01T05:30:00Z",
@@ -24,8 +24,8 @@
   "GameplayConfig": "Default",
   "IsCompassUpdating": true,
   "IsObjectiveMarkersEnabled": true,
-  "IsSavingChunks": true,
-  "IsSavingPlayers": true,
+  "IsSavingChunks": false,
+  "IsSavingPlayers": false,
   "SpawnProvider": {
     "Id": "Global",
     "SpawnPoint": {
@@ -37,7 +37,7 @@
       "Roll": 0.0
     }
   },
-  "DeleteOnRemove": false,
+  "DeleteOnRemove": true,
   "DisabledFluidTickers": [],
   "ResourceStorage": {
     "Type": "Hytale"

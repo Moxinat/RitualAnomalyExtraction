@@ -12,6 +12,7 @@ import com.hypixel.hytale.server.core.asset.type.entityeffect.config.OverlapBeha
 import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
 import com.hypixel.hytale.server.core.entity.effect.EffectControllerComponent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.SoundUtil;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
@@ -41,7 +42,7 @@ public class RitualAnimationManager {
     }
 
     public static void reset() {
-        reset(Constants.ritualWorld);
+        reset(Universe.get().getWorld(Constants.miniGameWorldName));
     }
 
     public static void play(World world) {
@@ -55,7 +56,7 @@ public class RitualAnimationManager {
     }
 
     public static void play() {
-        play(Constants.ritualWorld);
+        play(Universe.get().getWorld(Constants.miniGameWorldName));
     }
 
     //TODO fix: currently all refs seem to be invalid or something else, so the effect does not get applied to them, which

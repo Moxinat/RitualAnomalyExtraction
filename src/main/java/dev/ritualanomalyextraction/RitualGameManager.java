@@ -1,5 +1,6 @@
 package dev.ritualanomalyextraction;
 
+import com.hypixel.hytale.builtin.instances.InstancesPlugin;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.math.vector.Transform;
@@ -30,13 +31,15 @@ public class RitualGameManager {
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
     private static CompletableFuture<World> lobbyWorld;
     private static CompletableFuture<World> miniGameWorld;
+    private boolean hasBeenReset = false;
 
     public enum GameState {
         IDLE,
         CONTROL_ROOM,
         RITUAL_ACTIVE,
         RITUAL_COMPLETE,
-        FAIL
+        FAIL,
+        RESETTING
     }
 
     private GameState state = GameState.IDLE;
@@ -54,28 +57,28 @@ public class RitualGameManager {
 
         LOGGER.at(Level.INFO).log("Players ready. Game state changed to CONTROL_ROOM.");
 
-        if (Constants.controlRoomWorld == null) {
+        if (Universe.get().getWorld(Constants.miniGameWorldName) == null) {
             LOGGER.at(Level.WARNING).log("Control room world is null");
             return;
         }
 
         spawnSailors();
 
-        Constants.controlRoomWorld.execute( () -> {
+        Universe.get().getWorld(Constants.miniGameWorldName).execute( () -> {
             for (PlayerRef playerRef : Universe.get().getPlayers()) {
-                InstanceUtil.teleportPlayerToWorld(playerRef.getReference(), Constants.controlRoomWorld);
+                InstanceUtil.teleportPlayerToWorld(playerRef.getReference(), Universe.get().getWorld(Constants.miniGameWorldName));
                 playerRef.sendMessage(Message.raw("Ritual Anomaly Extraction started."));
                 playerRef.sendMessage(Message.raw("Find the ritual objects and place them on the pedestals."));
             }
         });
 
-        if (Constants.ritualWorld == null) {
+        if (Universe.get().getWorld(Constants.miniGameWorldName) == null) {
             LOGGER.at(Level.WARNING).log("Ritual world is null");
             return;
         }
 
-        Constants.ritualWorld.execute(() -> {
-            RitualObjectSpawnManager.spawnRandomRitualObjects(Constants.ritualWorld);
+        Universe.get().getWorld(Constants.miniGameWorldName).execute(() -> {
+            RitualObjectSpawnManager.spawnRandomRitualObjects(Universe.get().getWorld(Constants.miniGameWorldName));
         });
 
         updateGameTimer();
@@ -89,7 +92,6 @@ public class RitualGameManager {
         state = GameState.RITUAL_ACTIVE;
         LOGGER.at(Level.INFO).log("Ritual started. Game state changed to RITUAL_ACTIVE.");
 
-        // TODO: Trigger ritual Celebration effects.
         RitualAnimationManager.play();
         HytaleServer.SCHEDULED_EXECUTOR.schedule(() -> {
             assert Constants.lobbyWorld != null;
@@ -99,6 +101,7 @@ public class RitualGameManager {
         Constants.controlRoomWorld.execute( () -> {
             for (PlayerRef playerRef : Universe.get().getPlayers()) {
                 Player player = playerRef.getReference().getStore().getComponent(playerRef.getReference(), Player.getComponentType());
+                player.getHudManager().resetHud(playerRef);
                 player.getHudManager().addCustomHud(playerRef, new StatusHud(playerRef,"endSuccess", getGameManager()));
             }
         });
@@ -118,30 +121,47 @@ public class RitualGameManager {
     }
 
     public void reset() {
-        state = GameState.IDLE;
+        state = GameState.RESETTING;
         gameStartMs = 0;
         gameTimeLimit = Constants.gameTimeLimit;
+        hasBeenReset = true;
 
         LOGGER.at(Level.INFO).log("Game manager reset.");
 
         RitualProgressTracker.reset();
         RitualAnimationManager.reset();
-        RitualObjectSpawnManager.clearSpawnedObjects(Constants.ritualWorld);
-        // TODO: reset Pedestal
-        Constants.controlRoomWorld.execute( () -> {
+        RitualObjectSpawnManager.clearSpawnedObjects(Universe.get().getWorld(Constants.miniGameWorldName));
+
+        Universe.get().getWorld(Constants.miniGameWorldName).execute( () -> {
             for (PlayerRef playerRef : Universe.get().getPlayers()) {
-                Player player = playerRef.getReference().getStore().getComponent(playerRef.getReference(), Player.getComponentType());
-                assert player != null;
-                player.getHudManager().resetHud(playerRef);
-                player.getHudManager().addCustomHud(playerRef, new StatusHud(playerRef,"spawn", getGameManager()));
+                InstanceUtil.teleportPlayerToWorld(playerRef.getReference(), Constants.lobbyWorld);
             }
         });
+
+        HytaleServer.SCHEDULED_EXECUTOR.schedule(() -> {
+            InstancesPlugin.safeRemoveInstance(Universe.get().getWorld(Constants.miniGameWorldName));
+        }, 5, TimeUnit.SECONDS);
+
+        HytaleServer.SCHEDULED_EXECUTOR.schedule(() -> {
+            InstanceUtil.tryGenerateMinigameWorld();
+        }, 10, TimeUnit.SECONDS);
+
+        HytaleServer.SCHEDULED_EXECUTOR.schedule(() -> {
+            Constants.lobbyWorld.execute( () -> {
+                for (PlayerRef playerRef : Universe.get().getPlayers()) {
+                    Player player = playerRef.getReference().getStore().getComponent(playerRef.getReference(), Player.getComponentType());
+                    player.getHudManager().resetHud(playerRef);
+                    player.getHudManager().addCustomHud(playerRef, new StatusHud(playerRef,"ready", getGameManager()));
+                }
+                setGameState(GameState.IDLE);
+            });
+        }, 13, TimeUnit.SECONDS);
     }
 
     public void spawnSailors() {
-        Constants.controlRoomWorld.execute( () -> {
+        Universe.get().getWorld(Constants.controlRoomWorld.getName()).execute( () -> {
             for (Transform transform : Constants.gameSailorSpawn) {
-                Pair<Ref<EntityStore>, INonPlayerCharacter> monster = NPCPlugin.get().spawnNPC(Constants.controlRoomWorld.getEntityStore().getStore(), "RAE_Monster_NPC_Role", null, transform.getPosition(), Constants.ritualMonsterSpawnRot);
+                Pair<Ref<EntityStore>, INonPlayerCharacter> monster = NPCPlugin.get().spawnNPC(Universe.get().getWorld(Constants.miniGameWorldName).getEntityStore().getStore(), "RAE_Monster_NPC_Role", null, transform.getPosition(), Constants.ritualMonsterSpawnRot);
                 LOGGER.atInfo().log("Spawned Sailor at %s", transform.getPosition());
             }
         });
@@ -206,23 +226,23 @@ public class RitualGameManager {
             @Override
             public void run() {
                 if (gameTimeLimit >= 0) {
-                    Constants.controlRoomWorld.execute( () -> {
-                        for (PlayerRef playerRef : Constants.controlRoomWorld.getPlayerRefs()) {
+                    Universe.get().getWorld(Constants.miniGameWorldName).execute( () -> {
+                        for (PlayerRef playerRef : Universe.get().getWorld(Constants.miniGameWorldName).getPlayerRefs()) {
                             Player player = playerRef.getReference().getStore().getComponent(playerRef.getReference(), Player.getComponentType());
                             assert player != null;
                             player.getHudManager().resetHud(playerRef);
                             player.getHudManager().addCustomHud(playerRef, new StatusHud(playerRef,"gameTimer", getGameManager()));
                         }
                     });
-                    if(gameTimeLimit == 60){
+                    if (gameTimeLimit == 60) {
                         int index = SoundEvent.getAssetMap().getIndex("RAE_Time");
-                        SoundUtil.playSoundEvent2d( index, SoundCategory.SFX,Constants.controlRoomWorld.getEntityStore().getStore());
+                        SoundUtil.playSoundEvent2d( index, SoundCategory.SFX, Universe.get().getWorld(Constants.miniGameWorldName).getEntityStore().getStore());
                     }
 
                     gameTimeLimit--;
                 } else {
-                    Constants.controlRoomWorld.execute( () -> {
-                        for (PlayerRef playerRef : Constants.controlRoomWorld.getPlayerRefs()) {
+                    Universe.get().getWorld(Constants.miniGameWorldName).execute( () -> {
+                        for (PlayerRef playerRef : Universe.get().getWorld(Constants.miniGameWorldName).getPlayerRefs()) {
                             Player player = playerRef.getReference().getStore().getComponent(playerRef.getReference(), Player.getComponentType());
                             assert player != null;
                             player.getHudManager().resetHud(playerRef);

@@ -59,9 +59,11 @@ public final class RitualObjectSpawnManager {
             return;
         }
 
-        for (Vector3i pos : spawnedPositions) {
-            clearBlock(world, pos);
-        }
+        world.execute(() -> {
+            for (Vector3i pos : spawnedPositions) {
+                clearBlock(world, pos);
+            }
+        });
 
         spawnedPositions.clear();
 

@@ -7,7 +7,6 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.math.vector.Transform;
-import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.modules.entity.component.HeadRotation;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
@@ -20,7 +19,9 @@ import dev.ritualanomalyextraction.RitualAnomalyPlugin;
 import dev.ritualanomalyextraction.RitualGameManager;
 import org.joml.Vector3d;
 
-import java.util.Arrays;
+import java.io.File;
+import java.nio.file.Files;
+import java.util.Comparator;
 import java.util.concurrent.CompletableFuture;
 
 public class InstanceUtil {
@@ -59,7 +60,7 @@ public class InstanceUtil {
         World fromWorld = Universe.get().getDefaultWorld();
 
         if (raeConfig.shouldCreateLobbyUponServerStart() && Universe.get().getWorld(DEFAULT_LOBBY_NAME) == null) {
-            TransformComponent transformComponent = new TransformComponent(new Vector3d(0,200,0), new Rotation3f(0,180,0));
+            TransformComponent transformComponent = new TransformComponent(new Vector3d(0,80,0), new Rotation3f(0,180,0));
             if (generateInstance(fromWorld, DEFAULT_LOBBY_NAME, DEFAULT_LOBBY_NAME, transformComponent.getTransform())) {
                 alreadySetUpLobby = true;
             } else {
@@ -77,9 +78,6 @@ public class InstanceUtil {
         if (Universe.get().getWorld(DEFAULT_MINIGAME_NAME) == null) {
             World fromWorld = Universe.get().getDefaultWorld();
             TransformComponent transformComponent = new TransformComponent(new Vector3d(0,200,0), new Rotation3f(0,180,0));
-            if (transformComponent == null) {
-                return;
-            }
             if (!generateInstance(fromWorld,DEFAULT_MINIGAME_NAME, DEFAULT_MINIGAME_NAME, transformComponent.getTransform())) {
                 LOGGER.atSevere().log("Failed creating the Minigame for Ritual Anomaly Extraction!");
             } else {
@@ -100,7 +98,7 @@ public class InstanceUtil {
             World worldFrom = store.getExternalData().getWorld();
 
             worldFrom.execute(() -> {
-                Transform spawnPoint = toWorld.getWorldConfig().getSpawnProvider().getSpawnPoint(playerRef, store);
+                Transform spawnPoint = new Transform(Constants.lobbyPos.getPosition(), Constants.lobbyRot);
                 if (spawnPoint != null) {
 
                     TransformComponent transformComponent = store.getComponent(playerRef, TransformComponent.getComponentType());

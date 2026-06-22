@@ -43,6 +43,14 @@ public class StatusHud extends CustomUIHud {
             uiCommandBuilder.set("#TextField.Text", "The ritual has been complete!");
             uiCommandBuilder.set("#TextField.Style.TextColor", "#33ff66");
         }
+        if (getKey().equals("reset")) {
+            uiCommandBuilder.set("#TextField.Text", "Resetting the game... Stand by");
+            uiCommandBuilder.set("#TextField.Style.TextColor", "#ff3333");
+        }
+        if (getKey().equals("ready")) {
+            uiCommandBuilder.set("#TextField.Text", "Game is ready: /start");
+            uiCommandBuilder.set("#TextField.Style.TextColor", "#ffffff");
+        }
     }
 
 }

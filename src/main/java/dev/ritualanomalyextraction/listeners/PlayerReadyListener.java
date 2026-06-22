@@ -37,12 +37,21 @@ public class PlayerReadyListener {
             return;
         }
 
+        if (playerRef == null) {
+            LOGGER.at(Level.SEVERE).log("playerRef is null playerReadyListener");
+        }
+
         if(!InstanceUtil.shouldForceTp()){
             return;
         }
-        if (gameManager.getState() == RitualGameManager.GameState.IDLE || gameManager.getState() == RitualGameManager.GameState.RITUAL_COMPLETE || gameManager.getState() == RitualGameManager.GameState.FAIL) {
+        if (gameManager.getState() != RitualGameManager.GameState.CONTROL_ROOM) {
             player.getHudManager().resetHud(playerRef);
             player.getHudManager().addCustomHud(playerRef, new StatusHud(playerRef, "spawn", gameManager));
+            InstanceUtil.teleportPlayerToWorld(playerRef.getReference(), Constants.lobbyWorld);
+        }
+        if (gameManager.getState() == RitualGameManager.GameState.RESETTING) {
+            player.getHudManager().resetHud(playerRef);
+            player.getHudManager().addCustomHud(playerRef, new StatusHud(playerRef, "reset", gameManager));
             InstanceUtil.teleportPlayerToWorld(playerRef.getReference(), Constants.lobbyWorld);
         }
         if (gameManager.getState() == RitualGameManager.GameState.CONTROL_ROOM) {

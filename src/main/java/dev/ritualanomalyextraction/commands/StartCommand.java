@@ -27,6 +27,15 @@ public class StartCommand extends AbstractCommand{
             return CompletableFuture.completedFuture(null);
         }
 
+        if (gameManager.getState() == RitualGameManager.GameState.RESETTING) {
+            context.sendMessage(Message.raw("You cannot do that right now. The map is resetting!"));
+            return CompletableFuture.completedFuture(null);
+        }
+
+        if (gameManager.getState() == RitualGameManager.GameState.CONTROL_ROOM) {
+            return CompletableFuture.completedFuture(null);
+        }
+
         gameManager.onPlayerReady();
 
         return CompletableFuture.completedFuture(null);
