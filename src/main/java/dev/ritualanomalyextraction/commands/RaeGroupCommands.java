@@ -9,5 +9,6 @@ public class RaeGroupCommands extends AbstractCommandCollection {
         this.addSubCommand(new SpawnObjectsCommand("spawnobjects","Command to spawn RAE spiritual Objects"));
         this.addSubCommand(new ClearObjectsCommand("clearobjects","Command to despawn RAE spiritual Objects"));
         this.addSubCommand(new RaeLobbyCommand("lobby","Command for the RAE Lobby"));
+        this.addSubCommand(new RaeRitualGroupCommands("ritual","Commands for  triggering the ritual animation"));
     }
 }

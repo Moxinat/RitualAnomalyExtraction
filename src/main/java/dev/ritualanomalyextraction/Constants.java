@@ -1,10 +1,13 @@
 package dev.ritualanomalyextraction;
 
+import com.hypixel.hytale.math.vector.Rotation3f;
+import com.hypixel.hytale.math.vector.Transform;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import org.joml.Vector3i;
 
 import java.util.List;
+import java.util.Map;
 
 public class Constants {
 
@@ -17,10 +20,9 @@ public class Constants {
 
     //Control room constants
     public static final World controlRoomWorld = Universe.get().getWorld("RAE-Minigame");
+    public static final Transform controlRoomPos = new Transform(32.5, 108.5, -7.5);
+    public static final Rotation3f controlRoomRot = new Rotation3f(0, -90, 0);
 
-    //not needed, since i've set the world spawn point - noc
-    /*public static final Transform controlRoomPos = new Transform(46.5, 134.5, 06.5);
-    public static final Rotation3f controlRoomRot = new Rotation3f(0, 80, 0);*/
 
     //Ritual object spawn constants
     public static final World ritualWorld = Universe.get().getWorld("RAE-Minigame");
@@ -49,18 +51,41 @@ public class Constants {
             "Ritual_Ghost_Candle",
             "Ritual_Soul_Lantern"
     );
-    //It works without map since the items and the blocks are the same; players can't place it, but it is one
-    /*public static final Map<String, String> ritualObjectsWorldToItem = Map.of(
-            "ritual_skull_world", "ritual_skull",
-            "ritual_lantern_world", "ritual_lantern",
-            "ritual_effigy_world", "ritual_effigy"
-    );*/
+
+    public static final List<Vector3i> ritualCircleSpawnSpots = List.of(
+            new Vector3i(36, 109, -7),
+            new Vector3i(32, 109, -11),
+            new Vector3i(28, 109, -7),
+            new Vector3i(32, 109, -3)
+    );
+
+    public static final List<Vector3i> ritualCircleSpawnSpotsRot = List.of(
+            new Vector3i(0, 90, 0),
+            new Vector3i(0, 180, 0),
+            new Vector3i(0, -90, 0),
+            new Vector3i(0, 0, 0)
+    );
+
+    public static final List<Transform> gameSailorSpawn = List.of(
+            new Transform(46, 134, 18), //church cliff
+            new Transform(-110, 120, 111), //lighthouse path
+            new Transform(-124, 119, 75), //lighthouse end island
+            new Transform(-296, 102, -254), //lone island
+            new Transform(-37, 105, -207), //windmill path north
+            new Transform(129, 104, -184), //windmill island east
+            new Transform(-68, 126, -118), //center windmill hill
+            new Transform(-248, 103, -66), //center middle dock
+            new Transform(-97, 104, -217) //library entrance
+    );
+
+    public static final Transform ritualMonsterSpawn = new Transform(-36, 130, 189);
+    public static final Rotation3f ritualMonsterSpawnRot = new Rotation3f(0, 90, 0);
 
     //Pedestal system constants
     public static final String ritualPedestalID = "Ritual_Pedestal";
 
     //Game time limit in seconds
-    public static final Integer gameTimeLimit = 600;
+    public static final Integer gameTimeLimit = 100;
 
     //Celebration time in seconds
     public static final Integer celebrationTime = 20;

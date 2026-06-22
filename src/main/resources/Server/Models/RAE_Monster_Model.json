@@ -1,0 +1,166 @@
+{
+  "Parent": "Skeleton",
+  "Model": "NPC/Beast/Monster/Models/TheSailor.blockymodel",
+  "Texture": "NPC/Beast/Monster/Models/Model_Textures/TheSailorTexture.png",
+  "EyeHeight": 2.2,
+  "CrouchOffset": -0.5,
+  "HitBox": {
+    "Max": {
+      "X": 0.7,
+      "Y": 2.6,
+      "Z": 0.7
+    },
+    "Min": {
+      "X": -0.7,
+      "Y": 0,
+      "Z": -0.7
+    }
+  },
+  "DetailBoxes": {},
+  "Camera": {
+    "Pitch": {
+      "AngleRange": {
+        "Max": 30,
+        "Min": -45
+      },
+      "TargetNodes": [
+        "Head"
+      ]
+    },
+    "Yaw": {
+      "AngleRange": {
+        "Max": 30,
+        "Min": -30
+      },
+      "TargetNodes": [
+        "Head"
+      ]
+    }
+  },
+  "AnimationSets": {
+    "Idle": {
+      "Animations": [
+        {
+          "Animation": "NPC/Beast/Monster/Animations/TheSailorIdle.blockyanim",
+          "Looping": true,
+          "Speed": 0.5,
+          "SoundEventId": "RAE_Monster_Sound_Idle"
+        }
+      ]
+    },
+    "Walk": {
+      "Animations": [
+        {
+          "Animation": "NPC/Beast/Monster/Animations/TheSailorWalk.blockyanim",
+          "Looping": true,
+          "Speed": 1,
+          "SoundEventId": "RAE_Monster_Sound_Walk"
+        }
+      ]
+    },
+    "Run": {
+      "Animations": [
+        {
+          "Animation": "NPC/Beast/Monster/Animations/TheSailorChase.blockyanim",
+          "Speed": 1
+        }
+      ]
+    },
+    "Jump": {
+      "Animations": [
+        {
+          "Animation": "NPC/Beast/Monster/Animations/Jump.blockyanim",
+          "BlendingDuration": 0.1,
+          "Looping": false,
+          "Speed": 1
+        }
+      ]
+    },
+    "JumpWalk": {
+      "Animations": [
+        {
+          "Animation": "NPC/Beast/Monster/Animations/Jump_Far.blockyanim",
+          "BlendingDuration": 0.1,
+          "Looping": false,
+          "Speed": 0.8
+        }
+      ]
+    },
+    "JumpRun": {
+      "Animations": [
+        {
+          "Animation": "NPC/Beast/Monster/Animations/Jump_Far.blockyanim",
+          "BlendingDuration": 0.1,
+          "Looping": false,
+          "Speed": 0.8
+        }
+      ]
+    },
+    "Fall": {
+      "Animations": [
+        {
+          "Animation": "NPC/Beast/Monster/Animations/Fall.blockyanim",
+          "BlendingDuration": 0.4
+        }
+      ]
+    },
+    "Alerted": {
+      "Animations": [
+        {
+          "Animation": "NPC/Beast/Monster/Animations/Alerted.blockyanim",
+          "Looping": false,
+          "SoundEventId": "RAE_Monster_Sound_Alert"
+        }
+      ]
+    },
+    "Hurt": {
+      "Animations": [
+        {
+          "Animation": "NPC/Beast/Monster/Animations/Hurt.blockyanim",
+          "BlendingDuration": 0.1,
+          "Looping": false
+        }
+      ]
+    },
+    "Death": {
+      "Animations": [
+        {
+          "Animation": "NPC/Beast/Monster/Animations/TheSailorDeath.blockyanim",
+          "Looping": false
+        }
+      ]
+    },
+    "Spawn": {
+      "Animations": [
+        {
+          "Animation": "NPC/Beast/Monster/Animations/Spawn.blockyanim",
+          "BlendingDuration": 0,
+          "Looping": false
+        }
+      ]
+    },
+    "IdlePassive": {
+      "Animations": [
+        {
+          "Animation": "NPC/Beast/Monster/Animations/TheSailorDefaultPose.blockyanim",
+          "BlendingDuration": 0.4,
+          "Looping": false
+        }
+      ],
+      "NextAnimationDelay": {
+        "Max": 10,
+        "Min": 2
+      }
+    },
+    "Search": {
+      "Animations": [
+        {
+          "Animation": "NPC/Beast/Monster/Animations/TheSailorIdleSearchHigh.blockyanim"
+        }
+      ]
+    }
+  },
+  "MinScale": 1.0,
+  "MaxScale": 1.5,
+  "Icon": "Icons/ModelsGenerated/RAE_Monster_Model.png"
+}

@@ -1,0 +1,137 @@
+{
+  "Particle": {
+    "Texture": "Particles/Textures/Basic/Star2.png",
+    "Animation": {
+      "0": {
+        "Scale": {
+          "X": {
+            "Min": 0.1,
+            "Max": 0.1
+          },
+          "Y": {
+            "Min": 0.1,
+            "Max": 0.1
+          }
+        }
+      },
+      "20": {
+        "Scale": {
+          "X": {
+            "Min": 1,
+            "Max": 1
+          },
+          "Y": {
+            "Min": 1,
+            "Max": 1
+          }
+        }
+      },
+      "80": {
+        "Scale": {
+          "X": {
+            "Min": 1,
+            "Max": 1
+          },
+          "Y": {
+            "Max": 1,
+            "Min": 1
+          }
+        }
+      },
+      "100": {
+        "Scale": {
+          "X": {
+            "Min": 0.1,
+            "Max": 0.1
+          },
+          "Y": {
+            "Min": 0.1,
+            "Max": 0.1
+          }
+        }
+      }
+    },
+    "InitialAnimationFrame": {
+      "Scale": {
+        "X": {
+          "Min": 0.05,
+          "Max": 0.05
+        },
+        "Y": {
+          "Min": 0.2,
+          "Max": 0.2
+        }
+      }
+    },
+    "ScaleRatioConstraint": "None"
+  },
+  "MaxConcurrentParticles": 400,
+  "TrailSpawnerPositionMultiplier": 1,
+  "TrailSpawnerRotationMultiplier": 1,
+  "RenderMode": "Erosion",
+  "LinearFiltering": true,
+  "ParticleRotationInfluence": "BillboardVelocity",
+  "Attractors": [
+    {
+      "Position": {
+        "X": 3,
+        "Z": 3,
+        "Y": 3
+      },
+      "RadialAcceleration": -5,
+      "RadialAxis": {
+        "Y": 1
+      },
+      "RadialTangentImpulse": 4,
+      "LinearImpulse": {
+        "Y": 1
+      }
+    },
+    {
+      "Radius": 3,
+      "Position": {
+        "X": 3,
+        "Y": 4.5,
+        "Z": 3
+      },
+      "RadialImpulse": -4
+    }
+  ],
+  "ParticleLifeSpan": {
+    "Min": 2,
+    "Max": 2
+  },
+  "InitialVelocity": {
+    "Pitch": {
+      "Min": 90,
+      "Max": 90
+    },
+    "Speed": {
+      "Min": 2,
+      "Max": 2
+    }
+  },
+  "SpawnRate": {
+    "Min": 2,
+    "Max": 2
+  },
+  "SpawnBurst": true,
+  "WaveDelay": {
+    "Min": 0.01,
+    "Max": 0.01
+  },
+  "VelocityStretchMultiplier": 6,
+  "Shape": "Cube",
+  "EmitOffset": {
+    "X": {
+      "Max": 0.1
+    },
+    "Y": {
+      "Max": 0.1
+    },
+    "Z": {
+      "Max": 0.1
+    }
+  },
+  "LifeSpan": 3
+}

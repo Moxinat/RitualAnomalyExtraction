@@ -1,0 +1,12 @@
+{
+  "AnimationDuration": 2,
+  "EffectDirection": "TopDown",
+  "HighlightThickness": 4,
+  "HighlightColor": "#ff0000",
+  "UseBloomOnHighlight": true,
+  "SwitchTo": "Disappear",
+  "NoiseScale": {
+    "X": 4,
+    "Y": 16
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "Particle": {
+    "Texture": "Particles/Textures/Basic/Shape4.png",
+    "Animation": {
+      "50": {
+        "Color": "#6f03ad"
+      },
+      "100": {
+        "Scale": {
+          "X": {
+            "Min": 0.01,
+            "Max": 0.01
+          },
+          "Y": {
+            "Min": 64,
+            "Max": 64
+          }
+        },
+        "Color": "#000000"
+      }
+    },
+    "InitialAnimationFrame": {
+      "Scale": {
+        "X": {
+          "Min": 0.4,
+          "Max": 0.4
+        },
+        "Y": {
+          "Min": 0.2,
+          "Max": 0.2
+        }
+      },
+      "Color": "#6f03ad"
+    },
+    "ScaleRatioConstraint": "None",
+    "UVOption": "RandomFlipUV"
+  },
+  "MaxConcurrentParticles": 600,
+  "TrailSpawnerPositionMultiplier": 1,
+  "TrailSpawnerRotationMultiplier": 1,
+  "RenderMode": "Erosion",
+  "LinearFiltering": true,
+  "ParticleRotationInfluence": "BillboardY",
+  "ParticleLifeSpan": {
+    "Min": 1,
+    "Max": 1
+  },
+  "SpawnRate": {
+    "Min": 80,
+    "Max": 80
+  },
+  "LifeSpan": 1,
+  "SpawnBurst": true,
+  "UVMotion": {
+    "Texture": "Particles/Textures/UVMotion/FlowMapSmoke.png",
+    "Strength": 8,
+    "Scale": 1,
+    "AddRandomUVOffset": true
+  },
+  "EmitOffset": {
+    "X": {
+      "Max": 2
+    },
+    "Z": {
+      "Max": 2
+    },
+    "Y": {
+      "Max": 4
+    }
+  }
+}

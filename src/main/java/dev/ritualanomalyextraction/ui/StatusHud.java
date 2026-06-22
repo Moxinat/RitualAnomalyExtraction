@@ -29,15 +29,19 @@ public class StatusHud extends CustomUIHud {
             int seconds = gameTime % 60;
             int minutes = gameTime / 60;
             uiCommandBuilder.set("#TextField.Text", String.format("%d:%02d", minutes, seconds));
-            uiCommandBuilder.set("#TextField.Style.TextColor", "#ffffff");
+            if (minutes <= 0) {
+                uiCommandBuilder.set("#TextField.Style.TextColor", "#ff3333");
+            } else {
+                uiCommandBuilder.set("#TextField.Style.TextColor", "#ffffff");
+            }
         }
         if (getKey().equals("endFail")) {
-            uiCommandBuilder.set("#TextField.Text", "You failed!");
+            uiCommandBuilder.set("#TextField.Text", "The ritual is broken... now are you.");
             uiCommandBuilder.set("#TextField.Style.TextColor", "#ff3333");
         }
         if (getKey().equals("endSuccess")) {
-            uiCommandBuilder.set("#TextField.Text", "You won!");
-            uiCommandBuilder.set("#TextField.Style.TextColor", "##33ff66");
+            uiCommandBuilder.set("#TextField.Text", "The ritual has been complete!");
+            uiCommandBuilder.set("#TextField.Style.TextColor", "#33ff66");
         }
     }
 

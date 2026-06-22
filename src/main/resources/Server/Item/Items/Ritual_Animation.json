@@ -1,0 +1,25 @@
+{
+  "Icon": "Icons/Items/EditorTools/Anchor.png",
+  "PlayerAnimationsId": "Block",
+  "BlockType": {
+    "Textures": [
+      {
+        "All": "Blocks/Miscellaneous/Editor_Empty_Cube_Texture.png"
+      }
+    ],
+    "RequiresAlphaBlending": true,
+    "Support": {
+      "All": [
+        {
+          "Support": "Ignored"
+        }
+      ]
+    },
+    "Particles": [
+      {
+        "SystemId": "Ritual_Animation_Main",
+        "Color": "#ff0000"
+      }
+    ]
+  }
+}

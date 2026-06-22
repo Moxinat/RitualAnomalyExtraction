@@ -7,6 +7,7 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.math.vector.Transform;
+import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.modules.entity.component.HeadRotation;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
@@ -14,6 +15,7 @@ import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.Config;
+import dev.ritualanomalyextraction.Constants;
 import dev.ritualanomalyextraction.RitualAnomalyPlugin;
 import dev.ritualanomalyextraction.RitualGameManager;
 import org.joml.Vector3d;
@@ -75,6 +77,9 @@ public class InstanceUtil {
         if (Universe.get().getWorld(DEFAULT_MINIGAME_NAME) == null) {
             World fromWorld = Universe.get().getDefaultWorld();
             TransformComponent transformComponent = new TransformComponent(new Vector3d(0,200,0), new Rotation3f(0,180,0));
+            if (transformComponent == null) {
+                return;
+            }
             if (!generateInstance(fromWorld,DEFAULT_MINIGAME_NAME, DEFAULT_MINIGAME_NAME, transformComponent.getTransform())) {
                 LOGGER.atSevere().log("Failed creating the Minigame for Ritual Anomaly Extraction!");
             } else {
@@ -91,15 +96,6 @@ public class InstanceUtil {
             LOGGER.atSevere().log("Failed to teleport player to world! (Cause: Invalid Ref)");
         }
 
-        //for correct teleport history
-        String worldType;
-        String[] files = toWorld.getSavePath().toFile().list();
-        if(files != null && Arrays.stream(files).toList().contains("instance.bson")){
-            worldType = "Instance";
-        }else{
-            worldType = "World";
-        }
-
             Store<EntityStore> store = playerRef.getStore();
             World worldFrom = store.getExternalData().getWorld();
 
@@ -109,17 +105,15 @@ public class InstanceUtil {
 
                     TransformComponent transformComponent = store.getComponent(playerRef, TransformComponent.getComponentType());
                     HeadRotation headRotationComponent = store.getComponent(playerRef, HeadRotation.getComponentType());
-
-                    //not needed, since i've set the world spawn point- noc
-                    /*if (toWorld.getName().equals("RAE-Minigame")) {
+                    if (toWorld.getName().equals("RAE-Minigame")) {
                         transformComponent = new TransformComponent(Constants.controlRoomPos.getPosition(), Constants.controlRoomRot);
                         headRotationComponent = new HeadRotation(Constants.controlRoomRot);
                         spawnPoint = new Transform(transformComponent.getPosition(), headRotationComponent.getRotation());
-                    }*/
+                    }
 
                     if (transformComponent != null && headRotationComponent != null) {
                         TeleportHistory teleportHistoryComponent = store.ensureAndGetComponent(playerRef, TeleportHistory.getComponentType());
-                        teleportHistoryComponent.append(worldFrom, new Vector3d(transformComponent.getPosition()), headRotationComponent.getRotation().clone(),worldType +" '" + toWorld.getName() + "'");
+                        teleportHistoryComponent.append(worldFrom, new Vector3d(transformComponent.getPosition()), headRotationComponent.getRotation().clone(),"Instance '" + toWorld.getName() + "'");
                     }
 
                     Teleport teleportComponent = Teleport.createForPlayer(toWorld, spawnPoint);
