@@ -1,6 +1,8 @@
 package dev.ritualanomalyextraction;
 
+import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.logger.HytaleLogger;
+import com.hypixel.hytale.math.vector.Transform;
 import com.hypixel.hytale.protocol.SoundCategory;
 import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.Message;
@@ -10,11 +12,15 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.SoundUtil;
 import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.universe.world.npc.INonPlayerCharacter;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import com.hypixel.hytale.server.npc.NPCPlugin;
 import dev.ritualanomalyextraction.systems.RitualAnimationManager;
 import dev.ritualanomalyextraction.systems.RitualObjectSpawnManager;
 import dev.ritualanomalyextraction.systems.RitualProgressTracker;
 import dev.ritualanomalyextraction.ui.StatusHud;
 import dev.ritualanomalyextraction.utils.InstanceUtil;
+import it.unimi.dsi.fastutil.Pair;
 
 import java.util.concurrent.*;
 import java.util.logging.Level;
@@ -52,6 +58,8 @@ public class RitualGameManager {
             LOGGER.at(Level.WARNING).log("Control room world is null");
             return;
         }
+
+        spawnSailors();
 
         Constants.controlRoomWorld.execute( () -> {
             for (PlayerRef playerRef : Universe.get().getPlayers()) {
@@ -126,6 +134,15 @@ public class RitualGameManager {
                 assert player != null;
                 player.getHudManager().resetHud(playerRef);
                 player.getHudManager().addCustomHud(playerRef, new StatusHud(playerRef,"spawn", getGameManager()));
+            }
+        });
+    }
+
+    public void spawnSailors() {
+        Constants.controlRoomWorld.execute( () -> {
+            for (Transform transform : Constants.gameSailorSpawn) {
+                Pair<Ref<EntityStore>, INonPlayerCharacter> monster = NPCPlugin.get().spawnNPC(Constants.controlRoomWorld.getEntityStore().getStore(), "RAE_Monster_NPC_Role", null, transform.getPosition(), Constants.ritualMonsterSpawnRot);
+                LOGGER.atInfo().log("Spawned Sailor at %s", transform.getPosition());
             }
         });
     }

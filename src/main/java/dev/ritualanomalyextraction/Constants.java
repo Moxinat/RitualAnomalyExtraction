@@ -85,7 +85,7 @@ public class Constants {
     public static final String ritualPedestalID = "Ritual_Pedestal";
 
     //Game time limit in seconds
-    public static final Integer gameTimeLimit = 600;
+    public static final Integer gameTimeLimit = 100;
 
     //Celebration time in seconds
     public static final Integer celebrationTime = 20;
