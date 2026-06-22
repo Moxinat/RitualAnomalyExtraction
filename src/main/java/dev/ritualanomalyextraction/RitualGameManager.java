@@ -96,12 +96,6 @@ public class RitualGameManager {
             Constants.lobbyWorld.execute(this::onRitualCelebrationComplete);
         }, Constants.celebrationTime, TimeUnit.SECONDS);
 
-        Constants.controlRoomWorld.execute( () -> {
-            for (PlayerRef playerRef : Universe.get().getPlayers()) {
-                Player player = playerRef.getReference().getStore().getComponent(playerRef.getReference(), Player.getComponentType());
-                player.getHudManager().addCustomHud(playerRef, new StatusHud(playerRef,"endSuccess", getGameManager()));
-            }
-        });
     }
 
     public void onRitualCelebrationComplete() {
@@ -113,7 +107,26 @@ public class RitualGameManager {
 
         LOGGER.at(Level.INFO).log("Ritual complete. Game state changed to RITUAL_COMPLETE.");
 
-        reset();
+        Constants.controlRoomWorld.execute(() -> {
+            for (PlayerRef playerRef : Universe.get().getPlayers()) {
+                Player player = playerRef.getReference()
+                        .getStore()
+                        .getComponent(playerRef.getReference(), Player.getComponentType());
+
+                if (player == null) {
+                    continue;
+                }
+
+                player.getHudManager().addCustomHud(
+                        playerRef,
+                        new StatusHud(playerRef, "endSuccess", getGameManager())
+                );
+            }
+        });
+
+        HytaleServer.SCHEDULED_EXECUTOR.schedule(() -> {
+            reset();
+        }, 8, TimeUnit.SECONDS);
         // TODO: Show final win message / end screen.
     }
 
@@ -205,6 +218,11 @@ public class RitualGameManager {
         Runnable countdownTask = new Runnable() {
             @Override
             public void run() {
+
+                if (state != GameState.CONTROL_ROOM) {
+                    scheduler.shutdown();
+                    return;
+                }
                 if (gameTimeLimit >= 0) {
                     Constants.controlRoomWorld.execute( () -> {
                         for (PlayerRef playerRef : Constants.controlRoomWorld.getPlayerRefs()) {

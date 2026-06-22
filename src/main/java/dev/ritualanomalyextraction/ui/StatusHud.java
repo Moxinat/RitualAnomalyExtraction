@@ -20,7 +20,27 @@ public class StatusHud extends CustomUIHud {
 
     @Override
     protected void build(@Nonnull UICommandBuilder uiCommandBuilder) {
+
+        if (getKey().equals("endSuccess")) {
+            uiCommandBuilder.append("Hud/endScreenUI.ui");
+            uiCommandBuilder.set("#Title.Text", "RITUAL COMPLETE");
+            uiCommandBuilder.set("#Title.Style.TextColor", "#33ff66");
+            uiCommandBuilder.set("#Subtitle.Text", "The last offering has been accepted.");
+            uiCommandBuilder.set("#Hint.Text", "You survived the ritual.");
+            return;
+        }
+
+        if (getKey().equals("endFail")) {
+            uiCommandBuilder.append("Hud/endScreenUI.ui");
+            uiCommandBuilder.set("#Title.Text", "RITUAL FAILED");
+            uiCommandBuilder.set("#Title.Style.TextColor", "#ff3333");
+            uiCommandBuilder.set("#Subtitle.Text", "The deep has claimed the offering.");
+            uiCommandBuilder.set("#Hint.Text", "No light remains beyond the mist.");
+            return;
+        }
+
         uiCommandBuilder.append("Hud/statusUI.ui");
+
         if (getKey().equals("spawn")) {
             uiCommandBuilder.set("#TextField.Text", "To start the game type /start");
             uiCommandBuilder.set("#TextField.Style.TextColor", "#ffffff");
