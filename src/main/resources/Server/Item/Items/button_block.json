@@ -58,6 +58,7 @@
       "Button_Block"
     ],
     "BlockBreakingDecalId": "Breaking_Decals_Wood",
+    "InteractionHint": "server.interactionHints.start_button",
     "Interactions": {
       "Use": {
         "Interactions": [

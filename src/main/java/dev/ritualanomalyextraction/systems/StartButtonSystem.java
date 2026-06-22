@@ -23,6 +23,8 @@ public class StartButtonSystem extends EntityEventSystem<EntityStore, UseBlockEv
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
     private static final String START_BUTTON_BLOCK_ID = "button_block";
+    private static final String START_BUTTON_PRESSED_ID = "*button_block_state_definitions_pressed";
+    private static final String START_BUTTON_PRESSED_ALT_ID = "*button_block_state_definitions_pressedalt";
 
     private final RitualGameManager gameManager;
 
@@ -59,7 +61,7 @@ public class StartButtonSystem extends EntityEventSystem<EntityStore, UseBlockEv
 
         String blockId = normalizeId(event.getBlockType().getId());
 
-        if (!START_BUTTON_BLOCK_ID.equals(blockId)) {
+        if (!(START_BUTTON_BLOCK_ID.equals(blockId) || START_BUTTON_PRESSED_ID.equals(blockId) || START_BUTTON_PRESSED_ALT_ID.equals(blockId))) {
             return;
         }
 

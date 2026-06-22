@@ -81,15 +81,15 @@ public final class RitualObjectSpawnManager {
         return chunk.setBlock(pos.x, pos.y, pos.z, blockId);
     }
 
-    private static boolean clearBlock(World world, Vector3i pos) {
+    private static void clearBlock(World world, Vector3i pos) {
         WorldChunk chunk = world.getChunk(ChunkUtil.indexChunkFromBlock(pos.x, pos.z));
 
         if (chunk == null) {
             LOGGER.at(Level.WARNING).log("Cannot clear block at %s: chunk is null.", pos);
-            return false;
+            return;
         }
 
-        return chunk.setBlock(pos.x, pos.y, pos.z, BlockType.EMPTY);
+        world.execute(()->chunk.setBlock(pos.x, pos.y, pos.z, BlockType.EMPTY));
     }
 
     public static List<Vector3i> getSpawnedPositions() {

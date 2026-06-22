@@ -12,13 +12,14 @@ import java.util.Map;
 public class Constants {
 
     //Initial spawn constants
-    public static World lobbyWorld = Universe.get().getWorld("RAE-Lobby");
-    public static final Transform lobbyPos = new Transform(0.5, 80, 0.5);
-    public static final Rotation3f lobbyRot = new Rotation3f(0, 180, 0);
+    public static final World lobbyWorld = Universe.get().getWorld("RAE-Lobby");
+
+    //not needed, since i've set the world spawn point - noc
+    /*public static final Transform lobbyPos = new Transform(0.0, 80, 0.0);
+    public static final Rotation3f lobbyRot = new Rotation3f(0, 0, 0);*/
 
     //Control room constants
-    public static final String miniGameWorldName = "RAE-Minigame";
-    public static World controlRoomWorld = Universe.get().getWorld("RAE-Minigame");
+    public static final World controlRoomWorld = Universe.get().getWorld("RAE-Minigame");
     public static final Transform controlRoomPos = new Transform(32.5, 108.5, -7.5);
     public static final Rotation3f controlRoomRot = new Rotation3f(0, -90, 0);
 
@@ -84,8 +85,8 @@ public class Constants {
     public static final String ritualPedestalID = "Ritual_Pedestal";
 
     //Game time limit in seconds
-    public static final Integer gameTimeLimit = 800;
+    public static final Integer gameTimeLimit = 600;
 
     //Celebration time in seconds
-    public static final Integer celebrationTime = 10;
+    public static final Integer celebrationTime = 20;
 }

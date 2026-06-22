@@ -3,13 +3,13 @@
   "Texture": "Items/RitualItems/soul_lantern.png",
   "HitBox": {
     "Max": {
-      "X": 0.8,
-      "Y": 1.2,
-      "Z": 0.8
+      "X": 0.2,
+      "Y": 0.6,
+      "Z": 0.2
     },
     "Min": {
-      "X": 0.2,
-      "Z": 0.2
+      "X": -0.2,
+      "Z": -0.2
     }
   },
   "AnimationSets": {

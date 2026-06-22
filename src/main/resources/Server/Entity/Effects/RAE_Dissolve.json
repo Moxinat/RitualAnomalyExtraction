@@ -1,5 +1,14 @@
 {
   "ApplicationEffects": {
-    "ModelVFXId": "Dissolve"
+    "ModelVFXId": "Dissolve",
+    "Particles": [
+      {
+        "SystemId": "RAE_Dissolve",
+        "Color": "#ff0000",
+        "PositionOffset": {
+          "Y": 0.2
+        }
+      }
+    ]
   }
 }
