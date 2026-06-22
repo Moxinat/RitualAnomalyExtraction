@@ -93,6 +93,9 @@ public class RitualGameManager {
         LOGGER.at(Level.INFO).log("Ritual started. Game state changed to RITUAL_ACTIVE.");
 
         RitualAnimationManager.play();
+
+//        Pair<Ref<EntityStore>, INonPlayerCharacter> monster = NPCPlugin.get().spawnNPC(Universe.get().getWorld(Constants.miniGameWorldName).getEntityStore().getStore(), "RAE_Monster_NPC_Role", null, Constants.controlRoomPos.getPosition(), Constants.ritualMonsterSpawnRot);
+
         HytaleServer.SCHEDULED_EXECUTOR.schedule(() -> {
             assert Constants.lobbyWorld != null;
             Constants.lobbyWorld.execute(this::onRitualCelebrationComplete);
@@ -247,6 +250,7 @@ public class RitualGameManager {
                             assert player != null;
                             player.getHudManager().resetHud(playerRef);
                             player.getHudManager().addCustomHud(playerRef, new StatusHud(playerRef,"endFail", getGameManager()));
+                            reset();
                         }
                     });
                     scheduler.shutdown();
