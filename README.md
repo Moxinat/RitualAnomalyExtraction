@@ -1,11 +1,11 @@
-# Ritual Extraction
+# Ritual at Blacktide Isle
 
 ### Hytale ModJam Minigame Submission
 
 ## Description
 
-**Ritual Extraction** is a short horror minigame set in a cursed fishing village beneath a fading lighthouse.
-You start in a control room and enter the village to search for ritual objects while avoiding a hostile deep-sea creature. Bring the objects back one at a time, place them on the ritual pedestal, and complete the ritual before time runs out.
+**Ritual at Blacktide Isle** is a short horror minigame set in a cursed fishing village on an island.
+You start in basement of a church and enter the village to search for ritual objects while avoiding a hostile deep-sea creature. Bring the objects back one at a time, place them on the ritual pedestal, and complete the ritual before time runs out.
 
 ## How to Play
 
