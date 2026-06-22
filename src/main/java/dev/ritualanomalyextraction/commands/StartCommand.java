@@ -3,7 +3,6 @@ package dev.ritualanomalyextraction.commands;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.Message;
-import com.hypixel.hytale.server.core.command.system.AbstractCommand;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractPlayerCommand;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
@@ -12,41 +11,30 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.ritualanomalyextraction.RitualGameManager;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.concurrent.CompletableFuture;
 
-public class StartCommand extends AbstractCommand {
+public class StartCommand extends AbstractPlayerCommand {
 
     RitualGameManager gameManager;
 
     public StartCommand(String name, String description, RitualGameManager gameManager) {
         super(name, description);
-        setAllowsExtraArguments(false);
         this.gameManager = gameManager;
+        this.setPermissionGroups("hytale:Adventurer");
     }
 
-    @Nullable
+
+
     @Override
-    protected CompletableFuture<Void> execute(@Nonnull CommandContext context) {
-
-        if (!context.isPlayer()) {
-            context.sender().sendMessage(Message.raw("Must be a player to execute this command!"));
-            return CompletableFuture.completedFuture(null);
-        }
-
+    protected void execute(@NonNullDecl CommandContext context, @NonNullDecl Store<EntityStore> store, @NonNullDecl Ref<EntityStore> ref, @NonNullDecl PlayerRef playerRef, @NonNullDecl World world) {
         if (gameManager.getState() == RitualGameManager.GameState.RESETTING) {
             context.sendMessage(Message.raw("You cannot do that right now. The map is resetting!"));
-            return CompletableFuture.completedFuture(null);
+            return;
         }
 
         if (gameManager.getState() == RitualGameManager.GameState.CONTROL_ROOM) {
-            return CompletableFuture.completedFuture(null);
+            return;
         }
 
         gameManager.onPlayerReady();
-
-        return CompletableFuture.completedFuture(null);
     }
-
 }
