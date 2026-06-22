@@ -1,5 +1,6 @@
 package dev.ritualanomalyextraction.listeners;
 
+import com.hypixel.hytale.component.Holder;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.entity.entities.Player;

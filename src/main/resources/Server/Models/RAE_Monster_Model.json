@@ -1,5 +1,5 @@
 {
-  "Parent": "Player",
+  "Parent": "Skeleton",
   "Model": "NPC/Beast/Monster/Models/TheSailor.blockymodel",
   "Texture": "NPC/Beast/Monster/Models/Model_Textures/TheSailorTexture.png",
   "EyeHeight": 2.2,
@@ -160,7 +160,7 @@
       ]
     }
   },
-  "MinScale": 1.5,
+  "MinScale": 1.0,
   "MaxScale": 1.5,
   "Icon": "Icons/ModelsGenerated/RAE_Monster_Model.png"
 }
