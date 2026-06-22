@@ -62,7 +62,6 @@ public class RitualGameManager {
                 playerRef.sendMessage(Message.raw("Ritual Anomaly Extraction started."));
                 playerRef.sendMessage(Message.raw("Find the ritual objects and place them on the pedestals."));
             }
-            NPCPlugin.get().spawnNPC(Constants.controlRoomWorld.getEntityStore().getStore(), "RAE_Monster_NPC_Role", null, new Transform(45, 133, 12).getPosition(), Constants.ritualMonsterSpawnRot);
         });
 
         if (Constants.ritualWorld == null) {
