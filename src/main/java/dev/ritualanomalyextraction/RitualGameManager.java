@@ -129,7 +129,26 @@ public class RitualGameManager {
 
         LOGGER.at(Level.INFO).log("Ritual complete. Game state changed to RITUAL_COMPLETE.");
 
-        reset();
+        Constants.controlRoomWorld.execute(() -> {
+            for (PlayerRef playerRef : Universe.get().getPlayers()) {
+                Player player = playerRef.getReference()
+                        .getStore()
+                        .getComponent(playerRef.getReference(), Player.getComponentType());
+
+                if (player == null) {
+                    continue;
+                }
+
+                player.getHudManager().addCustomHud(
+                        playerRef,
+                        new StatusHud(playerRef, "endSuccess", getGameManager())
+                );
+            }
+        });
+
+        HytaleServer.SCHEDULED_EXECUTOR.schedule(() -> {
+            reset();
+        }, 8, TimeUnit.SECONDS);
         // TODO: Show final win message / end screen.
     }
 
@@ -137,7 +156,6 @@ public class RitualGameManager {
         state = GameState.RESETTING;
         gameStartMs = 0;
         gameTimeLimit = Constants.gameTimeLimit;
-        hasBeenReset = true;
 
         LOGGER.at(Level.INFO).log("Game manager reset.");
 
@@ -244,7 +262,7 @@ public class RitualGameManager {
                             Player player = playerRef.getReference().getStore().getComponent(playerRef.getReference(), Player.getComponentType());
                             assert player != null;
                             player.getHudManager().resetHud(playerRef);
-                            player.getHudManager().addCustomHud(playerRef, new StatusHud(playerRef,"gameTimer", getGameManager()));
+                            player.getHudManager().addCustomHud(playerRef, new StatusHud(playerRef, "gameTimer", getGameManager()));
                         }
                     });
                     if (gameTimeLimit == 60) {
@@ -260,7 +278,6 @@ public class RitualGameManager {
                             assert player != null;
                             player.getHudManager().resetHud(playerRef);
                             player.getHudManager().addCustomHud(playerRef, new StatusHud(playerRef,"endFail", getGameManager()));
-                            reset();
                         }
                     });
                     scheduler.shutdown();

@@ -1,0 +1,11 @@
+{
+  "Layers": [
+    {
+      "Files": [
+        "Sounds/dragon-studio-chimes-of-death.ogg"
+      ]
+    }
+  ],
+  "AudioCategory": "AudioCat_SFX",
+  "Volume": 5
+}

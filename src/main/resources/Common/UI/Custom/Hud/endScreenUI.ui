@@ -1,0 +1,29 @@
+Group {
+  Anchor: (Full: 0);
+  Background: #000000dd;
+  LayoutMode: MiddleCenter;
+
+  Group {
+    Anchor: (Width: 900, Height: 300);
+    LayoutMode: Top;
+    Padding: (Full: 20);
+
+    Label #Title {
+      Anchor: (Left: 0, Right: 0, Height: 90);
+      Text: "RITUAL COMPLETE";
+      Style: (FontSize: 56, HorizontalAlignment: Center, TextColor: #33ff66);
+    }
+
+    Label #Subtitle {
+      Anchor: (Left: 0, Right: 0, Height: 60);
+      Text: "The offering has been accepted.";
+      Style: (FontSize: 26, HorizontalAlignment: Center, TextColor: #ffffff);
+    }
+
+    Label #Hint {
+      Anchor: (Left: 0, Right: 0, Height: 40);
+      Text: "You survived the night.";
+      Style: (FontSize: 20, HorizontalAlignment: Center, TextColor: #cccccc);
+    }
+  }
+}

@@ -28,8 +28,111 @@ import java.util.logging.Level;
 
 public class RitualAnimationManager {
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
+
     private static final Vector3i controllerBlockPos = new Vector3i(32,114,-8);
     private static final String controllerBlockID = "Ritual_Animation";
+
+    private static final String bloodyGoldID = "Rock_Gold_Brick_Ornate_Glowing_Bloody";
+    private static final String glowGoldID = "Rock_Gold_Brick_Ornate_Glowing";
+    private final static List<Vector3i> goldPos = List.of(
+            //SouthEast
+            new Vector3i(39,114,-4),
+            new Vector3i(39,114,-3),
+            new Vector3i(38,114,-2),
+            new Vector3i(37,114,-1),
+            new Vector3i(36,114,-1),
+
+            new Vector3i(39,109,-4),
+            new Vector3i(39,109,-3),
+            new Vector3i(38,109,-2),
+            new Vector3i(37,109,-1),
+            new Vector3i(36,109,-1),
+
+            new Vector3i(39,113,-4),
+            new Vector3i(39,112,-4),
+            new Vector3i(39,111,-4),
+            new Vector3i(39,110,-4),
+
+            new Vector3i(36,113,-1),
+            new Vector3i(36,112,-1),
+            new Vector3i(36,111,-1),
+            new Vector3i(36,110,-1),
+
+            //NorthEast
+            new Vector3i(39,114,-12),
+            new Vector3i(39,114,-13),
+            new Vector3i(38,114,-14),
+            new Vector3i(37,114,-15),
+            new Vector3i(36,114,-15),
+
+            new Vector3i(39,109,-12),
+            new Vector3i(39,109,-13),
+            new Vector3i(38,109,-14),
+            new Vector3i(37,109,-15),
+            new Vector3i(36,109,-15),
+
+            new Vector3i(39,113,-12),
+            new Vector3i(39,112,-12),
+            new Vector3i(39,111,-12),
+            new Vector3i(39,110,-12),
+
+            new Vector3i(36,113,-15),
+            new Vector3i(36,112,-15),
+            new Vector3i(36,111,-15),
+            new Vector3i(36,110,-15),
+
+            //SouthWest
+            new Vector3i(25,114,-4),
+            new Vector3i(25,114,-3),
+            new Vector3i(26,114,-2),
+            new Vector3i(27,114,-1),
+            new Vector3i(28,114,-1),
+
+            new Vector3i(25,109,-4),
+            new Vector3i(25,109,-3),
+            new Vector3i(26,109,-2),
+            new Vector3i(27,109,-1),
+            new Vector3i(28,109,-1),
+
+            new Vector3i(25,113,-4),
+            new Vector3i(25,112,-4),
+            new Vector3i(25,111,-4),
+            new Vector3i(25,110,-4),
+
+            new Vector3i(28,113,-1),
+            new Vector3i(28,112,-1),
+            new Vector3i(28,111,-1),
+            new Vector3i(28,110,-1),
+
+            //NorthWest
+            new Vector3i(25,114,-12),
+            new Vector3i(25,114,-13),
+            new Vector3i(26,114,-14),
+            new Vector3i(27,114,-15),
+            new Vector3i(28,114,-15),
+
+            new Vector3i(25,109,-12),
+            new Vector3i(25,109,-13),
+            new Vector3i(26,109,-14),
+            new Vector3i(27,109,-15),
+            new Vector3i(28,109,-15),
+
+            new Vector3i(25,113,-12),
+            new Vector3i(25,112,-12),
+            new Vector3i(25,111,-12),
+            new Vector3i(25,110,-12),
+
+            new Vector3i(28,113,-15),
+            new Vector3i(28,112,-15),
+            new Vector3i(28,111,-15),
+            new Vector3i(28,110,-15),
+
+            //Ground
+            new Vector3i(36,108,-8),
+            new Vector3i(28,108,-8),
+            new Vector3i(32,108,-4),
+            new Vector3i(32,108,-12)
+    );
 
     private static final Vector3d min = new Vector3d(28,108,-12);
     private static final Vector3d max = new Vector3d(36,111,-4);
@@ -41,6 +144,7 @@ public class RitualAnimationManager {
 
     public static void reset(World world) {
         placeBlock(world,controllerBlockPos,"empty");
+        replaceGoldPos(world,glowGoldID);
     }
 
     public static void reset() {
@@ -52,7 +156,10 @@ public class RitualAnimationManager {
                 ()-> {
                     placeBlock(world,controllerBlockPos,controllerBlockID);
                     HytaleServer.SCHEDULED_EXECUTOR.schedule(
-                            ()->explosion(world),
+                            ()->{
+                                explosion(world);
+                                replaceGoldPos(world,bloodyGoldID);
+                            },
                             8,
                             TimeUnit.SECONDS
                     );
@@ -67,7 +174,6 @@ public class RitualAnimationManager {
         play(Universe.get().getWorld(Constants.miniGameWorldName));
     }
 
-    //TODO fix: currently all refs seem to be invalid or something else, so the effect does not get applied to them, which
     private static void applyEntityEffects(World world){
         world.execute(()->{
             EntityEffect effect = EntityEffect.getAssetMap().getAsset("RAE_Dissolve");
@@ -139,6 +245,19 @@ public class RitualAnimationManager {
     private static void explosion(World world){
         tremor(world);
         explosionSound(world);
+    }
+
+    private static void replaceGoldPos(World world,String blockID){
+        if(world== null){
+            LOGGER.atSevere().log("No World! Aborting...");
+            return;
+        }
+        world.execute(()->{
+            for(Vector3i pos :goldPos){
+                world.setBlock(pos.x, pos.y, pos.z, blockID);
+            }
+        } );
+
     }
 
 }

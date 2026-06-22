@@ -88,5 +88,5 @@ public class Constants {
     public static final Integer gameTimeLimit = 900;
 
     //Celebration time in seconds
-    public static final Integer celebrationTime = 20;
+    public static final Integer celebrationTime = 15;
 }
