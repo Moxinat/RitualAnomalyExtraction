@@ -4,7 +4,7 @@
   "BlockType": {
     "Textures": [
       {
-        "All": "Blocks/Miscellaneous/Editor_Empty_Cube_Texture.png"
+        "All": "Blocks/_Debug/TextureEmpty.png"
       }
     ],
     "RequiresAlphaBlending": true,

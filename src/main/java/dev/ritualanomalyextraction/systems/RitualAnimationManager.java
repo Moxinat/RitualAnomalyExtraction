@@ -11,14 +11,16 @@ import com.hypixel.hytale.server.core.asset.type.entityeffect.config.EntityEffec
 import com.hypixel.hytale.server.core.asset.type.entityeffect.config.OverlapBehavior;
 import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
 import com.hypixel.hytale.server.core.entity.effect.EffectControllerComponent;
+import com.hypixel.hytale.server.core.modules.entity.component.ModelComponent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.SoundUtil;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import com.hypixel.hytale.server.core.util.TargetUtil;
 import dev.ritualanomalyextraction.Constants;
+import org.joml.Vector3d;
 import org.joml.Vector3i;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -28,7 +30,8 @@ public class RitualAnimationManager {
     private static final Vector3i controllerBlockPos = new Vector3i(32,114,-8);
     private static final String controllerBlockID = "Ritual_Animation";
 
-    private static final List<Ref<EntityStore>> pedestalModels = new ArrayList<>(4);
+    private static final Vector3d min = new Vector3d(28,108,-12);
+    private static final Vector3d max = new Vector3d(36,111,-4);
 
 
     private RitualAnimationManager() {
@@ -37,7 +40,6 @@ public class RitualAnimationManager {
 
     public static void reset(World world) {
         placeBlock(world,controllerBlockPos,"empty");
-        pedestalModels.clear();
     }
 
     public static void reset() {
@@ -45,13 +47,19 @@ public class RitualAnimationManager {
     }
 
     public static void play(World world) {
-        placeBlock(world,controllerBlockPos,controllerBlockID);
         HytaleServer.SCHEDULED_EXECUTOR.schedule(
-                ()->explosion(world),
-                8,
+                ()-> {
+                    placeBlock(world,controllerBlockPos,controllerBlockID);
+                    HytaleServer.SCHEDULED_EXECUTOR.schedule(
+                            ()->explosion(world),
+                            8,
+                            TimeUnit.SECONDS
+                    );
+                    applyEntityEffects(world);
+                },
+                1,
                 TimeUnit.SECONDS
         );
-        applyEntityEffects(world);
     }
 
     public static void play() {
@@ -66,23 +74,35 @@ public class RitualAnimationManager {
                 LOGGER.at(Level.WARNING).log("Failed to find entity effect! Skipping...");
                 return;
             }
-            for(Ref<EntityStore> entityRef : pedestalModels) {
+            Store<EntityStore> store = world.getEntityStore().getStore();
+            List<Ref<EntityStore>> refs = TargetUtil.getAllEntitiesInBox(
+                    min,
+                    max,
+                    store
+                    );
+
+            LOGGER.at(Level.INFO).log("Found %s entity candidates for applying effects",String.valueOf(refs.size()));
+            for(Ref<EntityStore> entityRef : refs) {
                 if(!entityRef.isValid()){
                     LOGGER.at(Level.WARNING).log("Invalid ref! Skipping...");
                     return;
                 }
-                Store<EntityStore> store = entityRef.getStore();
+                ModelComponent model = store.getComponent(entityRef, ModelComponent.getComponentType());
+                if(model == null){
+                    LOGGER.at(Level.WARNING).log("Entity doesn't have a model! Skipping...");
+                    return;
+                }
+                if(!model.getModel().getModelAssetId().endsWith("Display")){
+                    LOGGER.at(Level.INFO).log("Entity is not a display entity (pedestal)! Skipping...");
+                    return;
+                }
+
                 EffectControllerComponent effectControllerComponent = store.ensureAndGetComponent(entityRef, EffectControllerComponent.getComponentType());
-                effectControllerComponent.addEffect(entityRef, effect, 2f, OverlapBehavior.OVERWRITE, store);
+                effectControllerComponent.addEffect(entityRef, effect, 16f, OverlapBehavior.OVERWRITE, store); // disappear in 2 seconds, but stays invisible for another 14 seconds
+                LOGGER.at(Level.INFO).log("Applied Effect to pedestal entity display...");
             }
         });
 
-    }
-    public static void registerPedestalModel(Ref<EntityStore> ref){
-        pedestalModels.add(ref);
-    }
-    public static void unregisterPedestalModel(Ref<EntityStore> ref){
-        pedestalModels.remove(ref);
     }
     private static void placeBlock(World world,Vector3i pos, String blockID){
         if(world== null){

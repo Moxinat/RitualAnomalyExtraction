@@ -1,35 +1,27 @@
 package dev.ritualanomalyextraction.commands;
 
-import com.hypixel.hytale.server.core.Message;
-import com.hypixel.hytale.server.core.command.system.AbstractCommand;
+import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
+import com.hypixel.hytale.server.core.command.system.basecommands.AbstractPlayerCommand;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.ritualanomalyextraction.RitualGameManager;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.concurrent.CompletableFuture;
+import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
-public class StartCommand extends AbstractCommand{
+public class StartCommand extends AbstractPlayerCommand {
 
     RitualGameManager gameManager;
 
     public StartCommand(String name, String description, RitualGameManager gameManager) {
         super(name, description);
-        setAllowsExtraArguments(false);
         this.gameManager = gameManager;
+        this.setPermissionGroups("hytale:Adventurer");
     }
 
-    @Nullable
     @Override
-    protected CompletableFuture<Void> execute(@Nonnull CommandContext context) {
-
-        if (!context.isPlayer()) {
-            context.sender().sendMessage(Message.raw("Must be a player to execute this command!"));
-            return CompletableFuture.completedFuture(null);
-        }
-
+    protected void execute(@NonNullDecl CommandContext commandContext, @NonNullDecl Store<EntityStore> store, @NonNullDecl Ref<EntityStore> ref, @NonNullDecl PlayerRef playerRef, @NonNullDecl World world) {
         gameManager.onPlayerReady();
-
-        return CompletableFuture.completedFuture(null);
     }
-
 }

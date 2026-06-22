@@ -7,7 +7,6 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import org.joml.Vector3i;
 
 import java.util.List;
-import java.util.Map;
 
 public class Constants {
 
@@ -85,7 +84,7 @@ public class Constants {
     public static final String ritualPedestalID = "Ritual_Pedestal";
 
     //Game time limit in seconds
-    public static final Integer gameTimeLimit = 100;
+    public static final Integer gameTimeLimit = 600;
 
     //Celebration time in seconds
     public static final Integer celebrationTime = 20;

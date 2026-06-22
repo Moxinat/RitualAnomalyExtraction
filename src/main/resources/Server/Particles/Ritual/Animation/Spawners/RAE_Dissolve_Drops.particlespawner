@@ -1,0 +1,112 @@
+{
+  "Particle": {
+    "Texture": "Particles/Textures/Basic/Ball.png",
+    "Animation": {
+      "0": {
+        "Scale": {
+          "X": {
+            "Min": 0.1,
+            "Max": 0.1
+          },
+          "Y": {
+            "Min": 0.1,
+            "Max": 0.1
+          }
+        }
+      },
+      "20": {
+        "Scale": {
+          "X": {
+            "Min": 1,
+            "Max": 1
+          },
+          "Y": {
+            "Min": 1,
+            "Max": 1
+          }
+        }
+      },
+      "50": {},
+      "80": {
+        "Scale": {
+          "X": {
+            "Min": 1,
+            "Max": 1
+          },
+          "Y": {
+            "Max": 1,
+            "Min": 1
+          }
+        }
+      },
+      "100": {
+        "Scale": {
+          "X": {
+            "Min": 0.1,
+            "Max": 0.1
+          },
+          "Y": {
+            "Min": 0.1,
+            "Max": 0.1
+          }
+        },
+        "Opacity": 0
+      }
+    },
+    "InitialAnimationFrame": {
+      "Scale": {
+        "X": {
+          "Min": 0.04,
+          "Max": 0.04
+        }
+      }
+    },
+    "ScaleRatioConstraint": "OneToOne"
+  },
+  "MaxConcurrentParticles": 800,
+  "TrailSpawnerPositionMultiplier": 1,
+  "TrailSpawnerRotationMultiplier": 1,
+  "RenderMode": "Erosion",
+  "LinearFiltering": true,
+  "ParticleRotationInfluence": "Billboard",
+  "ParticleLifeSpan": {
+    "Min": 4,
+    "Max": 4
+  },
+  "SpawnRate": {
+    "Min": 200,
+    "Max": 200
+  },
+  "EmitOffset": {
+    "X": {
+      "Max": 0.1
+    },
+    "Z": {
+      "Max": 0.1
+    }
+  },
+  "Attractors": [
+    {
+      "DampingMultiplier": {
+        "Y": 0.6
+      },
+      "RadialAxis": {
+        "Y": 1
+      },
+      "RadialTangentImpulse": 0.2,
+      "RadialImpulse": 0.05
+    }
+  ],
+  "LifeSpan": 3.1,
+  "IsLowRes": true,
+  "InitialVelocity": {
+    "Pitch": {
+      "Min": -90,
+      "Max": -90
+    },
+    "Speed": {
+      "Min": 1,
+      "Max": 1
+    }
+  }
+}
