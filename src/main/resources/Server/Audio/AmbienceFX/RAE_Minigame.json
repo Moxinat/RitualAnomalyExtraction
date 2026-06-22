@@ -26,6 +26,13 @@
       }
     },
     {
+      "SoundEventId": "RAE_Minigame_Music2",
+      "MaxBodiesPerEmitter": 1,
+      "Radius": {
+        "Max": 8
+      }
+    },
+    {
       "SoundEventId": "RAE_Minigame_Drums",
       "MaxBodiesPerEmitter": 1
     }

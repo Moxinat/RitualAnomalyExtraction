@@ -89,7 +89,6 @@ public class RitualGameManager {
         state = GameState.RITUAL_ACTIVE;
         LOGGER.at(Level.INFO).log("Ritual started. Game state changed to RITUAL_ACTIVE.");
 
-        // TODO: Trigger ritual Celebration effects.
         RitualAnimationManager.play();
         HytaleServer.SCHEDULED_EXECUTOR.schedule(() -> {
             assert Constants.lobbyWorld != null;
@@ -240,6 +239,8 @@ public class RitualGameManager {
                     gameTimeLimit--;
                 } else {
                     Constants.controlRoomWorld.execute( () -> {
+                        int index = SoundEvent.getAssetMap().getIndex("RAE_Time_Up");
+                        SoundUtil.playSoundEvent2d( index, SoundCategory.SFX,Constants.controlRoomWorld.getEntityStore().getStore());
                         for (PlayerRef playerRef : Constants.controlRoomWorld.getPlayerRefs()) {
                             Player player = playerRef.getReference().getStore().getComponent(playerRef.getReference(), Player.getComponentType());
                             assert player != null;

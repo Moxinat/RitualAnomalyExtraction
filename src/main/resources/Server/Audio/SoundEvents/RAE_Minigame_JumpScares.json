@@ -6,7 +6,8 @@
         "Sounds/dragon-studio-heavy-object-falling.ogg",
         "Sounds/dragon-studio-creepy-whisper.ogg",
         "Sounds/monster_distance.ogg",
-        "Sounds/not_safe.ogg"
+        "Sounds/not_safe.ogg",
+        "Sounds/dragon-studio-cinematic-pulsing.ogg"
       ],
       "RoundRobinHistorySize": 2,
       "RandomSettings": {

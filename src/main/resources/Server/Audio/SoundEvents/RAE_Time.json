@@ -2,8 +2,14 @@
   "Layers": [
     {
       "Files": [
-        "Sounds/dragon-studio-clock-ticking-sfx.ogg"
+        "Sounds/dragon-studio-scary-bells.ogg"
       ]
+    },
+    {
+      "Files": [
+        "Sounds/dragon-studio-clock-ticking-sfx.ogg"
+      ],
+      "StartDelay": 1
     }
   ],
   "AudioCategory": "AudioCat_SFX",
