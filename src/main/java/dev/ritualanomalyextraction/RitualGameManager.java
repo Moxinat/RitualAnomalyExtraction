@@ -256,6 +256,10 @@ public class RitualGameManager {
         Runnable countdownTask = new Runnable() {
             @Override
             public void run() {
+                if (state != GameState.CONTROL_ROOM) {
+                    scheduler.shutdown();
+                    return;
+                }
                 if (gameTimeLimit >= 1) {
                     Universe.get().getWorld(Constants.miniGameWorldName).execute( () -> {
                         for (PlayerRef playerRef : Universe.get().getWorld(Constants.miniGameWorldName).getPlayerRefs()) {
