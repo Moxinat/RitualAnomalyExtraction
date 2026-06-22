@@ -125,6 +125,7 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
             return;
         }
 
+        RitualAnimationManager.unregisterPedestalModel(visualEntity);
         if (visualEntity.isValid()) {
             commandBuffer.removeEntity(visualEntity, RemoveReason.REMOVE);
         }
@@ -215,6 +216,7 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
 
         pedestal.setPlacedItemId(itemId);
         pedestal.setVisualItemEntity(visualItemEntity);
+        RitualAnimationManager.registerPedestalModel(visualItemEntity);
 
         RitualProgressTracker.onObjectPlaced(player, itemId);
 
