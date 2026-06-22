@@ -31,14 +31,15 @@ public class Constants {
             "Ritual_Soul_Lantern"
     );
     public static final List<Vector3i> ritualObjectSpawnSpots = List.of(
-            // TODO add actual coordinates
             new Vector3i(46, 134, -14), // church back
             new Vector3i(-24, 107, -213), // windmill
             new Vector3i(35, 105, -159), // ruined house
             new Vector3i(-149, 118, -158), // school under the roof
-            new Vector3i(-256, 103, -56), // boat house
+            new Vector3i(-259, 103, -56), // boat house
             new Vector3i(-198, 108, -151), // tavern
-            new Vector3i(-77, 153, 131) // top of light house
+            new Vector3i(-77, 153, 131), // top of lighthouse
+            new Vector3i( -106, 113, -90), // outhouse
+            new Vector3i(-114, 102, -214) // well
     );
 
     //Pickup system constants
