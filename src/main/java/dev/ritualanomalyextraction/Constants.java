@@ -2,6 +2,7 @@ package dev.ritualanomalyextraction;
 
 import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.math.vector.Transform;
+import com.hypixel.hytale.protocol.Vector3d;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import org.joml.Vector3i;
@@ -18,8 +19,8 @@ public class Constants {
 
     //Control room constants
     public static final World controlRoomWorld = Universe.get().getWorld("RAE-Minigame");
-    public static final Transform controlRoomPos = new Transform(46.5, 134.5, 06.5);
-    public static final Rotation3f controlRoomRot = new Rotation3f(0, 80, 0);
+    public static final Transform controlRoomPos = new Transform(32.5, 108.5, -7.5);
+    public static final Rotation3f controlRoomRot = new Rotation3f(0, -90, 0);
 
     //Ritual object spawn constants
     public static final World ritualWorld = Universe.get().getWorld("RAE-Minigame");
@@ -29,17 +30,15 @@ public class Constants {
             "ritual_effigy_world"
     );
     public static final List<Vector3i> ritualObjectSpawnSpots = List.of(
-            // TODO add actual coordinates
-            new Vector3i(-36, 130, 189),
-            new Vector3i(-38, 130, 195),
-            new Vector3i(-43, 130, 199),
-            new Vector3i(-49, 130, 199),
-            new Vector3i(-54, 130, 195),
-            new Vector3i(-56, 130, 189),
-            new Vector3i(-54, 130, 183),
-            new Vector3i(-49, 130, 179),
-            new Vector3i(-43, 130, 179),
-            new Vector3i(-38, 130, 183)
+            new Vector3i(46, 134, -14), // church back
+            new Vector3i(-24, 107, -213), // windmill
+            new Vector3i(35, 105, -159), // ruined house
+            new Vector3i(-149, 118, -158), // school under the roof
+            new Vector3i(-259, 103, -56), // boat house
+            new Vector3i(-198, 108, -151), // tavern
+            new Vector3i(-77, 153, 131), // top of lighthouse
+            new Vector3i( -106, 113, -90), // outhouse
+            new Vector3i(-114, 102, -214) // well
     );
 
     //Pickup system constants
@@ -48,6 +47,23 @@ public class Constants {
             "ritual_lantern_world", "ritual_lantern",
             "ritual_effigy_world", "ritual_effigy"
     );
+
+    public static final List<Vector3i> ritualCircleSpawnSpots = List.of(
+            new Vector3i(36, 109, -7),
+            new Vector3i(32, 109, -11),
+            new Vector3i(28, 109, -7),
+            new Vector3i(32, 109, -3)
+    );
+
+    public static final List<Vector3i> ritualCircleSpawnSpotsRot = List.of(
+            new Vector3i(0, 90, 0),
+            new Vector3i(0, 180, 0),
+            new Vector3i(0, -90, 0),
+            new Vector3i(0, 0, 0)
+    );
+
+    public static final Transform ritualMonsterSpawn = new Transform(-36, 130, 189);
+    public static final Rotation3f ritualMonsterSpawnRot = new Rotation3f(0, 90, 0);
 
     //Pedestal system constants
     public static final String ritualPedestalID = "Ritual_Pedestal";

@@ -1,7 +1,7 @@
 {
   "Parent": "Player",
-  "Model": "NPC/Beast/Monster/Models/Model.blockymodel",
-  "Texture": "NPC/Beast/Monster/Models/Model_Textures/Texture.png",
+  "Model": "NPC/Beast/Monster/Models/TheSailor.blockymodel",
+  "Texture": "NPC/Beast/Monster/Models/Model_Textures/TheSailorTexture.png",
   "EyeHeight": 2.2,
   "CrouchOffset": -0.5,
   "HitBox": {
@@ -41,24 +41,27 @@
     "Idle": {
       "Animations": [
         {
-          "Animation": "NPC/Beast/Monster/Animations/Idle.blockyanim",
+          "Animation": "NPC/Beast/Monster/Animations/TheSailorIdle.blockyanim",
           "Looping": true,
-          "Speed": 0.5
+          "Speed": 0.5,
+          "SoundEventId": "RAE_Monster_Sound_Idle"
         }
       ]
     },
     "Walk": {
       "Animations": [
         {
-          "Animation": "NPC/Beast/Monster/Animations/Walk.blockyanim",
-          "Speed": 1
+          "Animation": "NPC/Beast/Monster/Animations/TheSailorWalk.blockyanim",
+          "Looping": true,
+          "Speed": 1,
+          "SoundEventId": "RAE_Monster_Sound_Walk"
         }
       ]
     },
     "Run": {
       "Animations": [
         {
-          "Animation": "NPC/Beast/Monster/Animations/Run.blockyanim",
+          "Animation": "NPC/Beast/Monster/Animations/TheSailorChase.blockyanim",
           "Speed": 1
         }
       ]
@@ -122,7 +125,7 @@
     "Death": {
       "Animations": [
         {
-          "Animation": "NPC/Beast/Monster/Animations/Death.blockyanim",
+          "Animation": "NPC/Beast/Monster/Animations/TheSailorDeath.blockyanim",
           "Looping": false
         }
       ]
@@ -139,7 +142,7 @@
     "IdlePassive": {
       "Animations": [
         {
-          "Animation": "NPC/Beast/Monster/Animations/Scratch.blockyanim",
+          "Animation": "NPC/Beast/Monster/Animations/TheSailorDefaultPose.blockyanim",
           "BlendingDuration": 0.4,
           "Looping": false
         }
@@ -152,7 +155,7 @@
     "Search": {
       "Animations": [
         {
-          "Animation": "NPC/Beast/Monster/Animations/Search.blockyanim"
+          "Animation": "NPC/Beast/Monster/Animations/TheSailorIdleSearchHigh.blockyanim"
         }
       ]
     }

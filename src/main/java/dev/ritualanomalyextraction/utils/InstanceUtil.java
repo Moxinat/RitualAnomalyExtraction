@@ -43,6 +43,7 @@ public class InstanceUtil {
         }
         if (instanceCreationName.equals("RAE-Minigame")) {
             RitualGameManager.setMiniGameWorld(worldFuture);
+            LOGGER.atSevere().log("Minigame detected");
         }
 
         LOGGER.atInfo().log("Created %s for Ritual Anomaly Extraction!", instanceCreationName);
@@ -79,10 +80,8 @@ public class InstanceUtil {
             if (transformComponent == null) {
                 return;
             }
-            if (!generateInstance(fromWorld,DEFAULT_MINIGAME_NAME, DEFAULT_MINIGAME_NAME, transformComponent.getTransform())) {
+            if (!generateInstance(fromWorld, DEFAULT_MINIGAME_NAME, DEFAULT_MINIGAME_NAME, transformComponent.getTransform())) {
                 LOGGER.atSevere().log("Failed creating the Minigame for Ritual Anomaly Extraction!");
-            } else {
-                LOGGER.atInfo().log("Created the Minigame for Ritual Anomaly Extraction!");
             }
         } else {
             LOGGER.atInfo().log("Minigame world already exists!");

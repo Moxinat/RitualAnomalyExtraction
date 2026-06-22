@@ -1,16 +1,22 @@
 package dev.ritualanomalyextraction;
 
+import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.logger.HytaleLogger;
+import com.hypixel.hytale.math.vector.Transform;
 import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.universe.world.npc.INonPlayerCharacter;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import com.hypixel.hytale.server.npc.NPCPlugin;
 import dev.ritualanomalyextraction.systems.RitualObjectSpawnManager;
 import dev.ritualanomalyextraction.systems.RitualProgressTracker;
 import dev.ritualanomalyextraction.ui.StatusHud;
 import dev.ritualanomalyextraction.utils.InstanceUtil;
+import it.unimi.dsi.fastutil.Pair;
 
 import java.util.concurrent.*;
 import java.util.logging.Level;
@@ -55,6 +61,7 @@ public class RitualGameManager {
                 playerRef.sendMessage(Message.raw("Ritual Anomaly Extraction started."));
                 playerRef.sendMessage(Message.raw("Find the ritual objects and place them on the pedestals."));
             }
+            NPCPlugin.get().spawnNPC(Constants.controlRoomWorld.getEntityStore().getStore(), "RAE_Monster_NPC_Role", null, new Transform(45, 133, 12).getPosition(), Constants.ritualMonsterSpawnRot);
         });
 
         if (Constants.ritualWorld == null) {
@@ -89,6 +96,7 @@ public class RitualGameManager {
                 Player player = playerRef.getReference().getStore().getComponent(playerRef.getReference(), Player.getComponentType());
                 player.getHudManager().addCustomHud(playerRef, new StatusHud(playerRef,"endSuccess", getGameManager()));
             }
+            Pair<Ref<EntityStore>, INonPlayerCharacter> monster = NPCPlugin.get().spawnNPC(Constants.controlRoomWorld.getEntityStore().getStore(), "RAE_Monster_NPC_Role", null, Constants.ritualMonsterSpawn.getPosition(), Constants.ritualMonsterSpawnRot);
         });
     }
 
@@ -121,6 +129,7 @@ public class RitualGameManager {
                 assert player != null;
                 player.getHudManager().resetHud(playerRef);
                 player.getHudManager().addCustomHud(playerRef, new StatusHud(playerRef,"spawn", getGameManager()));
+                InstanceUtil.teleportPlayerToWorld(playerRef.getReference(), Constants.lobbyWorld);
             }
         });
     }
