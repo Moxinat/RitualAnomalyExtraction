@@ -54,6 +54,7 @@ public class RitualGameManager {
             LOGGER.at(Level.WARNING).log("Control room world is null");
             return;
         }
+        spawnSailors();
 
         Constants.controlRoomWorld.execute( () -> {
             for (PlayerRef playerRef : Universe.get().getPlayers()) {
@@ -96,7 +97,6 @@ public class RitualGameManager {
                 Player player = playerRef.getReference().getStore().getComponent(playerRef.getReference(), Player.getComponentType());
                 player.getHudManager().addCustomHud(playerRef, new StatusHud(playerRef,"endSuccess", getGameManager()));
             }
-            Pair<Ref<EntityStore>, INonPlayerCharacter> monster = NPCPlugin.get().spawnNPC(Constants.controlRoomWorld.getEntityStore().getStore(), "RAE_Monster_NPC_Role", null, Constants.ritualMonsterSpawn.getPosition(), Constants.ritualMonsterSpawnRot);
         });
     }
 
@@ -111,6 +111,15 @@ public class RitualGameManager {
 
         reset();
         // TODO: Show final win message / end screen.
+    }
+
+    public void spawnSailors() {
+        Constants.controlRoomWorld.execute( () -> {
+            for (Transform transform : Constants.gameSailorSpawn) {
+                Pair<Ref<EntityStore>, INonPlayerCharacter> monster = NPCPlugin.get().spawnNPC(Constants.controlRoomWorld.getEntityStore().getStore(), "RAE_Monster_NPC_Role", null, transform.getPosition(), Constants.ritualMonsterSpawnRot);
+                LOGGER.atInfo().log("Spawned Sailor at %s", transform.getPosition());
+            }
+        });
     }
 
     public void reset() {

@@ -26,8 +26,8 @@
     "ThreatenAnimation": "",
     "FleeIfNotThreatened": false,
     "FleeRange": 11,
-    "HardLeashDistance": 60,
-    "LeashDistance": 30,
+    "HardLeashDistance": 128,
+    "LeashDistance": 60,
     "LeashMinPlayerDistance": 7,
     "LeashTimer": [
       3,

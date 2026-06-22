@@ -62,6 +62,18 @@ public class Constants {
             new Vector3i(0, 0, 0)
     );
 
+    public static final List<Transform> gameSailorSpawn = List.of(
+            new Transform(46, 134, 18), //church cliff
+            new Transform(-110, 120, 111), //lighthouse path
+            new Transform(-124, 119, 75), //lighthouse end island
+            new Transform(-296, 102, -254), //lone island
+            new Transform(-37, 105, -207), //windmill path north
+            new Transform(129, 104, -184), //windmill island east
+            new Transform(-68, 126, -118), //center windmill hill
+            new Transform(-248, 103, -66), //center middle dock
+            new Transform(-97, 104, -217) //library entrance
+    );
+
     public static final Transform ritualMonsterSpawn = new Transform(-36, 130, 189);
     public static final Rotation3f ritualMonsterSpawnRot = new Rotation3f(0, 90, 0);
 

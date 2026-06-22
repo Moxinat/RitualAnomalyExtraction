@@ -30,7 +30,7 @@ public class StatusHud extends CustomUIHud {
             int minutes = gameTime / 60;
             uiCommandBuilder.set("#TextField.Text", String.format("%d:%02d", minutes, seconds));
             if (minutes <= 0) {
-                uiCommandBuilder.set("#TextField.Style.TextColor", "#33ff66");
+                uiCommandBuilder.set("#TextField.Style.TextColor", "#ff3333");
             } else {
                 uiCommandBuilder.set("#TextField.Style.TextColor", "#ffffff");
             }

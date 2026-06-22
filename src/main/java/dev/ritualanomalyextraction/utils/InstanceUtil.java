@@ -43,7 +43,6 @@ public class InstanceUtil {
         }
         if (instanceCreationName.equals("RAE-Minigame")) {
             RitualGameManager.setMiniGameWorld(worldFuture);
-            LOGGER.atSevere().log("Minigame detected");
         }
 
         LOGGER.atInfo().log("Created %s for Ritual Anomaly Extraction!", instanceCreationName);
