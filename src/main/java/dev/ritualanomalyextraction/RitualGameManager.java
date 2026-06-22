@@ -1,14 +1,24 @@
 package dev.ritualanomalyextraction;
 
 import com.hypixel.hytale.builtin.instances.InstancesPlugin;
+import com.hypixel.hytale.component.AddReason;
+import com.hypixel.hytale.component.CommandBuffer;
+import com.hypixel.hytale.component.Holder;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.logger.HytaleLogger;
+import com.hypixel.hytale.math.shape.Box;
+import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.math.vector.Transform;
 import com.hypixel.hytale.protocol.SoundCategory;
 import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.Message;
+import com.hypixel.hytale.server.core.asset.type.model.config.Model;
+import com.hypixel.hytale.server.core.asset.type.model.config.ModelAsset;
 import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
+import com.hypixel.hytale.server.core.entity.UUIDComponent;
 import com.hypixel.hytale.server.core.entity.entities.Player;
+import com.hypixel.hytale.server.core.modules.entity.component.*;
+import com.hypixel.hytale.server.core.modules.entity.tracker.NetworkId;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.SoundUtil;
@@ -22,6 +32,8 @@ import dev.ritualanomalyextraction.systems.RitualProgressTracker;
 import dev.ritualanomalyextraction.ui.StatusHud;
 import dev.ritualanomalyextraction.utils.InstanceUtil;
 import it.unimi.dsi.fastutil.Pair;
+import org.joml.Vector3d;
+import org.joml.Vector3i;
 
 import java.util.concurrent.*;
 import java.util.logging.Level;
@@ -93,8 +105,6 @@ public class RitualGameManager {
         LOGGER.at(Level.INFO).log("Ritual started. Game state changed to RITUAL_ACTIVE.");
 
         RitualAnimationManager.play();
-
-//        Pair<Ref<EntityStore>, INonPlayerCharacter> monster = NPCPlugin.get().spawnNPC(Universe.get().getWorld(Constants.miniGameWorldName).getEntityStore().getStore(), "RAE_Monster_NPC_Role", null, Constants.controlRoomPos.getPosition(), Constants.ritualMonsterSpawnRot);
 
         HytaleServer.SCHEDULED_EXECUTOR.schedule(() -> {
             assert Constants.lobbyWorld != null;
