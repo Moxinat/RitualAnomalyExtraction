@@ -26,15 +26,13 @@ public class RaeSettingGroupCommands extends AbstractCommandCollection {
 
         @Override
         protected void executeSync(@NonNullDecl CommandContext commandContext) {
-            Config<RaeConfig> config = RitualAnomalyPlugin.getInstance().getConfig();
-            RaeConfig raeConfig = config.get();
-            boolean current = raeConfig.shouldForceTP();
+            RaeConfig.RaeConfigManager config = RitualAnomalyPlugin.getInstance().getConfig();
+            boolean current = config.shouldForceTP();
             boolean now = !current;
-            raeConfig.setForceTP(now);
             commandContext.sendMessage(Message.raw(
                     "Changed ForceTp from "+ current +" to " + now
             ));
-            config.save();
+            config.setForceTP(now);
         }
     }
 }

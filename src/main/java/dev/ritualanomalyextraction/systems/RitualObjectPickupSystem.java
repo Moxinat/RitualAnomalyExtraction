@@ -60,14 +60,6 @@ public class RitualObjectPickupSystem extends EntityEventSystem<EntityStore, Use
         LOGGER.at(Level.INFO).log("Set carried ritual object for player '%s' to '%s'.", player, itemId);
     }
 
-    /*private static String normalizeId(String id) {
-        if (id == null) {
-            return "";
-        }
-
-        return id.toLowerCase(Locale.ROOT);
-    }*/
-
     private static BlockPosition toBlockPosition(org.joml.Vector3i pos) {
         return new BlockPosition(pos.x, pos.y, pos.z);
     }
@@ -87,9 +79,7 @@ public class RitualObjectPickupSystem extends EntityEventSystem<EntityStore, Use
             return false;
         }
 
-        boolean removed = chunk.setBlock(pos.x, pos.y, pos.z, BlockType.EMPTY);
-
-        return removed;
+        return chunk.setBlock(pos.x, pos.y, pos.z, BlockType.EMPTY);
     }
 
     public static boolean isRitualObjectItemId(String itemId) {
@@ -97,7 +87,6 @@ public class RitualObjectPickupSystem extends EntityEventSystem<EntityStore, Use
             return false;
         }
 
-        // normalized = normalizeId(itemId);
         return Constants.ritualObjectsWorldToItem.contains(itemId);
     }
 

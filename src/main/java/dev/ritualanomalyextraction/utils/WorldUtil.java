@@ -55,8 +55,7 @@ public class InstanceUtil {
         if (alreadySetUpLobby) {
             return;
         }
-        Config<RaeConfig> config = RitualAnomalyPlugin.getInstance().getConfig();
-        RaeConfig raeConfig = config.get();
+        RaeConfig.RaeConfigManager raeConfig = RitualAnomalyPlugin.getInstance().getConfig();
         World fromWorld = Universe.get().getDefaultWorld();
 
         if (raeConfig.shouldCreateLobbyUponServerStart() && Universe.get().getWorld(DEFAULT_LOBBY_NAME) == null) {
@@ -70,8 +69,6 @@ public class InstanceUtil {
             LOGGER.atInfo().log("Lobby either exists or shouldn't be created.");
             alreadySetUpLobby = true;
         }
-
-        config.save();
     }
 
     public static void tryGenerateMinigameWorld() {
@@ -122,7 +119,7 @@ public class InstanceUtil {
     }
 
     public static boolean shouldForceTp(){
-        return RitualAnomalyPlugin.getInstance().getConfig().get().shouldForceTP();
+        return RitualAnomalyPlugin.getInstance().getConfig().shouldForceTP();
     }
 }
 

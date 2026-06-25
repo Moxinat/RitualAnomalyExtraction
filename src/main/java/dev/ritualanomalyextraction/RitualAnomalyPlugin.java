@@ -21,6 +21,7 @@ public class RitualAnomalyPlugin extends JavaPlugin {
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
     private final Config<RaeConfig> CONFIG = this.withConfig("RitualAnomalyExtraction-Config",RaeConfig.CODEC);
+    private RaeConfig.RaeConfigManager CONFIG_MANAGER;
 
     private final RitualGameManager gameManager;
 
@@ -33,7 +34,8 @@ public class RitualAnomalyPlugin extends JavaPlugin {
     @Override
     protected void setup() {
         instance = this;
-        CONFIG.save();
+        CONFIG.save().thenRun(()->CONFIG_MANAGER = new RaeConfig.RaeConfigManager(CONFIG));
+
         RitualProgressTracker.setGameManager(gameManager);
 
         this.getEventRegistry().registerGlobal(PlayerReadyEvent.class,event -> PlayerReadyListener.onPlayerReady(event, gameManager));
@@ -68,7 +70,7 @@ public class RitualAnomalyPlugin extends JavaPlugin {
 
     }
 
-    public Config<RaeConfig> getConfig(){
-        return CONFIG;
+    public RaeConfig.RaeConfigManager getConfig(){
+        return CONFIG_MANAGER;
     }
 }

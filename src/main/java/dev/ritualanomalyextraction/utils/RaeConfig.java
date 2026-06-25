@@ -3,6 +3,7 @@ package dev.ritualanomalyextraction.utils;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
+import com.hypixel.hytale.server.core.util.Config;
 
 public class RaeConfig {
 
@@ -45,5 +46,48 @@ public class RaeConfig {
 
     public void setForceTP(boolean forceTP) {
         this.forceTP = forceTP;
+    }
+
+    public static RaeConfigManager getManager(){
+        return RaeConfigManager.INSTANCE;
+    }
+
+    public static class RaeConfigManager{
+        public static RaeConfigManager INSTANCE;
+
+        private final Config<RaeConfig> CONFIG_FILE_MANAGER;
+        private final RaeConfig CONFIG;
+
+        public RaeConfigManager(Config<RaeConfig> config){
+            INSTANCE = this;
+            CONFIG_FILE_MANAGER = config;
+            CONFIG = config.get();
+        }
+
+        public boolean shouldCreateLobbyUponServerStart() {
+            return CONFIG.createLobbyUponServerStart;
+        }
+
+        public void setCreateLobbyUponServerStart(boolean createLobbyUponServerStart) {
+            CONFIG.createLobbyUponServerStart = createLobbyUponServerStart;
+            CONFIG_FILE_MANAGER.save();
+        }
+
+        public boolean shouldSetLobbyAsDefaultWorld() {
+            return CONFIG.setLobbyAsDefaultWorld;
+        }
+
+        public void setSetLobbyAsDefaultWorld(boolean setLobbyAsDefaultWorld) {
+            CONFIG.setLobbyAsDefaultWorld = setLobbyAsDefaultWorld;
+        }
+
+        public boolean shouldForceTP() {
+            return CONFIG.forceTP;
+        }
+
+        public void setForceTP(boolean forceTP) {
+            CONFIG.forceTP = forceTP;
+        }
+
     }
 }

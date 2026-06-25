@@ -47,7 +47,7 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
         super(UseBlockEvent.Post.class);
     }
 
-    private static final Map<BlockPosition, RitualPedestalComponent> pedestalStates = new HashMap<>();
+    private static final Map<BlockPosition, RitualPedestalComponent> pedestalStates = new HashMap<>(4);
 
     public static RitualPedestalComponent getOrCreatePedestal(BlockPosition pos) {
         BlockPosition key = new BlockPosition(pos);

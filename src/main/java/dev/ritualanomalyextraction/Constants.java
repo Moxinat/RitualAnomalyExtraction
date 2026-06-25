@@ -14,14 +14,10 @@ public class Constants {
     //Initial spawn constants
     public static final World lobbyWorld = Universe.get().getWorld("RAE-Lobby");
 
-    public static final Transform lobbyPos = new Transform(0.0, 80, 0.0);
-    public static final Rotation3f lobbyRot = new Rotation3f(0, 0, 0);
 
     //Control room constants
     public static String miniGameWorldName = "RAE-Minigame";
     public static final World controlRoomWorld = Universe.get().getWorld("RAE-Minigame");
-    public static final Transform controlRoomPos = new Transform(32.5, 108.5, -7.5);
-    public static final Rotation3f controlRoomRot = new Rotation3f(0, -90, 0);
 
 
     //Ritual object spawn constants

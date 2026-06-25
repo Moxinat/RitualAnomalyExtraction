@@ -134,6 +134,7 @@ public class RitualAnimationManager {
             new Vector3i(32,108,-12)
     );
 
+    //searching are for ritual display entities
     private static final Vector3d min = new Vector3d(28,108,-12);
     private static final Vector3d max = new Vector3d(36,111,-4);
 
@@ -143,7 +144,7 @@ public class RitualAnimationManager {
 
 
     public static void reset(World world) {
-        placeBlock(world,controllerBlockPos,"empty");
+        placeBlock(world,controllerBlockPos,null);
         replaceGoldPos(world,glowGoldID);
     }
 
