@@ -28,6 +28,7 @@ import com.hypixel.hytale.server.core.inventory.transaction.ItemStackSlotTransac
 import com.hypixel.hytale.server.core.modules.entity.component.*;
 import com.hypixel.hytale.server.core.modules.entity.tracker.NetworkId;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.ritualanomalyextraction.Constants;
 import dev.ritualanomalyextraction.components.RitualPedestalComponent;
@@ -37,6 +38,8 @@ import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
+
+import dev.ritualanomalyextraction.utils.WorldUtil;
 import org.joml.Vector3i;
 import org.joml.Vector3d;
 
@@ -222,6 +225,27 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
             RitualObjectPickupSystem.clearCarriedRitualObjectIfMatches(player, itemId);
         }
 
+    }
+
+    public static void reset(){
+        Universe.get().getWorld(WorldUtil.DEFAULT_MINIGAME_NAME).execute(()->{
+
+            pedestalStates.values().forEach(pedestal ->{
+                Ref<EntityStore> visualEntity = pedestal.getVisualItemEntity();
+
+                if (visualEntity == null) {
+                    return;
+                }
+
+                if (visualEntity.isValid()) {
+                    visualEntity.getStore().removeEntity(visualEntity, RemoveReason.REMOVE);
+                }
+            });
+
+        });
+
+        pedestalStates.clear();
+        LOGGER.atInfo().log("Reset Pedestals!");
     }
 
     public static class BreakListener extends EntityEventSystem<EntityStore, BreakBlockEvent> {

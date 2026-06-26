@@ -2,6 +2,8 @@ package dev.ritualanomalyextraction;
 
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.event.events.ecs.UseBlockEvent;
+import com.hypixel.hytale.server.core.event.events.player.PlayerConnectEvent;
+import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
@@ -9,9 +11,9 @@ import dev.ritualanomalyextraction.commands.ResetCommand;
 import com.hypixel.hytale.server.core.util.Config;
 import dev.ritualanomalyextraction.commands.RaeGroupCommands;
 import dev.ritualanomalyextraction.commands.StartCommand;
-import dev.ritualanomalyextraction.listeners.PlayerReadyListener;
+import dev.ritualanomalyextraction.listeners.PlayerFirstJoinListener;
 import dev.ritualanomalyextraction.systems.*;
-import dev.ritualanomalyextraction.utils.InstanceUtil;
+import dev.ritualanomalyextraction.utils.WorldUtil;
 import dev.ritualanomalyextraction.utils.RaeConfig;
 
 import javax.annotation.Nonnull;
@@ -38,7 +40,9 @@ public class RitualAnomalyPlugin extends JavaPlugin {
 
         RitualProgressTracker.setGameManager(gameManager);
 
-        this.getEventRegistry().registerGlobal(PlayerReadyEvent.class,event -> PlayerReadyListener.onPlayerReady(event, gameManager));
+        this.getEventRegistry().registerGlobal(PlayerReadyEvent.class,event -> PlayerFirstJoinListener.onPlayerReady(event, gameManager));
+        this.getEventRegistry().registerGlobal(PlayerConnectEvent.class, PlayerFirstJoinListener::onNewConnection);
+        this.getEventRegistry().registerGlobal(PlayerDisconnectEvent.class, PlayerFirstJoinListener::onConnectionRemoved);
 
         this.getCommandRegistry().registerCommand(new RaeGroupCommands("rae", "Ritual Anomaly Extraction commands"));
         this.getCommandRegistry().registerCommand(new StartCommand("start", "Start the game", gameManager));
@@ -56,8 +60,8 @@ public class RitualAnomalyPlugin extends JavaPlugin {
 
     @Override
     protected void start() {
-        InstanceUtil.trySetUpLobby();
-        InstanceUtil.tryGenerateMinigameWorld();
+        WorldUtil.trySetUpLobby();
+        WorldUtil.tryGenerateMinigameWorld();
     }
 
     @Override
