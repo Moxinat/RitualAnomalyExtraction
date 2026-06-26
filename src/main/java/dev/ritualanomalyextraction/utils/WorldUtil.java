@@ -4,29 +4,29 @@ import com.hypixel.hytale.builtin.instances.InstancesPlugin;
 import com.hypixel.hytale.builtin.teleport.components.TeleportHistory;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.function.consumer.TriConsumer;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.math.vector.Transform;
 import com.hypixel.hytale.server.core.modules.entity.component.HeadRotation;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import com.hypixel.hytale.server.core.util.Config;
-import dev.ritualanomalyextraction.Constants;
 import dev.ritualanomalyextraction.RitualAnomalyPlugin;
 import dev.ritualanomalyextraction.RitualGameManager;
 import org.joml.Vector3d;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.util.Comparator;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 
-public class InstanceUtil {
+public class WorldUtil {
 
-    private static final HytaleLogger LOGGER = HytaleLogger.get("RAE|InstanceUtil");
+    private static final HytaleLogger LOGGER = HytaleLogger.get("RAE|WorldUtil");
 
     public static final String DEFAULT_LOBBY_NAME = "RAE-Lobby";
     public static final String DEFAULT_MINIGAME_NAME = "RAE-Minigame";
@@ -40,10 +40,10 @@ public class InstanceUtil {
         }
 
         CompletableFuture<World> worldFuture =  InstancesPlugin.get().spawnInstance(instanceFolderName, instanceCreationName, fromWorld, returnPoint);
-        if (instanceCreationName.equals("RAE-Lobby")) {
-            RitualGameManager.setLobbyWorld(worldFuture);
+        if (instanceCreationName.equals(DEFAULT_LOBBY_NAME)) {
+            RitualGameManager.setLobbyWorldFuture(worldFuture);
         }
-        if (instanceCreationName.equals("RAE-Minigame")) {
+        if (instanceCreationName.equals(DEFAULT_MINIGAME_NAME)) {
             RitualGameManager.setMiniGameWorld(worldFuture);
         }
 
@@ -85,37 +85,94 @@ public class InstanceUtil {
         }
     }
 
-    public static void teleportPlayerToWorld(Ref<EntityStore> playerRef, World toWorld) {
+    private static void addTeleportComponent(@Nonnull World worldFrom,@Nonnull  World worldTo,@Nonnull Store<EntityStore> store,@Nonnull  Ref<EntityStore> playerRef,@Nonnull String worldType){
+        Transform spawnPoint = worldTo.getWorldConfig().getSpawnProvider().getSpawnPoint(playerRef, store);
+        if (spawnPoint != null) {
+
+            TransformComponent transformComponent = store.getComponent(playerRef, TransformComponent.getComponentType());
+            HeadRotation headRotationComponent = store.getComponent(playerRef, HeadRotation.getComponentType());
+
+            if (transformComponent != null && headRotationComponent != null) {
+                TeleportHistory teleportHistoryComponent = store.ensureAndGetComponent(playerRef, TeleportHistory.getComponentType());
+                teleportHistoryComponent.append(worldFrom, new Vector3d(transformComponent.getPosition()), headRotationComponent.getRotation().clone(),worldType +" '" + worldTo.getName() + "'");
+            }
+
+            Teleport teleportComponent = Teleport.createForPlayer(worldTo, spawnPoint);
+            store.addComponent(playerRef, Teleport.getComponentType(), teleportComponent);
+            LOGGER.atInfo().log("Teleport player to %s", worldTo.getName());
+        }
+    }
+
+    private static String resolveWorldType(@Nonnull World world){
+        String[] files = world.getSavePath().toFile().list();
+        if(files != null && Arrays.stream(files).toList().contains("instance.bson")){
+            return "Instance";
+        }else{
+            return "World";
+        }
+    }
+    public static void teleportPlayerToWorld(@Nonnull World worldTo,@Nonnull  Ref<EntityStore> playerRef) {
 
         if (!playerRef.isValid()) {
             LOGGER.atSevere().log("Failed to teleport player to world! (Cause: Invalid Ref)");
+            return;
         }
 
-            Store<EntityStore> store = playerRef.getStore();
+        Store<EntityStore> store = playerRef.getStore();
+        World worldFrom = store.getExternalData().getWorld();
+
+        worldFrom.execute(() -> {
+                addTeleportComponent(worldFrom,worldTo,store,playerRef,resolveWorldType(worldTo));
+            });
+    }
+
+    //use this if the given players are in different world
+    @SafeVarargs
+    public static void teleportPlayersToWorld(@Nonnull World worldTo, @Nonnull Ref<EntityStore>... playerRefs) {
+        for(Ref<EntityStore> ref : playerRefs){
+            if (!ref.isValid()) {
+                LOGGER.atSevere().log("Failed to teleport player to world! (Cause: Invalid Ref)");
+                continue;
+            }
+            Store<EntityStore> store = ref.getStore();
             World worldFrom = store.getExternalData().getWorld();
 
             worldFrom.execute(() -> {
-                Transform spawnPoint = new Transform(Constants.lobbyPos.getPosition(), Constants.lobbyRot);
-                if (spawnPoint != null) {
+                addTeleportComponent(worldFrom, worldTo,store,ref,resolveWorldType(worldTo));
+            });
+        }
+    }
 
-                    TransformComponent transformComponent = store.getComponent(playerRef, TransformComponent.getComponentType());
-                    HeadRotation headRotationComponent = store.getComponent(playerRef, HeadRotation.getComponentType());
-                    if (toWorld.getName().equals("RAE-Minigame")) {
-                        transformComponent = new TransformComponent(Constants.controlRoomPos.getPosition(), Constants.controlRoomRot);
-                        headRotationComponent = new HeadRotation(Constants.controlRoomRot);
-                        spawnPoint = new Transform(transformComponent.getPosition(), headRotationComponent.getRotation());
+    //use this, if all given players are in the same world
+    public static CompletableFuture<Void> teleportPlayersFromSameWorldToWorld(@Nonnull World worldFrom, @Nonnull World worldTo,@Nullable TriConsumer<PlayerRef,Ref<EntityStore>,Store<EntityStore>> additionalTask) {
+        return CompletableFuture.runAsync(()->{
+            worldFrom.execute(() -> {
+                Store<EntityStore> store = worldFrom.getEntityStore().getStore();
+                for(PlayerRef playerRef : worldFrom.getPlayerRefs()){
+
+                    Ref<EntityStore> ref = playerRef.getReference();
+                    if (ref == null || !ref.isValid()) {
+                        LOGGER.atSevere().log("Failed to teleport player to world! (Cause: Invalid Ref)");
+                        continue;
+                    }
+                    if(additionalTask != null){
+                        additionalTask.accept(playerRef,ref,store);
                     }
 
-                    if (transformComponent != null && headRotationComponent != null) {
-                        TeleportHistory teleportHistoryComponent = store.ensureAndGetComponent(playerRef, TeleportHistory.getComponentType());
-                        teleportHistoryComponent.append(worldFrom, new Vector3d(transformComponent.getPosition()), headRotationComponent.getRotation().clone(),"Instance '" + toWorld.getName() + "'");
-                    }
 
-                    Teleport teleportComponent = Teleport.createForPlayer(toWorld, spawnPoint);
-                    store.addComponent(playerRef, Teleport.getComponentType(), teleportComponent);
-                    LOGGER.atInfo().log("Teleport player to %s", toWorld.getName());
+                    addTeleportComponent(worldFrom,worldTo,store,ref,resolveWorldType(worldTo));
                 }
             });
+        });
+    }
+
+
+    public static CompletableFuture<Void> teleportPlayersFromMinigameToLobby(TriConsumer<PlayerRef,Ref<EntityStore>,Store<EntityStore>> additionalTask){
+        return teleportPlayersFromSameWorldToWorld(Universe.get().getWorld(DEFAULT_MINIGAME_NAME),Universe.get().getWorld(DEFAULT_LOBBY_NAME),additionalTask);
+    }
+
+    public static CompletableFuture<Void> teleportPlayersFromLobbyToMinigame(){
+        return teleportPlayersFromSameWorldToWorld(Universe.get().getWorld(DEFAULT_LOBBY_NAME),Universe.get().getWorld(DEFAULT_MINIGAME_NAME),null);
     }
 
     public static boolean shouldForceTp(){

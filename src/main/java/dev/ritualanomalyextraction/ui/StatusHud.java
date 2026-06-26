@@ -1,9 +1,9 @@
 package dev.ritualanomalyextraction.ui;
 
-import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.entities.player.hud.CustomUIHud;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import dev.ritualanomalyextraction.Constants;
 import dev.ritualanomalyextraction.RitualGameManager;
 
 import javax.annotation.Nonnull;
@@ -21,7 +21,7 @@ public class StatusHud extends CustomUIHud {
     @Override
     protected void build(@Nonnull UICommandBuilder uiCommandBuilder) {
 
-        if (getKey().equals("endSuccess")) {
+        if (getKey().equals(Constants.UI_END_SUCCESS)) {
             uiCommandBuilder.append("Hud/endScreenUI.ui");
             uiCommandBuilder.set("#Title.Text", "RITUAL COMPLETE");
             uiCommandBuilder.set("#Title.Style.TextColor", "#33ff66");
@@ -30,7 +30,7 @@ public class StatusHud extends CustomUIHud {
             return;
         }
 
-        if (getKey().equals("endFail")) {
+        if (getKey().equals(Constants.UI_END_FAIL)) {
             uiCommandBuilder.append("Hud/endScreenUI.ui");
             uiCommandBuilder.set("#Title.Text", "RITUAL FAILED");
             uiCommandBuilder.set("#Title.Style.TextColor", "#ff3333");
@@ -41,11 +41,11 @@ public class StatusHud extends CustomUIHud {
 
         uiCommandBuilder.append("Hud/statusUI.ui");
 
-        if (getKey().equals("spawn")) {
-            uiCommandBuilder.set("#TextField.Text", "To start the game type /start");
+        if (getKey().equals(Constants.UI_IDLE)) {
+            uiCommandBuilder.set("#TextField.Text", "To start the game type /start or press the button");
             uiCommandBuilder.set("#TextField.Style.TextColor", "#ffffff");
         }
-        if (getKey().equals("gameTimer")) {
+        if (getKey().equals(Constants.UI_TIMER)) {
             int seconds = gameTime % 60;
             int minutes = gameTime / 60;
             uiCommandBuilder.set("#TextField.Text", String.format("%d:%02d", minutes, seconds));
@@ -55,19 +55,22 @@ public class StatusHud extends CustomUIHud {
                 uiCommandBuilder.set("#TextField.Style.TextColor", "#ffffff");
             }
         }
-        if (getKey().equals("endFail")) {
+        //isn't this unreachable?
+        if (getKey().equals(Constants.UI_END_FAIL)) {
             uiCommandBuilder.set("#TextField.Text", "The ritual is broken... now are you.");
             uiCommandBuilder.set("#TextField.Style.TextColor", "#ff3333");
         }
-        if (getKey().equals("endSuccess")) {
+        //isn't this unreachable?
+        if (getKey().equals(Constants.UI_END_SUCCESS)) {
             uiCommandBuilder.set("#TextField.Text", "The ritual has been complete!");
             uiCommandBuilder.set("#TextField.Style.TextColor", "#33ff66");
         }
-        if (getKey().equals("reset")) {
+
+        if (getKey().equals(Constants.UI_RESET)) {
             uiCommandBuilder.set("#TextField.Text", "Resetting the game... Stand by");
             uiCommandBuilder.set("#TextField.Style.TextColor", "#ff3333");
         }
-        if (getKey().equals("ready")) {
+        if (getKey().equals(Constants.UI_READY)) {
             uiCommandBuilder.set("#TextField.Text", "Game is ready: /start");
             uiCommandBuilder.set("#TextField.Style.TextColor", "#ffffff");
         }

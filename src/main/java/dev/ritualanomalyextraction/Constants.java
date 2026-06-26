@@ -7,7 +7,6 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import org.joml.Vector3i;
 
 import java.util.List;
-import java.util.Map;
 
 public class Constants {
 
@@ -84,5 +83,14 @@ public class Constants {
     public static final Integer gameTimeLimit = 900;
 
     //Celebration time in seconds
-    public static final Integer celebrationTime = 15;
+    public static final Integer celebrationTime = 12;
+
+    //UI Keys
+
+    public static final String UI_END_SUCCESS = "RitualState-EndSuccess";
+    public static final String UI_END_FAIL = "RitualState-EndFail";
+    public static final String UI_IDLE = "RitualState-Idle";
+    public static final String UI_READY = "RitualState-Ready";
+    public static final String UI_TIMER = "RitualState-Timer";
+    public static final String UI_RESET = "RitualState-Reset";
 }
