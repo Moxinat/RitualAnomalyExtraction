@@ -64,7 +64,10 @@
     },
     {
       "SpawnerId": "Ritual_Animation_Sphere_Explosion",
-      "StartDelay": 8
+      "StartDelay": 8,
+      "PositionOffset": {
+        "Y": -6
+      }
     }
   ]
 }

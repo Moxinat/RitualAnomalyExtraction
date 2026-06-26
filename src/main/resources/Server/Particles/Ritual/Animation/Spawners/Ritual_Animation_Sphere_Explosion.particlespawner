@@ -6,36 +6,34 @@
         "Color": "#6f03ad"
       },
       "100": {
+        "Color": "#000000",
         "Scale": {
           "X": {
-            "Min": 0.01,
-            "Max": 0.01
+            "Min": 0.1,
+            "Max": 0.1
           },
           "Y": {
-            "Min": 64,
-            "Max": 64
+            "Min": 0.1,
+            "Max": 0.1
           }
-        },
-        "Color": "#000000"
+        }
       }
     },
     "InitialAnimationFrame": {
       "Scale": {
         "X": {
-          "Min": 0.4,
-          "Max": 0.4
+          "Min": 0.5,
+          "Max": 0.5
         },
         "Y": {
-          "Min": 0.2,
-          "Max": 0.2
+          "Min": 12,
+          "Max": 12
         }
       },
       "Color": "#6f03ad"
     },
-    "ScaleRatioConstraint": "None",
-    "UVOption": "RandomFlipUV"
+    "ScaleRatioConstraint": "None"
   },
-  "MaxConcurrentParticles": 600,
   "TrailSpawnerPositionMultiplier": 1,
   "TrailSpawnerRotationMultiplier": 1,
   "RenderMode": "Erosion",
@@ -43,7 +41,7 @@
   "ParticleRotationInfluence": "BillboardY",
   "ParticleLifeSpan": {
     "Min": 1,
-    "Max": 1
+    "Max": 2
   },
   "SpawnRate": {
     "Min": 80,
@@ -67,5 +65,9 @@
     "Y": {
       "Max": 4
     }
+  },
+  "TotalParticles": {
+    "Min": 80,
+    "Max": 80
   }
 }
