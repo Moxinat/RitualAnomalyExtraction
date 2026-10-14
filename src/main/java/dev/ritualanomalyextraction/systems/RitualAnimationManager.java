@@ -19,6 +19,7 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.TargetUtil;
 import dev.ritualanomalyextraction.Constants;
+import dev.ritualanomalyextraction.utils.WorldUtil;
 import org.joml.Vector3d;
 import org.joml.Vector3i;
 
@@ -218,9 +219,9 @@ public class RitualAnimationManager {
             return;
         }
         if(blockID == null||blockID.isBlank()|| blockID.equalsIgnoreCase("empty")){
-            world.execute(()-> world.setBlock(pos.x, pos.y, pos.z, BlockType.EMPTY_KEY));
+            WorldUtil.setBlock(world,pos, BlockType.EMPTY);
         }else {
-            world.execute(()-> world.setBlock(pos.x, pos.y, pos.z, blockID));
+            WorldUtil.setBlock(world,pos, blockID);
         }
         LOGGER.atInfo().log("Replaced a block!");
 
@@ -253,11 +254,9 @@ public class RitualAnimationManager {
             LOGGER.atSevere().log("No World! Aborting...");
             return;
         }
-        world.execute(()->{
-            for(Vector3i pos :goldPos){
-                world.setBlock(pos.x, pos.y, pos.z, blockID);
-            }
-        } );
+        for(Vector3i pos :goldPos){
+            WorldUtil.setBlock(world,pos, blockID);
+        }
 
     }
 

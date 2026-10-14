@@ -38,7 +38,7 @@
         }
       ]
     },
-    "BlockSoundSetId": "Brazier",
+    "BlockSoundSetId": "Brazier_Metal",
     "PhysicalMaterialId": "Stone",
     "Looping": true,
     "Particles": [
@@ -71,7 +71,8 @@
       "Definitions": {
         "On": {
           "AmbientSoundEventId": "SFX_Campfire_Default_Loop",
-          "InteractionSoundEventId": "SFX_Flame_Ignite"
+          "InteractionSoundEventId": "SFX_Flame_Ignite",
+          "BlockSoundSetId": "Brazier_Metal_Lit"
         },
         "Off": {
           "InteractionHint": "server.interactionHints.turnon",
@@ -79,7 +80,7 @@
           "Particles": null,
           "InteractionSoundEventId": "SFX_Torch_Off",
           "AmbientSoundEventId": null,
-          "BlockSoundSetId": "Stone"
+          "BlockSoundSetId": "Brazier_Metal"
         }
       }
     },

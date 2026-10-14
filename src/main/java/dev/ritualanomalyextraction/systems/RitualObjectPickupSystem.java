@@ -17,11 +17,10 @@ import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.transaction.ItemStackTransaction;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.universe.world.World;
-import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
 import dev.ritualanomalyextraction.Constants;
+import dev.ritualanomalyextraction.utils.WorldUtil;
 import org.joml.Vector3i;
 
 import javax.annotation.Nonnull;
@@ -71,15 +70,7 @@ public class RitualObjectPickupSystem extends EntityEventSystem<EntityStore, Use
     private static boolean removeWorldRitualObjectBlock(CommandBuffer<EntityStore> commandBuffer,
                                                         Vector3i pos) {
         World world = commandBuffer.getExternalData().getWorld();
-
-        WorldChunk chunk = world.getChunk(ChunkUtil.indexChunkFromBlock(pos.x, pos.z));
-
-        if (chunk == null) {
-            LOGGER.at(Level.WARNING).log("Cannot remove ritual object block at %s because chunk is null.", pos);
-            return false;
-        }
-
-        return chunk.setBlock(pos.x, pos.y, pos.z, BlockType.EMPTY);
+        return WorldUtil.setBlock(world,pos, BlockType.EMPTY);
     }
 
     public static boolean isRitualObjectItemId(String itemId) {
