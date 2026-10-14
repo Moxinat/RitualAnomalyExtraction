@@ -36,6 +36,7 @@ public class RitualGameManager {
     private World lobbyWorld;
 
     private boolean hasBeenReset = false;
+    private ScheduledFuture<?> TICKING;
 
     public enum GameState {
         IDLE,
@@ -129,6 +130,7 @@ public class RitualGameManager {
         state = GameState.RESETTING;
         gameStartMs = 0;
         gameTimeLimit = Constants.gameTimeLimit;
+        if(TICKING != null)TICKING.cancel(true);
 
         LOGGER.at(Level.INFO).log("Game manager reset.");
 
@@ -223,7 +225,7 @@ public class RitualGameManager {
     }
 
     private void updateGameTimer() {
-        HytaleServer.SCHEDULED_EXECUTOR.scheduleAtFixedRate(
+        TICKING = HytaleServer.SCHEDULED_EXECUTOR.scheduleAtFixedRate(
                 ()->{
                     if (state != GameState.CONTROL_ROOM) {
                         return;
@@ -256,6 +258,7 @@ public class RitualGameManager {
                         HytaleServer.SCHEDULED_EXECUTOR.schedule(this::reset, 2, TimeUnit.SECONDS);
                     }
                 }
-                , 0, 1, TimeUnit.SECONDS);
+                , 0, 1, TimeUnit.SECONDS
+        );
     }
 }
