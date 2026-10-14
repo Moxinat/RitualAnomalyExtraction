@@ -1,5 +1,5 @@
 {
-    "Group": "dev",
+    "Group": "RAE",
     "Name": "Ritual_at_Blacktide_Isle",
     "Version": "0.0.1",
     "Description": "Cooperative Hytale ritual anomaly extraction plugin.",
@@ -26,7 +26,7 @@
     "OptionalDependencies": {
         
     },
-    "ServerVersion": ">=0.5.3 <0.6.0",
+    "ServerVersion": ">=0.7.0 <0.8.0",
     "Main": "dev.ritualanomalyextraction.RitualAnomalyPlugin",
     "UpdateChecker": {
         "CurseForge": ""

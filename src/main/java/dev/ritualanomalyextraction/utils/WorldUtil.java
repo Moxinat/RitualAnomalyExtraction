@@ -8,21 +8,31 @@ import com.hypixel.hytale.function.consumer.TriConsumer;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.math.vector.Transform;
+import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
+import com.hypixel.hytale.server.core.asset.type.blocktype.config.RotationTuple;
 import com.hypixel.hytale.server.core.modules.entity.component.HeadRotation;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.entity.teleport.Teleport;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
+import com.hypixel.hytale.server.core.universe.world.SetBlockSettings;
 import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.universe.world.chunk.BlockOperations;
+import com.hypixel.hytale.server.core.universe.world.chunk.section.BlockSection;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import com.hypixel.hytale.server.core.universe.world.storage.GetChunkFlags;
+import com.hypixel.hytale.server.core.util.FillerBlockUtil;
 import dev.ritualanomalyextraction.RitualAnomalyPlugin;
 import dev.ritualanomalyextraction.RitualGameManager;
+import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 import org.joml.Vector3d;
+import org.joml.Vector3i;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
+import java.util.logging.Level;
 
 public class WorldUtil {
 
@@ -86,21 +96,24 @@ public class WorldUtil {
     }
 
     private static void addTeleportComponent(@Nonnull World worldFrom,@Nonnull  World worldTo,@Nonnull Store<EntityStore> store,@Nonnull  Ref<EntityStore> playerRef,@Nonnull String worldType){
-        Transform spawnPoint = worldTo.getWorldConfig().getSpawnProvider().getSpawnPoint(playerRef, store);
-        if (spawnPoint != null) {
+        worldTo.getWorldConfig().getSpawnProvider().getSpawnPointAsync(playerRef, store).thenAccept(
+                spawnPoint ->{
+                    if (spawnPoint != null) {
 
-            TransformComponent transformComponent = store.getComponent(playerRef, TransformComponent.getComponentType());
-            HeadRotation headRotationComponent = store.getComponent(playerRef, HeadRotation.getComponentType());
+                        TransformComponent transformComponent = store.getComponent(playerRef, TransformComponent.getComponentType());
+                        HeadRotation headRotationComponent = store.getComponent(playerRef, HeadRotation.getComponentType());
 
-            if (transformComponent != null && headRotationComponent != null) {
-                TeleportHistory teleportHistoryComponent = store.ensureAndGetComponent(playerRef, TeleportHistory.getComponentType());
-                teleportHistoryComponent.append(worldFrom, new Vector3d(transformComponent.getPosition()), headRotationComponent.getRotation().clone(),worldType +" '" + worldTo.getName() + "'");
-            }
+                        if (transformComponent != null && headRotationComponent != null) {
+                            TeleportHistory teleportHistoryComponent = store.ensureAndGetComponent(playerRef, TeleportHistory.getComponentType());
+                            teleportHistoryComponent.append(worldFrom, new Vector3d(transformComponent.getPosition()), headRotationComponent.getRotation().clone(),worldType +" '" + worldTo.getName() + "'");
+                        }
 
-            Teleport teleportComponent = Teleport.createForPlayer(worldTo, spawnPoint);
-            store.addComponent(playerRef, Teleport.getComponentType(), teleportComponent);
-            LOGGER.atInfo().log("Teleport player to %s", worldTo.getName());
-        }
+                        Teleport teleportComponent = Teleport.createForPlayer(worldTo, spawnPoint);
+                        store.addComponent(playerRef, Teleport.getComponentType(), teleportComponent);
+                        LOGGER.atInfo().log("Teleport player to %s", worldTo.getName());
+                    }
+                }
+        );
     }
 
     private static String resolveWorldType(@Nonnull World world){
@@ -158,6 +171,10 @@ public class WorldUtil {
                     if(additionalTask != null){
                         additionalTask.accept(playerRef,ref,store);
                     }
+                    if(additionalTask != null){
+                        additionalTask.accept(playerRef,ref,store);
+                    }
+
 
 
                     addTeleportComponent(worldFrom,worldTo,store,ref,resolveWorldType(worldTo));
@@ -177,6 +194,69 @@ public class WorldUtil {
 
     public static boolean shouldForceTp(){
         return RitualAnomalyPlugin.getInstance().getConfig().shouldForceTP();
+    }
+
+    public static boolean setBlock(World world, Vector3i position, String block){
+        return setBlock(world,position.x,position.y,position.z,block);
+    }
+    public static boolean setBlock(World world, Vector3i position, BlockType blockType){
+        return setBlock(world,position.x,position.y,position.z,blockType);
+    }
+    public static boolean setBlock(World world, int x, int y, int z, String block){
+        final var blockType = BlockType.fromString(block);
+        if(blockType == null) return false;
+        return setBlock(world,x,y,z,blockType);
+    }
+    public static boolean setBlock(World world, int x, int y, int z,@NonNullDecl BlockType blockType){
+        final var chunkStore = world.getChunkStore();
+        final var b = new Object(){boolean success;};
+        chunkStore.getChunkSectionReferenceAtBlockAsync(x, y, z, GetChunkFlags.SET_TICKING).thenAcceptAsync(sectionRef -> {
+            if (sectionRef == null || !sectionRef.isValid()) {
+                LOGGER.atWarning().log("Failed setting block at %s %s %s to %s",x,y,z,blockType.getId());
+                b.success = false;
+                return;
+            }
+            BlockOperations.setBlock(
+                    chunkStore,
+                    sectionRef,
+                    x,y,z,
+                    BlockType.getAssetMap().getIndex(blockType.getId()),
+                    blockType,
+                    RotationTuple.NONE_INDEX,
+                    FillerBlockUtil.NO_FILLER,
+                    SetBlockSettings.NONE);
+            b.success = true;
+        }, world).exceptionally(t -> {
+            LOGGER.at(Level.WARNING).withCause(t).log("Error while getting chunk section.");
+            b.success = false;
+            return null;
+        });
+        return b.success;
+    }
+    public static BlockType getBlockType(World world, int x, int y, int z){
+        return BlockType.getAssetMap().getAsset(getBlockID(world, x, y, z));
+    }
+    public static int getBlockID(World world, int x, int y, int z){
+        final var chunkStore = world.getChunkStore();
+        final var b = new Object(){int blockID;};
+        chunkStore.getChunkSectionReferenceAtBlockAsync(x, y, z, GetChunkFlags.SET_TICKING).thenAcceptAsync(sectionRef -> {
+            if (sectionRef == null || !sectionRef.isValid()) {
+                LOGGER.atWarning().log("Failed getting block at %s %s %s",x,y,z);
+                return;
+            }
+
+            var blockSection = chunkStore.getStore().getComponent(sectionRef, BlockSection.getComponentType());
+            if(blockSection == null){
+                LOGGER.atWarning().log("Failed getting BlockSection for %s %s %s",x,y,z);
+                return;
+            }
+
+            b.blockID  = blockSection.get(x, y, z);
+        }, world).exceptionally(t -> {
+            LOGGER.at(Level.WARNING).withCause(t).log("Error while getting chunk section.");
+            return null;
+        });
+        return b.blockID;
     }
 }
 

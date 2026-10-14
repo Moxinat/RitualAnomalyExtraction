@@ -1,11 +1,10 @@
 package dev.ritualanomalyextraction.systems;
 
 import com.hypixel.hytale.logger.HytaleLogger;
-import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.universe.world.World;
-import com.hypixel.hytale.server.core.universe.world.chunk.WorldChunk;
 import dev.ritualanomalyextraction.Constants;
+import dev.ritualanomalyextraction.utils.WorldUtil;
 import org.joml.Vector3i;
 
 import java.util.ArrayList;
@@ -42,7 +41,7 @@ public final class RitualObjectSpawnManager {
             String blockId = Constants.ritualObjectsWorldID.get(i);
             Vector3i pos = shuffledSpots.get(i);
 
-            boolean success = setBlock(world, pos, blockId);
+            boolean success = WorldUtil.setBlock(world, pos, blockId);
 
             if (success) {
                 spawnedPositions.add(new Vector3i(pos));
@@ -58,38 +57,14 @@ public final class RitualObjectSpawnManager {
         if (world == null) {
             return;
         }
+        for (Vector3i pos : spawnedPositions) {
+            WorldUtil.setBlock(world, pos,BlockType.EMPTY);
+        }
 
-        world.execute(() -> {
-            for (Vector3i pos : spawnedPositions) {
-                clearBlock(world, pos);
-            }
-        });
 
         spawnedPositions.clear();
 
         LOGGER.at(Level.INFO).log("Cleared spawned ritual objects.");
-    }
-
-    private static boolean setBlock(World world, Vector3i pos, String blockId) {
-        WorldChunk chunk = world.getChunk(ChunkUtil.indexChunkFromBlock(pos.x, pos.z));
-
-        if (chunk == null) {
-            LOGGER.at(Level.WARNING).log("Cannot set block '%s' at %s: chunk is null.", blockId, pos);
-            return false;
-        }
-
-        return chunk.setBlock(pos.x, pos.y, pos.z, blockId);
-    }
-
-    private static void clearBlock(World world, Vector3i pos) {
-        WorldChunk chunk = world.getChunk(ChunkUtil.indexChunkFromBlock(pos.x, pos.z));
-
-        if (chunk == null) {
-            LOGGER.at(Level.WARNING).log("Cannot clear block at %s: chunk is null.", pos);
-            return;
-        }
-
-        world.execute(()->chunk.setBlock(pos.x, pos.y, pos.z, BlockType.EMPTY));
     }
 
     public static List<Vector3i> getSpawnedPositions() {
