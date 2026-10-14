@@ -7,27 +7,31 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import org.joml.Vector3i;
 
 import java.util.List;
-import java.util.Map;
 
 public class Constants {
 
     //Initial spawn constants
+    @Deprecated
     public static final World lobbyWorld = Universe.get().getWorld("RAE-Lobby");
 
 
     //Control room constants
     public static String miniGameWorldName = "RAE-Minigame";
+    @Deprecated
     public static final World controlRoomWorld = Universe.get().getWorld("RAE-Minigame");
 
 
     //Ritual object spawn constants
+    @Deprecated
     public static final World ritualWorld = Universe.get().getWorld("RAE-Minigame");
+    @Deprecated
     public static final List<String> ritualObjectsWorldID = List.of(
             "Ritual_Active_Pentacle",
             "Ritual_Blood_Effigy",
             "Ritual_Ghost_Candle",
             "Ritual_Soul_Lantern"
     );
+    @Deprecated
     public static final List<Vector3i> ritualObjectSpawnSpots = List.of(
             new Vector3i(46, 134, -14), // church back
             new Vector3i(-24, 107, -213), // windmill
@@ -41,20 +45,21 @@ public class Constants {
     );
 
     //Pickup system constants
+    @Deprecated
     public static final List<String> ritualObjectsWorldToItem = List.of(
             "Ritual_Active_Pentacle",
             "Ritual_Blood_Effigy",
             "Ritual_Ghost_Candle",
             "Ritual_Soul_Lantern"
     );
-
+    @Deprecated
     public static final List<Vector3i> ritualCircleSpawnSpots = List.of(
             new Vector3i(36, 109, -7),
             new Vector3i(32, 109, -11),
             new Vector3i(28, 109, -7),
             new Vector3i(32, 109, -3)
     );
-
+    @Deprecated
     public static final List<Vector3i> ritualCircleSpawnSpotsRot = List.of(
             new Vector3i(0, 90, 0),
             new Vector3i(0, 180, 0),
@@ -62,6 +67,7 @@ public class Constants {
             new Vector3i(0, 0, 0)
     );
 
+    @Deprecated
     public static final List<Transform> gameSailorSpawn = List.of(
             new Transform(46, 134, 18), //church cliff
             new Transform(-110, 120, 111), //lighthouse path
@@ -81,7 +87,8 @@ public class Constants {
     public static final String ritualPedestalID = "Ritual_Pedestal";
 
     //Game time limit in seconds
-    public static final Integer gameTimeLimit = 900;
+    @Deprecated
+    public static final Integer gameTimeLimit = 120;
 
     //Celebration time in seconds
     public static final Integer celebrationTime = 12;

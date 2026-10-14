@@ -3,8 +3,9 @@ package dev.ritualanomalyextraction.systems;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.universe.world.World;
-import dev.ritualanomalyextraction.Constants;
+import dev.ritualanomalyextraction.asset.GameConfig;
 import dev.ritualanomalyextraction.utils.WorldUtil;
+import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 import org.joml.Vector3i;
 
 import java.util.ArrayList;
@@ -21,24 +22,25 @@ public final class RitualObjectSpawnManager {
     private RitualObjectSpawnManager() {
     }
 
-    public static void spawnRandomRitualObjects(World world) {
+    public static void spawnRandomRitualObjects(World world,@NonNullDecl GameConfig config) {
+        var ritualItemList = new ArrayList<>(config.getItemIdModelIdMap().keySet());
         if (world == null) {
             LOGGER.at(Level.WARNING).log("Cannot spawn ritual objects: world is null.");
             return;
         }
 
-        if (Constants.ritualObjectSpawnSpots.size() < Constants.ritualObjectsWorldID.size()) {
+        if (config.getPossibleItemLocations().size() < ritualItemList.size()) {
             LOGGER.at(Level.WARNING).log("Not enough ritual object spawn spots configured.");
             return;
         }
 
         clearSpawnedObjects(world);
 
-        List<Vector3i> shuffledSpots = new ArrayList<>(Constants.ritualObjectSpawnSpots);
+        List<Vector3i> shuffledSpots = new ArrayList<>(config.getPossibleItemLocations());
         Collections.shuffle(shuffledSpots);
 
-        for (int i = 0; i < Constants.ritualObjectsWorldID.size(); i++) {
-            String blockId = Constants.ritualObjectsWorldID.get(i);
+        for (int i = 0; i < ritualItemList.size(); i++) {
+            String blockId = ritualItemList.get(i);
             Vector3i pos = shuffledSpots.get(i);
 
             boolean success = WorldUtil.setBlock(world, pos, blockId);

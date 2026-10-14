@@ -16,6 +16,7 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.npc.INonPlayerCharacter;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.NPCPlugin;
+import dev.ritualanomalyextraction.asset.GameConfig;
 import dev.ritualanomalyextraction.systems.PedestalSystem;
 import dev.ritualanomalyextraction.systems.RitualAnimationManager;
 import dev.ritualanomalyextraction.systems.RitualObjectSpawnManager;
@@ -35,8 +36,14 @@ public class RitualGameManager {
     private World miniGameWorld;
     private World lobbyWorld;
 
-    private boolean hasBeenReset = false;
+    private GameConfig gameConfig;
     private ScheduledFuture<?> TICKING;
+
+    private static RitualGameManager INSTANCE;
+
+    public RitualGameManager(){
+        INSTANCE = this;
+    }
 
     public enum GameState {
         IDLE,
@@ -51,14 +58,21 @@ public class RitualGameManager {
     private long gameStartMs = 0;
     private int gameTimeLimit;
 
-    public void onPlayerReady() {
+    public void onPlayerReady(){
+        onPlayerReady(GameConfig.getAssetMap().getAsset("Default"));
+    }
+    public void onPlayerReady(GameConfig gameConfig) {
         if (state != GameState.IDLE) {
             return;
         }
 
+        this.gameConfig = gameConfig;
+        if(this.gameConfig == null) return;
+
+
         state = GameState.CONTROL_ROOM;
         gameStartMs = System.currentTimeMillis();
-        gameTimeLimit = Constants.gameTimeLimit;
+        gameTimeLimit = gameConfig.getGameTime();
 
         LOGGER.at(Level.INFO).log("Players ready. Game state changed to CONTROL_ROOM.");
 
@@ -76,7 +90,7 @@ public class RitualGameManager {
             miniGameWorld.sendMessage(Message.raw("Find the ritual objects and place them on the pedestals."));
         });
 
-        miniGameWorld.execute(() -> RitualObjectSpawnManager.spawnRandomRitualObjects(miniGameWorld));
+        miniGameWorld.execute(() -> RitualObjectSpawnManager.spawnRandomRitualObjects(miniGameWorld,gameConfig));
 
         updateGameTimer();
     }
@@ -129,7 +143,8 @@ public class RitualGameManager {
     public void reset() {
         state = GameState.RESETTING;
         gameStartMs = 0;
-        gameTimeLimit = Constants.gameTimeLimit;
+        gameTimeLimit = 60;
+        gameConfig = null;
         if(TICKING != null)TICKING.cancel(true);
 
         LOGGER.at(Level.INFO).log("Game manager reset.");
@@ -165,7 +180,7 @@ public class RitualGameManager {
 
     public void spawnSailors() {
         Universe.get().getWorld(Constants.miniGameWorldName).execute( () -> {
-            for (Transform transform : Constants.gameSailorSpawn) {
+            for (Transform transform : gameConfig.getSailorSpawnLocations()) {
                 Pair<Ref<EntityStore>, INonPlayerCharacter> monster = NPCPlugin.get().spawnNPC(Universe.get().getWorld(Constants.miniGameWorldName).getEntityStore().getStore(), "RAE_Monster_NPC_Role", null, transform.getPosition(), Constants.ritualMonsterSpawnRot);
                 LOGGER.atInfo().log("Spawned Sailor at %s", transform.getPosition());
             }
@@ -220,8 +235,16 @@ public class RitualGameManager {
         return gameTimeLimit;
     }
 
+    public GameConfig getGameConfig() {
+        return gameConfig;
+    }
+
     public RitualGameManager getGameManager() {
         return this;
+    }
+
+    public static RitualGameManager getInstance(){
+        return INSTANCE;
     }
 
     private void updateGameTimer() {

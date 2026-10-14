@@ -20,6 +20,8 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.universe.world.World;
 import dev.ritualanomalyextraction.Constants;
+import dev.ritualanomalyextraction.RitualGameManager;
+import dev.ritualanomalyextraction.asset.GameConfig;
 import dev.ritualanomalyextraction.utils.WorldUtil;
 import org.joml.Vector3i;
 
@@ -73,12 +75,12 @@ public class RitualObjectPickupSystem extends EntityEventSystem<EntityStore, Use
         return WorldUtil.setBlock(world,pos, BlockType.EMPTY);
     }
 
-    public static boolean isRitualObjectItemId(String itemId) {
-        if (itemId == null) {
+    public static boolean isRitualObjectItemId(String itemId, GameConfig config) {
+        if (itemId == null|| config == null) {
             return false;
         }
 
-        return Constants.ritualObjectsWorldToItem.contains(itemId);
+        return config.getItemIdModelIdMap().containsKey(itemId);
     }
 
     public static void clearCarriedRitualObjectIfMatches(PlayerRef player, String itemId) {
@@ -98,7 +100,7 @@ public class RitualObjectPickupSystem extends EntityEventSystem<EntityStore, Use
             return;
         }
 
-        if (!isRitualObjectItemId(itemId)) {
+        if (!isRitualObjectItemId(itemId, RitualGameManager.getInstance().getGameConfig())) {
             return;
         }
 
@@ -132,7 +134,7 @@ public class RitualObjectPickupSystem extends EntityEventSystem<EntityStore, Use
             return;
         }
 
-        if (!Constants.ritualObjectsWorldToItem.contains(rawWorldBlockId)) {
+        if (!RitualGameManager.getInstance().getGameConfig().getItemIdModelIdMap().containsKey(rawWorldBlockId)) {
             return;
         }
 

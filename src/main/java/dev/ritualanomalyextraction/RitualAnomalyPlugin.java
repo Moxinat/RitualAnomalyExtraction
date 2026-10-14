@@ -1,12 +1,17 @@
 package dev.ritualanomalyextraction;
 
+import com.hypixel.hytale.assetstore.map.DefaultAssetMap;
 import com.hypixel.hytale.logger.HytaleLogger;
+import com.hypixel.hytale.server.core.asset.HytaleAssetStore;
+import com.hypixel.hytale.server.core.asset.type.item.config.Item;
+import com.hypixel.hytale.server.core.asset.type.model.config.ModelAsset;
 import com.hypixel.hytale.server.core.event.events.ecs.UseBlockEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerConnectEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
+import dev.ritualanomalyextraction.asset.GameConfig;
 import dev.ritualanomalyextraction.commands.ResetCommand;
 import com.hypixel.hytale.server.core.util.Config;
 import dev.ritualanomalyextraction.commands.RaeGroupCommands;
@@ -37,6 +42,14 @@ public class RitualAnomalyPlugin extends JavaPlugin {
     protected void setup() {
         instance = this;
         CONFIG.save().thenRun(()->CONFIG_MANAGER = new RaeConfig.RaeConfigManager(CONFIG));
+
+        this.getAssetRegistry().register(HytaleAssetStore.builder(GameConfig.class, new DefaultAssetMap<>())
+                        .loadsAfter(Item.class)
+                        .loadsAfter(ModelAsset.class)
+                        .setCodec(GameConfig.CODEC)
+                        .setPath("Game/Config")
+                        .setKeyFunction(GameConfig::getId)
+                .build());
 
         RitualProgressTracker.setGameManager(gameManager);
 

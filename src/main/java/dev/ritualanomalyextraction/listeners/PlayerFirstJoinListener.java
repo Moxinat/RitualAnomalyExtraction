@@ -40,7 +40,7 @@ public class PlayerFirstJoinListener {
             return;
         }
 
-        if (Constants.lobbyWorld == null) {
+        if (Universe.get().getWorld("RAE-Lobby")== null) {
             LOGGER.at(Level.WARNING).log("Spawn world is null");
             return;
         }
@@ -71,7 +71,7 @@ public class PlayerFirstJoinListener {
             if (gameManager.getState() == RitualGameManager.GameState.CONTROL_ROOM) {
                 player.getHudManager().resetHud(playerRef);
                 player.getHudManager().addCustomHud(playerRef, new StatusHud(playerRef, Constants.UI_TIMER, gameManager));
-                assert Constants.controlRoomWorld != null;
+                assert Universe.get().getWorld("RAE-Minigame") != null;
                 WorldUtil.teleportPlayersFromLobbyToMinigame();
             }
         }

@@ -31,6 +31,7 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.ritualanomalyextraction.Constants;
+import dev.ritualanomalyextraction.RitualGameManager;
 import dev.ritualanomalyextraction.components.RitualPedestalComponent;
 import com.hypixel.hytale.server.core.Message;
 
@@ -165,7 +166,7 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
         if (pedestal.hasItem()) {
             String placedItemId = pedestal.getPlacedItemId();
 
-            if (RitualObjectPickupSystem.isRitualObjectItemId(placedItemId) && RitualObjectPickupSystem.isCarryingRitualObject(player)) {
+            if (RitualObjectPickupSystem.isRitualObjectItemId(placedItemId, RitualGameManager.getInstance().getGameConfig()) && RitualObjectPickupSystem.isCarryingRitualObject(player)) {
                 player.sendMessage(Message.raw("You are already carrying a ritual object."));
                 return;
             }
@@ -221,7 +222,7 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
 
         RitualProgressTracker.onObjectPlaced(player, itemId);
 
-        if (RitualObjectPickupSystem.isRitualObjectItemId(itemId)) {
+        if (RitualObjectPickupSystem.isRitualObjectItemId(itemId,RitualGameManager.getInstance().getGameConfig())) {
             RitualObjectPickupSystem.clearCarriedRitualObjectIfMatches(player, itemId);
         }
 
