@@ -1,0 +1,11 @@
+
+{
+  "Parent": "NPC_Attack_Melee_Damage",
+  "DamageCalculator": {
+    "Type": "Absolute",
+    "BaseDamage": {
+      "Physical": 1000
+    },
+    "RandomPercentageModifier": 0
+  }
+}

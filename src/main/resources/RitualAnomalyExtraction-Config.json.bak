@@ -1,0 +1,5 @@
+{
+  "SetLobbyAsDefaultWorld": true,
+  "CreateLobbyUponServerStart": true,
+  "ForceTP": true
+}

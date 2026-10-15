@@ -9,6 +9,7 @@
     "MaxSpeed": 7,
     "WanderRadius": 15,
     "ViewRange": 20,
+    "ViewSector": 120,
     "HearingRange": 12,
     "AbsoluteDetectionRange": 2,
     "AlertedRange": 25,
@@ -47,7 +48,12 @@
       3
     ],
     "CombatMovingRelativeSpeed": 0.5,
-    "Attack": "Root_NPC_Yeti_Attack",
+    "Attack": "Root_NPC_Attack_Melee",
+    "_InteractionVars": {
+      "Melee_Damage": {
+        "Interactions": ["RAE_Sailor_Damage"]
+      }
+    },
     "AttackPauseRange": [
       3,
       5
