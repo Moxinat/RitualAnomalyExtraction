@@ -4,7 +4,7 @@
   "DamageCalculator": {
     "Type": "Absolute",
     "BaseDamage": {
-      "Physical": 1000
+      "Physical": 50
     },
     "RandomPercentageModifier": 0
   }
