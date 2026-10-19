@@ -5,6 +5,7 @@ import com.hypixel.hytale.component.Holder;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.RemoveReason;
 import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.component.system.tick.TickingSystem;
 import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.math.vector.Transform;
 import com.hypixel.hytale.protocol.ColorLight;
@@ -24,10 +25,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * First draft: three red dynamic-light entities per monster.
  *
  * Call registerMonster on the monster's world thread after NPC spawning.
- * Call updateMonster (or updateAll for the world) from a future tick hook.
- * The lights are owned by the monster, so they are removed with it.
- *
- * No spawn/tick/reset hooks are wired up in this draft.
+ * Call registerMonster from the NPC spawn hook on the world thread.
+ * The Ticker updates all registered lights once per world tick.
+ * The lights are owned by their monster and are removed with it.
  */
 public final class MonsterRedLightSystem {
 
@@ -205,5 +205,14 @@ public final class MonsterRedLightSystem {
                 .add(new Vector3d(right).mul(FAR_SIDE));
 
         return new Vector3d[]{near, farLeft, farRight};
+    }
+
+    /** Updates registered monster lights once per world tick. */
+    public static final class Ticker extends TickingSystem<EntityStore> {
+
+        @Override
+        public void tick(float dt, int systemIndex, Store<EntityStore> store) {
+            MonsterRedLightSystem.updateAll(store);
+        }
     }
 }

@@ -54,6 +54,7 @@ public class RitualAnomalyPlugin extends JavaPlugin {
         this.getEntityStoreRegistry().registerSystem(new PedestalSystem());
         this.getEntityStoreRegistry().registerSystem(new PedestalSystem.BreakListener());
         this.getEntityStoreRegistry().registerSystem(new StartButtonSystem(gameManager));
+        this.getEntityStoreRegistry().registerSystem(new MonsterRedLightSystem.Ticker());
 
         LOGGER.atInfo().log("RitualAnomalyExtraction setup complete.");
     }
