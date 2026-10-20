@@ -1,11 +1,10 @@
 package dev.ritualanomalyextraction.systems;
 
-import com.hypixel.hytale.component.AddReason;
-import com.hypixel.hytale.component.Holder;
-import com.hypixel.hytale.component.Ref;
-import com.hypixel.hytale.component.RemoveReason;
-import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.component.*;
+import com.hypixel.hytale.component.query.Query;
+import com.hypixel.hytale.component.system.RefSystem;
 import com.hypixel.hytale.component.system.tick.TickingSystem;
+import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.math.vector.Transform;
 import com.hypixel.hytale.protocol.ColorLight;
@@ -14,6 +13,7 @@ import com.hypixel.hytale.server.core.modules.entity.component.DynamicLight;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.entity.tracker.NetworkId;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import org.joml.Vector3d;
 
 import java.util.ArrayList;
@@ -30,6 +30,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * The lights are owned by their monster and are removed with it.
  */
 public final class MonsterRedLightSystem {
+
+    private static final HytaleLogger LOGGER =
+            HytaleLogger.forEnclosingClass();
 
     private static final int LIGHT_COUNT = 3;
     private static final byte LIGHT_RADIUS = 3;
@@ -206,6 +209,63 @@ public final class MonsterRedLightSystem {
 
         return new Vector3d[]{near, farLeft, farRight};
     }
+
+
+    public static final class SpawnListener extends RefSystem<EntityStore> {
+
+        @Override
+        public Query<EntityStore> getQuery() {
+            return NPCEntity.getComponentType();
+        }
+
+        @Override
+        public void onEntityAdded(
+                Ref<EntityStore> ref,
+                AddReason reason,
+                Store<EntityStore> store,
+                CommandBuffer<EntityStore> commandBuffer) {
+
+            NPCEntity npc = commandBuffer.getComponent(
+                    ref, NPCEntity.getComponentType()
+            );
+
+            if (npc == null ||
+                    !"RAE_Monster_NPC_Role".equals(npc.getRoleName())) {
+                return;
+            }
+
+            LOGGER.atInfo().log(
+                    "[RedLight] Sailor added to ECS. Valid: %s",
+                    ref.isValid()
+            );
+
+            commandBuffer.run(s -> {
+                if (!ref.isValid()) {
+                    LOGGER.atInfo().log(
+                            "[RedLight] ERROR: Ref invalid after ECS add!"
+                    );
+                    return;
+                }
+
+                MonsterRedLightSystem.registerMonster(ref);
+            });
+        }
+
+        @Override
+        public void onEntityRemove(
+                Ref<EntityStore> ref,
+                RemoveReason reason,
+                Store<EntityStore> store,
+                CommandBuffer<EntityStore> commandBuffer) {
+
+            if (LIGHTS.containsKey(ref)) {
+                commandBuffer.run(s ->
+                        MonsterRedLightSystem.unregisterMonster(ref)
+                );
+            }
+        }
+    }
+
 
     /** Updates registered monster lights once per world tick. */
     public static final class Ticker extends TickingSystem<EntityStore> {

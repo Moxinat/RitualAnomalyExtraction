@@ -168,9 +168,6 @@ public class RitualGameManager {
         Universe.get().getWorld(Constants.miniGameWorldName).execute( () -> {
             for (Transform transform : Constants.gameSailorSpawn) {
                 Pair<Ref<EntityStore>, INonPlayerCharacter> monster = NPCPlugin.get().spawnNPC(Universe.get().getWorld(Constants.miniGameWorldName).getEntityStore().getStore(), "RAE_Monster_NPC_Role", null, transform.getPosition(), Constants.ritualMonsterSpawnRot);
-                if (monster != null && monster.left() != null) {
-                    MonsterRedLightSystem.registerMonster(monster.left());
-                }
                 LOGGER.atInfo().log("Spawned Sailor at %s", transform.getPosition());
             }
         });
