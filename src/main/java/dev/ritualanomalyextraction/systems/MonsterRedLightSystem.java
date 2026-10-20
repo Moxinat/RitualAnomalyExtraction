@@ -41,7 +41,10 @@ public final class MonsterRedLightSystem {
 
     private static void debug(String message, Object... args) {
         if (DEBUG_RED_LIGHT) {
-            LOGGER.atInfo().log("[RedLight] " + message, args);
+            LOGGER.atInfo().log(
+                    "%s",
+                    "[RedLight] " + String.format(message, args)
+            );
         }
     }
 
@@ -304,7 +307,11 @@ public final class MonsterRedLightSystem {
                 CommandBuffer<EntityStore> commandBuffer) {
 
             if (LIGHTS.containsKey(ref)) {
-                debug("Tracked monster is being removed from ECS");
+                debug(
+                        "Tracked monster removed: reason=%s, valid=%s",
+                        reason,
+                        ref.isValid()
+                );
                 commandBuffer.run(s ->
                         MonsterRedLightSystem.unregisterMonster(ref)
                 );
