@@ -30,11 +30,16 @@ import java.util.logging.Level;
 public class RitualAnimationManager {
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
+    @Deprecated
     private static final Vector3i controllerBlockPos = new Vector3i(32,114,-8);
+    @Deprecated
     private static final String controllerBlockID = "Ritual_Animation";
 
+    @Deprecated
     private static final String bloodyGoldID = "Rock_Gold_Brick_Ornate_Glowing_Bloody";
+    @Deprecated
     private static final String glowGoldID = "Rock_Gold_Brick_Ornate_Glowing";
+    @Deprecated
     private final static List<Vector3i> goldPos = List.of(
             //SouthEast
             new Vector3i(39,114,-4),
@@ -135,8 +140,10 @@ public class RitualAnimationManager {
             new Vector3i(32,108,-12)
     );
 
-    //searching are for ritual display entities
+    //searching area for ritual display entities
+    @Deprecated
     private static final Vector3d min = new Vector3d(28,108,-12);
+    @Deprecated
     private static final Vector3d max = new Vector3d(36,111,-4);
 
 
@@ -144,11 +151,13 @@ public class RitualAnimationManager {
     }
 
 
+    @Deprecated
     public static void reset(World world) {
         placeBlock(world,controllerBlockPos,null);
         replaceGoldPos(world,glowGoldID);
     }
 
+    @Deprecated
     public static void reset() {
         reset(Universe.get().getWorld(Constants.miniGameWorldName));
     }

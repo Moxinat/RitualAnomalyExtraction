@@ -28,6 +28,7 @@ import it.unimi.dsi.fastutil.Pair;
 import java.util.concurrent.*;
 import java.util.logging.Level;
 
+@Deprecated
 public class RitualGameManager {
 
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
@@ -164,7 +165,7 @@ public class RitualGameManager {
 
         HytaleServer.SCHEDULED_EXECUTOR.schedule(() -> InstancesPlugin.safeRemoveInstance(Universe.get().getWorld(Constants.miniGameWorldName)), 5, TimeUnit.SECONDS);
 
-        HytaleServer.SCHEDULED_EXECUTOR.schedule(WorldUtil::tryGenerateMinigameWorld, 10, TimeUnit.SECONDS);
+        HytaleServer.SCHEDULED_EXECUTOR.schedule(() -> WorldUtil.tryGenerateMinigameWorld(), 10, TimeUnit.SECONDS);
 
         HytaleServer.SCHEDULED_EXECUTOR.schedule(() -> {
             Universe.get().getWorld(WorldUtil.DEFAULT_LOBBY_NAME).execute( () -> {

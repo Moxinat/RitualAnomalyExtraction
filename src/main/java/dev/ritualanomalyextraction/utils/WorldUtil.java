@@ -24,6 +24,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.GetChunkFlags;
 import com.hypixel.hytale.server.core.util.FillerBlockUtil;
 import dev.ritualanomalyextraction.RitualAnomalyPlugin;
 import dev.ritualanomalyextraction.RitualGameManager;
+import dev.ritualanomalyextraction.asset.GameConfig;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 import org.joml.Vector3d;
 import org.joml.Vector3i;
@@ -61,6 +62,13 @@ public class WorldUtil {
         return true;
     }
 
+    public static CompletableFuture<World> generateInstance0(@NonNullDecl World fromWorld, String instanceCreationName, String instanceFolderName, Transform returnPoint){
+        LOGGER.atInfo().log("Trying to generate " + instanceCreationName);
+        CompletableFuture<World> worldFuture =  InstancesPlugin.get().spawnInstance(instanceFolderName, instanceCreationName, fromWorld, returnPoint);
+        LOGGER.atInfo().log("Created %s for Ritual Anomaly Extraction!", instanceCreationName);
+        return worldFuture;
+    }
+
     public static void trySetUpLobby() {
         if (alreadySetUpLobby) {
             return;
@@ -84,14 +92,25 @@ public class WorldUtil {
     public static void tryGenerateMinigameWorld() {
         if (Universe.get().getWorld(DEFAULT_MINIGAME_NAME) == null) {
             World fromWorld = Universe.get().getDefaultWorld();
-            TransformComponent transformComponent = new TransformComponent(new Vector3d(0,200,0), new Rotation3f(0,180,0));
-            if (!generateInstance(fromWorld,DEFAULT_MINIGAME_NAME, DEFAULT_MINIGAME_NAME, transformComponent.getTransform())) {
+            Transform transform = new Transform(new Vector3d(0,200,0), new Rotation3f(0,180,0));
+            if (!generateInstance(fromWorld,DEFAULT_MINIGAME_NAME, DEFAULT_MINIGAME_NAME, transform)) {
                 LOGGER.atSevere().log("Failed creating the Minigame for Ritual Anomaly Extraction!");
             } else {
                 LOGGER.atInfo().log("Created the Minigame for Ritual Anomaly Extraction!");
             }
         } else {
             LOGGER.atInfo().log("Minigame world already exists!");
+        }
+    }
+    public static CompletableFuture<World> tryGenerateMinigameWorld(GameConfig config,String name) {
+        if (Universe.get().getWorld(name) == null) {
+
+            World fromWorld = Universe.get().getDefaultWorld(); // change to lobby
+            Transform transform = new Transform(new Vector3d(0,200,0), new Rotation3f(0,180,0)); // Constant?
+            return generateInstance0(fromWorld,name, config.getMiniGameInstanceName(),transform);
+        } else {
+            LOGGER.atInfo().log("Minigame world already exists!");
+            return null;
         }
     }
 

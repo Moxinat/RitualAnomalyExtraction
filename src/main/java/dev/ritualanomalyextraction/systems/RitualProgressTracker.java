@@ -7,6 +7,7 @@ import dev.ritualanomalyextraction.RitualGameManager;
 
 import java.util.logging.Level;
 
+@Deprecated
 public final class RitualProgressTracker {
 
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();

@@ -19,8 +19,9 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.universe.world.World;
-import dev.ritualanomalyextraction.Constants;
 import dev.ritualanomalyextraction.RitualGameManager;
+import dev.ritualanomalyextraction.WipRitualGame;
+import dev.ritualanomalyextraction.WipRitualGameManager;
 import dev.ritualanomalyextraction.asset.GameConfig;
 import dev.ritualanomalyextraction.utils.WorldUtil;
 import org.joml.Vector3i;
@@ -95,12 +96,12 @@ public class RitualObjectPickupSystem extends EntityEventSystem<EntityStore, Use
         }
     }
 
-    public static void setCarriedRitualObjectIfEmpty(PlayerRef player, String itemId) {
+    public static void setCarriedRitualObjectIfEmpty(PlayerRef player, String itemId,GameConfig config) {
         if (player == null || itemId == null) {
             return;
         }
 
-        if (!isRitualObjectItemId(itemId, RitualGameManager.getInstance().getGameConfig())) {
+        if (!isRitualObjectItemId(itemId, config)) {
             return;
         }
 
@@ -134,7 +135,11 @@ public class RitualObjectPickupSystem extends EntityEventSystem<EntityStore, Use
             return;
         }
 
-        if (!RitualGameManager.getInstance().getGameConfig().getItemIdModelIdMap().containsKey(rawWorldBlockId)) {
+        String worldName = commandBuffer.getExternalData().getWorld().getName();
+        WipRitualGame game = WipRitualGameManager.gameFromWorldName(worldName);
+        if(game == null) return;
+
+        if (!game.getConfig().getItemIdModelIdMap().containsKey(rawWorldBlockId)) {
             return;
         }
 

@@ -32,6 +32,8 @@ import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.ritualanomalyextraction.Constants;
 import dev.ritualanomalyextraction.RitualGameManager;
+import dev.ritualanomalyextraction.WipRitualGame;
+import dev.ritualanomalyextraction.WipRitualGameManager;
 import dev.ritualanomalyextraction.components.RitualPedestalComponent;
 import com.hypixel.hytale.server.core.Message;
 
@@ -51,17 +53,21 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
         super(UseBlockEvent.Post.class);
     }
 
+    @Deprecated
     private static final Map<BlockPosition, RitualPedestalComponent> pedestalStates = new HashMap<>(4);
 
+    @Deprecated
     public static RitualPedestalComponent getOrCreatePedestal(BlockPosition pos) {
         BlockPosition key = new BlockPosition(pos);
         return pedestalStates.computeIfAbsent(key, ignored -> new RitualPedestalComponent());
     }
 
+    @Deprecated
     public static RitualPedestalComponent getPedestal(BlockPosition pos) {
         return pedestalStates.get(new BlockPosition(pos));
     }
 
+    @Deprecated
     public static void removePedestal(BlockPosition pos) {
         pedestalStates.remove(new BlockPosition(pos));
     }
@@ -74,6 +80,7 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
         return new Vector3d(pos.x + 0.5, pos.y + 0.74, pos.z + 0.5);
     }
 
+    //TODO make it compatible with the asset
     private static String resolveDisplayModelId(String itemId) {
         if (itemId == null || itemId.isBlank()) {
             return "RitualItemTest";
@@ -154,6 +161,10 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
             return;
         }
 
+        String worldName = commandBuffer.getExternalData().getWorld().getName();
+        WipRitualGame game = WipRitualGameManager.gameFromWorldName(worldName);
+        if(game == null) return;
+
         Ref<EntityStore> entity = event.getContext().getEntity();
         PlayerRef player = store.getComponent(entity, PlayerRef.getComponentType());
 
@@ -161,12 +172,13 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
             return;
         }
 
-        RitualPedestalComponent pedestal = getOrCreatePedestal(toBlockPosition(event.getTargetBlock()));
+        var pedestalMap = game.getPedestalStatesMap();
+        RitualPedestalComponent pedestal = pedestalMap.computeIfAbsent(toBlockPosition(event.getTargetBlock()), _ -> new RitualPedestalComponent());
 
         if (pedestal.hasItem()) {
             String placedItemId = pedestal.getPlacedItemId();
 
-            if (RitualObjectPickupSystem.isRitualObjectItemId(placedItemId, RitualGameManager.getInstance().getGameConfig()) && RitualObjectPickupSystem.isCarryingRitualObject(player)) {
+            if (RitualObjectPickupSystem.isRitualObjectItemId(placedItemId, game.getConfig()) && RitualObjectPickupSystem.isCarryingRitualObject(player)) {
                 player.sendMessage(Message.raw("You are already carrying a ritual object."));
                 return;
             }
@@ -176,11 +188,11 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
             if (giveTransaction.succeeded()) {
                 removeVisualItemEntity(commandBuffer, pedestal);
 
-                RitualProgressTracker.onObjectRemoved(player, placedItemId);
+                game.getRitualProgressTracker().onObjectRemoved(player, placedItemId);
 
                 pedestal.clear();
 
-                RitualObjectPickupSystem.setCarriedRitualObjectIfEmpty(player, placedItemId);
+                RitualObjectPickupSystem.setCarriedRitualObjectIfEmpty(player, placedItemId, game.getConfig());
             }
 
             return;
@@ -220,14 +232,15 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
         pedestal.setPlacedItemId(itemId);
         pedestal.setVisualItemEntity(visualItemEntity);
 
-        RitualProgressTracker.onObjectPlaced(player, itemId);
+        game.getRitualProgressTracker().onObjectRemoved(player,itemId);
 
-        if (RitualObjectPickupSystem.isRitualObjectItemId(itemId,RitualGameManager.getInstance().getGameConfig())) {
+        if (RitualObjectPickupSystem.isRitualObjectItemId(itemId,game.getConfig())) {
             RitualObjectPickupSystem.clearCarriedRitualObjectIfMatches(player, itemId);
         }
 
     }
 
+    @Deprecated
     public static void reset(){
         Universe.get().getWorld(WorldUtil.DEFAULT_MINIGAME_NAME).execute(()->{
 
@@ -268,13 +281,19 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
                 return;
             }
 
-            RitualPedestalComponent pedestal = PedestalSystem.getPedestal(toBlockPosition(event.getTargetBlock()));
+            String worldName = commandBuffer.getExternalData().getWorld().getName();
+            WipRitualGame game = WipRitualGameManager.gameFromWorldName(worldName);
+            if(game == null) return;
+
+            var pedestalMap = game.getPedestalStatesMap();
+            var blockPosition = toBlockPosition(event.getTargetBlock());
+            RitualPedestalComponent pedestal = pedestalMap.get(blockPosition);
 
             if (pedestal != null) {
                 PedestalSystem.removeVisualItemEntity(commandBuffer, pedestal);
             }
 
-            PedestalSystem.removePedestal(toBlockPosition(event.getTargetBlock()));
+            pedestalMap.remove(blockPosition);
         }
     }
 

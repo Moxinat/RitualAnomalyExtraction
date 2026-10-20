@@ -6,6 +6,7 @@ import com.hypixel.hytale.assetstore.AssetStore;
 import com.hypixel.hytale.assetstore.codec.AssetBuilderCodec;
 import com.hypixel.hytale.assetstore.map.DefaultAssetMap;
 import com.hypixel.hytale.assetstore.map.JsonAssetWithMap;
+import com.hypixel.hytale.builtin.instances.InstanceValidator;
 import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
@@ -16,6 +17,7 @@ import com.hypixel.hytale.math.vector.Transform;
 import com.hypixel.hytale.math.vector.Vector3iUtil;
 import com.hypixel.hytale.server.core.asset.type.item.config.Item;
 import com.hypixel.hytale.server.core.asset.type.model.config.ModelAsset;
+import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
 import com.hypixel.hytale.server.core.command.system.CommandSender;
 import com.hypixel.hytale.server.core.command.system.ParseResult;
 import com.hypixel.hytale.server.core.command.system.arguments.types.SingleArgumentType;
@@ -52,6 +54,20 @@ public class GameConfig implements JsonAssetWithMap<String, DefaultAssetMap<Stri
                     (c,v)->c.sailorSpawnLocations = v,
                     c-> c.sailorSpawnLocations
             ).addValidator(Validators.nonEmptyArray()).addValidator(Validators.uniqueInArray()).add()
+            //WARN animation is defined for the specific instance so others will fail
+            //TODO resolve this by adding another asset for tha animation
+            .append(new KeyedCodec<>("MiniGameInstanceName", Codec.STRING),
+                    (c,v)-> c.miniGameInstanceName = v,
+                    c -> c.miniGameInstanceName
+            ).addValidator(InstanceValidator.INSTANCE).add()
+            .append(new KeyedCodec<>("WarningTime", Codec.INTEGER),
+                    (c,v)->c.warningTime = v,
+                    c-> c.warningTime
+            ).addValidator(Validators.min(5)).add()
+            .append(new KeyedCodec<>("WarningSoundEvent", Codec.STRING),
+                    (c,v)->c.warningSoundEvent = v,
+                    c-> c.warningSoundEvent
+            ).addValidator(SoundEvent.VALIDATOR_CACHE.getValidator()).add()
             .build();
 
     private String id;
@@ -60,6 +76,9 @@ public class GameConfig implements JsonAssetWithMap<String, DefaultAssetMap<Stri
     private ItemModelPair[] possibleItems;
     private CommentedLocation[] possibleItemLocations;
     private CommentedLocation[] sailorSpawnLocations;
+    private String miniGameInstanceName;
+    private int warningTime = 60;
+    private String warningSoundEvent;
 
 
     private Map<String,String> itemIdModelIdMap;
@@ -87,6 +106,18 @@ public class GameConfig implements JsonAssetWithMap<String, DefaultAssetMap<Stri
             }
         }
         return itemIdModelIdMap;
+    }
+
+    public String getMiniGameInstanceName() {
+        return miniGameInstanceName;
+    }
+
+    public int getWarningTime() {
+        return warningTime;
+    }
+
+    public String getWarningSoundEvent() {
+        return warningSoundEvent;
     }
 
     public int getGameTime() {
