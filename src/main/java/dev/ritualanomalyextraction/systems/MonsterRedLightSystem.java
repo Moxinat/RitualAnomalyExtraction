@@ -8,9 +8,10 @@ import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.math.vector.Transform;
 import com.hypixel.hytale.protocol.ColorLight;
+import com.hypixel.hytale.server.core.asset.type.model.config.Model;
+import com.hypixel.hytale.server.core.asset.type.model.config.ModelAsset;
 import com.hypixel.hytale.server.core.entity.UUIDComponent;
-import com.hypixel.hytale.server.core.modules.entity.component.DynamicLight;
-import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
+import com.hypixel.hytale.server.core.modules.entity.component.*;
 import com.hypixel.hytale.server.core.modules.entity.tracker.NetworkId;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
@@ -49,7 +50,7 @@ public final class MonsterRedLightSystem {
     }
 
     private static final int LIGHT_COUNT = 3;
-    private static final byte LIGHT_RADIUS = 3;
+    private static final byte LIGHT_RADIUS = 8;
     private static final byte LIGHT_RED = 15;
 
     private static final double HEIGHT_OFFSET = 0.25;
@@ -92,6 +93,16 @@ public final class MonsterRedLightSystem {
         debug("Monster transform: position=%s, yaw=%s",
                 monsterTransform.getPosition(), monsterTransform.getRotation().yaw());
 
+        ModelAsset carrierAsset =
+                ModelAsset.getAssetMap().getAsset("LightCarrier");
+
+        if (carrierAsset == null) {
+            debug("ERROR: LightCarrier ModelAsset not found!");
+            return;
+        }
+
+        debug("LightCarrier ModelAsset loaded successfully");
+
         Vector3d[] positions = calculatePositions(monsterTransform);
         List<Ref<EntityStore>> lights = new ArrayList<>(LIGHT_COUNT);
 
@@ -100,6 +111,31 @@ public final class MonsterRedLightSystem {
                 Vector3d position = positions[i];
                 debug("Creating light %d/%d at %s", i + 1, LIGHT_COUNT, position);
                 Holder<EntityStore> holder = EntityStore.REGISTRY.newHolder();
+
+
+                Model carrierModel = Model.createUnitScaleModel(carrierAsset);
+
+                holder.addComponent(
+                        ModelComponent.getComponentType(),
+                        new ModelComponent(carrierModel)
+                );
+
+                holder.addComponent(
+                        PersistentModel.getComponentType(),
+                        new PersistentModel(carrierModel.toReference())
+                );
+
+                holder.addComponent(
+                        BoundingBox.getComponentType(),
+                        new BoundingBox(carrierModel.getBoundingBox())
+                );
+
+                holder.addComponent(
+                        PropComponent.getComponentType(),
+                        PropComponent.get()
+                );
+
+
                 holder.addComponent(
                         TransformComponent.getComponentType(),
                         new TransformComponent(position, new Rotation3f())

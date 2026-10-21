@@ -1,0 +1,20 @@
+
+{
+  "Model": "Items/lightcarrier/light_carrier.blockymodel",
+  "Texture": "Items/lightcarrier/lightcarrier.png",
+  "EyeHeight": 0.5,
+  "HitBox": {
+    "Max": {
+      "X": 0.5,
+      "Y": 1.0,
+      "Z": 0.5
+    },
+    "Min": {
+      "X": -0.5,
+      "Y": 0.0,
+      "Z": -0.5
+    }
+  },
+  "MinScale": 1.0,
+  "MaxScale": 1.0
+}
