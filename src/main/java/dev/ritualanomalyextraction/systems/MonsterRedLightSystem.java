@@ -50,11 +50,11 @@ public final class MonsterRedLightSystem {
     }
 
     private static final int LIGHT_COUNT = 3;
-    private static final byte LIGHT_RADIUS = 8;
+    private static final byte LIGHT_RADIUS = 4;
     private static final byte LIGHT_RED = 15;
 
-    private static final double HEIGHT_OFFSET = 0.25;
-    private static final double NEAR_FORWARD = 1.5;
+    private static final double HEIGHT_OFFSET = 1;
+    private static final double NEAR_FORWARD = 2;
     private static final double FAR_FORWARD = 4.0;
     private static final double FAR_SIDE = 2.0;
 
@@ -112,8 +112,7 @@ public final class MonsterRedLightSystem {
                 debug("Creating light %d/%d at %s", i + 1, LIGHT_COUNT, position);
                 Holder<EntityStore> holder = EntityStore.REGISTRY.newHolder();
 
-
-                Model carrierModel = Model.createUnitScaleModel(carrierAsset);
+                Model carrierModel = Model.createScaledModel(carrierAsset, 1F);
 
                 holder.addComponent(
                         ModelComponent.getComponentType(),
@@ -121,20 +120,16 @@ public final class MonsterRedLightSystem {
                 );
 
                 holder.addComponent(
-                        PersistentModel.getComponentType(),
-                        new PersistentModel(carrierModel.toReference())
+                        EntityScaleComponent.getComponentType(),
+                        new EntityScaleComponent(1F)
                 );
 
-                holder.addComponent(
-                        BoundingBox.getComponentType(),
-                        new BoundingBox(carrierModel.getBoundingBox())
-                );
-
-                holder.addComponent(
-                        PropComponent.getComponentType(),
-                        PropComponent.get()
-                );
-
+                if (carrierModel.getBoundingBox() != null) {
+                    holder.addComponent(
+                            BoundingBox.getComponentType(),
+                            new BoundingBox(carrierModel.getBoundingBox())
+                    );
+                }
 
                 holder.addComponent(
                         TransformComponent.getComponentType(),
@@ -156,7 +151,7 @@ public final class MonsterRedLightSystem {
                 );
 
                 // Parent ownership handles cleanup when the NPC is removed.
-                Ref<EntityStore> light = store.addEntity(holder, AddReason.SPAWN, monster);
+                Ref<EntityStore> light = store.addEntity(holder, AddReason.SPAWN);
                 debug("Light %d spawn result: nonNull=%s, valid=%s",
                         i + 1, light != null, light != null && light.isValid());
                 if (light == null) {
