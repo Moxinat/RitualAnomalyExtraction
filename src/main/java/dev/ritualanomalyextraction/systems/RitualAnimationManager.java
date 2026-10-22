@@ -13,12 +13,10 @@ import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
 import com.hypixel.hytale.server.core.entity.effect.EffectControllerComponent;
 import com.hypixel.hytale.server.core.modules.entity.component.ModelComponent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.SoundUtil;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.TargetUtil;
-import dev.ritualanomalyextraction.Constants;
 import dev.ritualanomalyextraction.utils.WorldUtil;
 import org.joml.Vector3d;
 import org.joml.Vector3i;
@@ -151,16 +149,11 @@ public class RitualAnimationManager {
     }
 
 
-    @Deprecated
     public static void reset(World world) {
         placeBlock(world,controllerBlockPos,null);
         replaceGoldPos(world,glowGoldID);
     }
 
-    @Deprecated
-    public static void reset() {
-        reset(Universe.get().getWorld(Constants.miniGameWorldName));
-    }
 
     public static void play(World world) {
         HytaleServer.SCHEDULED_EXECUTOR.schedule(
@@ -179,10 +172,6 @@ public class RitualAnimationManager {
                 1,
                 TimeUnit.SECONDS
         );
-    }
-
-    public static void play() {
-        play(Universe.get().getWorld(Constants.miniGameWorldName));
     }
 
     private static void applyEntityEffects(World world){
@@ -228,9 +217,9 @@ public class RitualAnimationManager {
             return;
         }
         if(blockID == null||blockID.isBlank()|| blockID.equalsIgnoreCase("empty")){
-            WorldUtil.setBlock(world,pos, BlockType.EMPTY);
+            WorldUtil.setBlock(world,pos, BlockType.EMPTY,null,null);
         }else {
-            WorldUtil.setBlock(world,pos, blockID);
+            WorldUtil.setBlock(world,pos, blockID,null,null);
         }
         LOGGER.atInfo().log("Replaced a block!");
 
@@ -264,7 +253,7 @@ public class RitualAnimationManager {
             return;
         }
         for(Vector3i pos :goldPos){
-            WorldUtil.setBlock(world,pos, blockID);
+            WorldUtil.setBlock(world,pos, blockID,null,null);
         }
 
     }

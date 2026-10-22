@@ -8,12 +8,11 @@ import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.EntityEventSystem;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.protocol.InteractionType;
-import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.event.events.ecs.UseBlockEvent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import dev.ritualanomalyextraction.RitualGameManager;
+import dev.ritualanomalyextraction.RitualGame;
 
 import javax.annotation.Nonnull;
 import java.util.Locale;
@@ -26,11 +25,9 @@ public class StartButtonSystem extends EntityEventSystem<EntityStore, UseBlockEv
     private static final String START_BUTTON_PRESSED_ID = "*button_block_state_definitions_pressed";
     private static final String START_BUTTON_PRESSED_ALT_ID = "*button_block_state_definitions_pressedalt";
 
-    private final RitualGameManager gameManager;
-
-    public StartButtonSystem(RitualGameManager gameManager) {
+    public StartButtonSystem() {
         super(UseBlockEvent.Post.class);
-        this.gameManager = gameManager;
+
 
         LOGGER.at(Level.INFO).log("StartButtonSystem registered.");
     }
@@ -70,6 +67,6 @@ public class StartButtonSystem extends EntityEventSystem<EntityStore, UseBlockEv
 
         LOGGER.at(Level.INFO).log("Start button used by player '%s'.", playerRef);
 
-        gameManager.onPlayerReady();
+        new RitualGame();
     }
 }

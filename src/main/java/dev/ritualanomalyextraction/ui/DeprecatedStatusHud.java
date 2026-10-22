@@ -4,10 +4,8 @@ import com.hypixel.hytale.server.core.entity.entities.player.hud.CustomUIHud;
 import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import dev.ritualanomalyextraction.Constants;
-import dev.ritualanomalyextraction.RitualGameManager;
 
 import javax.annotation.Nonnull;
-import java.awt.*;
 
 //Rework when we have Noesis
 @Deprecated
@@ -20,6 +18,7 @@ public class DeprecatedStatusHud extends CustomUIHud {
         this.gameTime = gameTime;
     }
 
+    //TODO rework this
     @Override
     protected void build(@Nonnull UICommandBuilder uiCommandBuilder) {
 

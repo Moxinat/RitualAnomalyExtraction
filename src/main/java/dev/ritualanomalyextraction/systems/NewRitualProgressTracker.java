@@ -3,7 +3,7 @@ package dev.ritualanomalyextraction.systems;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import dev.ritualanomalyextraction.WipRitualGame;
+import dev.ritualanomalyextraction.RitualGame;
 
 import java.util.logging.Level;
 
@@ -16,9 +16,9 @@ public final class NewRitualProgressTracker {
     private boolean ritualStarted = false;
 
 
-    private final WipRitualGame game;
+    private final RitualGame game;
 
-    public NewRitualProgressTracker(WipRitualGame game) {
+    public NewRitualProgressTracker(RitualGame game) {
         this.game = game;
     }
 

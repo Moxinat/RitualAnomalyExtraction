@@ -11,7 +11,7 @@ import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.ritualanomalyextraction.Constants;
 import dev.ritualanomalyextraction.RitualGameManager;
-import dev.ritualanomalyextraction.ui.StatusHud;
+import dev.ritualanomalyextraction.ui.DeprecatedStatusHud;
 import dev.ritualanomalyextraction.utils.WorldUtil;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public class PlayerFirstJoinListener {
 
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
-    public static void onPlayerReady(PlayerReadyEvent event, RitualGameManager gameManager) {
+    public static void onPlayerReady(PlayerReadyEvent event) {
 
         Ref<EntityStore> playerEntityRef = event.getPlayerRef();
 
@@ -55,25 +55,8 @@ public class PlayerFirstJoinListener {
 
         //only teleport the player to the current game world, if they newly joined the server
         if(NewPlayersList.checkAndConsumeNewPlayer(playerRef)){
-
-            if (gameManager.getState() != RitualGameManager.GameState.CONTROL_ROOM) {
-                player.getHudManager().resetHud(playerRef);
-
-                if (gameManager.getState() == RitualGameManager.GameState.RESETTING) {
-                    player.getHudManager().addCustomHud(playerRef, new StatusHud(playerRef, Constants.UI_RESET, gameManager));
-                }else{
-                    player.getHudManager().addCustomHud(playerRef, new StatusHud(playerRef, Constants.UI_IDLE, gameManager));
-                }
-
-                WorldUtil.teleportPlayerToWorld(Universe.get().getWorld(WorldUtil.DEFAULT_LOBBY_NAME),playerEntityRef);
-            }
-
-            if (gameManager.getState() == RitualGameManager.GameState.CONTROL_ROOM) {
-                player.getHudManager().resetHud(playerRef);
-                player.getHudManager().addCustomHud(playerRef, new StatusHud(playerRef, Constants.UI_TIMER, gameManager));
-                assert Universe.get().getWorld("RAE-Minigame") != null;
-                WorldUtil.teleportPlayersFromLobbyToMinigame();
-            }
+            player.getHudManager().addCustomHud(playerRef, new DeprecatedStatusHud(playerRef, Constants.UI_IDLE,-1));
+            WorldUtil.teleportPlayerToWorld(RitualGameManager.getLobby(),playerEntityRef);
         }
 
     }

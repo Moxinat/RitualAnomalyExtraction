@@ -43,15 +43,10 @@ public final class RitualObjectSpawnManager {
             String blockId = ritualItemList.get(i);
             Vector3i pos = shuffledSpots.get(i);
 
-            boolean success = WorldUtil.setBlock(world, pos, blockId);
-
-            if (success) {
+            WorldUtil.setBlock(world, pos, blockId,()->{
                 spawnedPositions.add(new Vector3i(pos));
-
                 LOGGER.at(Level.INFO).log("Spawned ritual object '%s' at %s.", blockId, pos);
-            } else {
-                LOGGER.at(Level.WARNING).log("Failed to spawn ritual object '%s' at %s.", blockId, pos);
-            }
+            },()-> LOGGER.at(Level.WARNING).log("Failed to spawn ritual object '%s' at %s.", blockId, pos));
         }
     }
 
@@ -60,7 +55,7 @@ public final class RitualObjectSpawnManager {
             return;
         }
         for (Vector3i pos : spawnedPositions) {
-            WorldUtil.setBlock(world, pos,BlockType.EMPTY);
+            WorldUtil.setBlock(world, pos,BlockType.EMPTY,null,null);
         }
 
 

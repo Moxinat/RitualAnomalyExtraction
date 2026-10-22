@@ -18,10 +18,7 @@ import com.hypixel.hytale.server.core.inventory.transaction.ItemStackTransaction
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
-import com.hypixel.hytale.server.core.universe.world.World;
 import dev.ritualanomalyextraction.RitualGameManager;
-import dev.ritualanomalyextraction.WipRitualGame;
-import dev.ritualanomalyextraction.WipRitualGameManager;
 import dev.ritualanomalyextraction.asset.GameConfig;
 import dev.ritualanomalyextraction.utils.WorldUtil;
 import org.joml.Vector3i;
@@ -34,6 +31,7 @@ import java.util.logging.Level;
 public class RitualObjectPickupSystem extends EntityEventSystem<EntityStore, UseBlockEvent.Post> {
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
+    //since a player is only in one game at the time we don't need to make it per game right?
     private static final Map<PlayerRef, String> carriedRitualObjects = new HashMap<>();
 
     public RitualObjectPickupSystem() {
@@ -68,12 +66,6 @@ public class RitualObjectPickupSystem extends EntityEventSystem<EntityStore, Use
 
     private static void sendAlreadyCarryingMessage(PlayerRef player) {
         player.sendMessage(Message.raw("You are already carrying a ritual object."));
-    }
-
-    private static boolean removeWorldRitualObjectBlock(CommandBuffer<EntityStore> commandBuffer,
-                                                        Vector3i pos) {
-        World world = commandBuffer.getExternalData().getWorld();
-        return WorldUtil.setBlock(world,pos, BlockType.EMPTY);
     }
 
     public static boolean isRitualObjectItemId(String itemId, GameConfig config) {
@@ -136,8 +128,11 @@ public class RitualObjectPickupSystem extends EntityEventSystem<EntityStore, Use
         }
 
         String worldName = commandBuffer.getExternalData().getWorld().getName();
-        WipRitualGame game = WipRitualGameManager.gameFromWorldName(worldName);
-        if(game == null) return;
+        final var game = RitualGameManager.gameFromWorldName(worldName);
+        if(game == null){
+            LOGGER.atWarning().log("World doesn't have a game");
+            return;
+        }
 
         if (!game.getConfig().getItemIdModelIdMap().containsKey(rawWorldBlockId)) {
             return;
@@ -188,15 +183,13 @@ public class RitualObjectPickupSystem extends EntityEventSystem<EntityStore, Use
 
         Vector3i targetBlock = event.getTargetBlock();
 
-        boolean removedBlock = removeWorldRitualObjectBlock(commandBuffer, targetBlock);
-
-        if (!removedBlock) {
+        WorldUtil.setBlock(commandBuffer.getExternalData().getWorld(), targetBlock,BlockType.EMPTY,null,()->{
             LOGGER.at(Level.WARNING).log(
                     "Player received ritual object '%s', but world block at %s could not be removed.",
                     rawWorldBlockId,
                     targetBlock
             );
-        }
+        });
 
         setCarriedRitualObject(player, rawWorldBlockId);
 

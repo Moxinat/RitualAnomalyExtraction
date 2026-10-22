@@ -13,6 +13,7 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import dev.ritualanomalyextraction.RitualGameManager;
 import dev.ritualanomalyextraction.utils.WorldUtil;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
@@ -30,7 +31,7 @@ public class RaeLobbyCommand extends AbstractPlayerCommand {
 
     @Override
     protected void execute(@NonNullDecl CommandContext commandContext, @NonNullDecl Store<EntityStore> store, @NonNullDecl Ref<EntityStore> ref, @NonNullDecl PlayerRef playerRef, @NonNullDecl World world) {
-        World lobbyWorld = Universe.get().getWorld(WorldUtil.DEFAULT_LOBBY_NAME);
+        World lobbyWorld = RitualGameManager.getLobby();
         boolean lobbyExists = lobbyWorld != null;
 
 

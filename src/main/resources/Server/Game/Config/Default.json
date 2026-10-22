@@ -165,5 +165,7 @@
         "Z": -217
       }
     }
-  ]
+  ],
+  "MiniGameInstanceName": "RAE-Minigame",
+  "WarningSoundEvent": "RAE_Time"
 }

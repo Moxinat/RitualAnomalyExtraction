@@ -12,13 +12,11 @@ import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import dev.ritualanomalyextraction.asset.GameConfig;
-import dev.ritualanomalyextraction.commands.ResetCommand;
 import com.hypixel.hytale.server.core.util.Config;
 import dev.ritualanomalyextraction.commands.RaeGroupCommands;
 import dev.ritualanomalyextraction.commands.StartCommand;
 import dev.ritualanomalyextraction.listeners.PlayerFirstJoinListener;
 import dev.ritualanomalyextraction.systems.*;
-import dev.ritualanomalyextraction.utils.WorldUtil;
 import dev.ritualanomalyextraction.utils.RaeConfig;
 
 import javax.annotation.Nonnull;
@@ -30,11 +28,9 @@ public class RitualAnomalyPlugin extends JavaPlugin {
     private final Config<RaeConfig> CONFIG = this.withConfig("RitualAnomalyExtraction-Config",RaeConfig.CODEC);
     private RaeConfig.RaeConfigManager CONFIG_MANAGER;
 
-    private final RitualGameManager gameManager;
-
     public RitualAnomalyPlugin(@Nonnull JavaPluginInit init) {
         super(init);
-        gameManager = new RitualGameManager();
+
         LOGGER.atInfo().log("RitualAnomalyExtraction constructed.");
     }
 
@@ -51,30 +47,28 @@ public class RitualAnomalyPlugin extends JavaPlugin {
                         .setKeyFunction(GameConfig::getId)
                 .build());
 
-        RitualProgressTracker.setGameManager(gameManager);
 
-        this.getEventRegistry().registerGlobal(PlayerReadyEvent.class,event -> PlayerFirstJoinListener.onPlayerReady(event, gameManager));
+
+        this.getEventRegistry().registerGlobal(PlayerReadyEvent.class, PlayerFirstJoinListener::onPlayerReady);
         this.getEventRegistry().registerGlobal(PlayerConnectEvent.class, PlayerFirstJoinListener::onNewConnection);
         this.getEventRegistry().registerGlobal(PlayerDisconnectEvent.class, PlayerFirstJoinListener::onConnectionRemoved);
 
         this.getCommandRegistry().registerCommand(new RaeGroupCommands("rae", "Ritual Anomaly Extraction commands"));
-        this.getCommandRegistry().registerCommand(new StartCommand("start", "Start the game", gameManager));
-        this.getCommandRegistry().registerCommand(new ResetCommand("reset", "Reset the game", gameManager));
+        this.getCommandRegistry().registerCommand(new StartCommand("start", "Start the game"));
 
         this.getEntityStoreRegistry().registerWorldEventType(UseBlockEvent.Post.class);
         this.getEntityStoreRegistry().registerSystem(new RitualObjectPickupSystem());
         this.getEntityStoreRegistry().registerSystem(new RitualObjectPickupSystem.DropRequestListener());
         this.getEntityStoreRegistry().registerSystem(new PedestalSystem());
         this.getEntityStoreRegistry().registerSystem(new PedestalSystem.BreakListener());
-        this.getEntityStoreRegistry().registerSystem(new StartButtonSystem(gameManager));
+        this.getEntityStoreRegistry().registerSystem(new StartButtonSystem());
 
         LOGGER.atInfo().log("RitualAnomalyExtraction setup complete.");
     }
 
     @Override
     protected void start() {
-        WorldUtil.trySetUpLobby();
-        WorldUtil.tryGenerateMinigameWorld();
+        RitualGameManager.createLobby();
     }
 
     @Override

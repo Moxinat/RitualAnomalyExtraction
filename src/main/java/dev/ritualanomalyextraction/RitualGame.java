@@ -9,11 +9,9 @@ import com.hypixel.hytale.math.vector.Transform;
 import com.hypixel.hytale.protocol.BlockPosition;
 import com.hypixel.hytale.protocol.SoundCategory;
 import com.hypixel.hytale.server.core.HytaleServer;
-import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.SoundUtil;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.npc.INonPlayerCharacter;
@@ -23,7 +21,6 @@ import dev.ritualanomalyextraction.asset.GameConfig;
 import dev.ritualanomalyextraction.components.RitualPedestalComponent;
 import dev.ritualanomalyextraction.systems.*;
 import dev.ritualanomalyextraction.ui.DeprecatedStatusHud;
-import dev.ritualanomalyextraction.ui.StatusHud;
 import dev.ritualanomalyextraction.utils.WorldUtil;
 import it.unimi.dsi.fastutil.Pair;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
@@ -35,69 +32,89 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
-public class WipRitualGame {
+public class RitualGame {
     public final static HytaleLogger LOGGER = RitualAnomalyPlugin.getInstance().getLogger().getSubLogger("Minigame");
 
 
-    public final HytaleLogger GAME_LOGGER;
-    private final int ID;
-    private final GameConfig CONFIG;
+    public HytaleLogger GAME_LOGGER;
+    private int ID;
+    private GameConfig CONFIG;
     private ScheduledFuture<?> TICKING;
     private RitualGameManager.GameState state;
     private int timeRemaining;
-    private final int warnTime;
+    private int warnTime;
 
     private World gameWorld;
 
     private final Map<BlockPosition, RitualPedestalComponent> pedestalStates = new HashMap<>(4);
-    private final NewRitualProgressTracker ritualProgressTracker;
+    private NewRitualProgressTracker ritualProgressTracker;
+
+    public RitualGame(){
+        var config = GameConfig.getAssetMap().getAsset("Default");
+        assert config != null;
+        new RitualGame(config);
+    }
 
     //TODO make the config a copy so id doesn't get accidentally deleted
-    public WipRitualGame(@NonNullDecl GameConfig config){
-        state = RitualGameManager.GameState.CONTROL_ROOM;
+    public RitualGame(@NonNullDecl GameConfig config){
+        state = RitualGameManager.GameState.BOOTING;
         CONFIG = config;
-        ID = WipRitualGameManager.takeNextID();
+        ID = RitualGameManager.takeNextID();
         ritualProgressTracker = new NewRitualProgressTracker(this);
         GAME_LOGGER = LOGGER.getSubLogger(String.valueOf(ID));
         timeRemaining = config.getGameTime();
         warnTime = config.getWarningTime();
         Objects.requireNonNull(WorldUtil.tryGenerateMinigameWorld(config, config.getMiniGameInstanceName() + ID)).thenAccept((world -> {
             gameWorld = world;
-            WipRitualGameManager.registerGame(this);
+            RitualGameManager.registerGame(this);
             spawnSailors();
-            //TODO update manager for different games
-            RitualObjectSpawnManager.spawnRandomRitualObjects(gameWorld,config);
 
-            WorldUtil.teleportPlayersFromLobbyToMinigame().thenRun(()->{
-                //I think it would be better to have an ui for these messages, instead if sending it into chat. Maybe with icons what ritual items are left to search for
-                gameWorld.sendMessage(Message.raw("Ritual Anomaly Extraction started."));
-                gameWorld.sendMessage(Message.raw("Find the ritual objects and place them on the pedestals."));
-                startTimeTicking();
-                state = RitualGameManager.GameState.RITUAL_ACTIVE;
-            });
+            gameWorld.execute(()-> RitualObjectSpawnManager.spawnRandomRitualObjects(gameWorld,CONFIG));
+
+            //I don't know why, but it needs some delay else I'm crashing with division by 0 (client only)
+            HytaleServer.SCHEDULED_EXECUTOR.schedule(this::start,1,TimeUnit.SECONDS);
         }));
 
     }
 
+    private void start(){
+        //TODO later only take players that are part of the "party", not sure how to do it without noesis yet
+        WorldUtil.teleportPlayersFromSameWorldToWorld(RitualGameManager.getLobby(),gameWorld,((playerRef, ref, store) -> {
+            Player player = store.getComponent(ref, Player.getComponentType());
+            assert player != null;
+            player.getHudManager().resetHud(playerRef);
+            playerRef.sendMessage(Constants.MESSAGE_START1);
+            playerRef.sendMessage(Constants.MESSAGE_START2);
+        })).thenRun(()->{
+            startTimeTicking();
+            state = RitualGameManager.GameState.RUNNING;
+        });
+    }
+
 
     public void end(){
-        TICKING.cancel(true);
+        LOGGER.atInfo().log("Game ended.");
+        TICKING.cancel(false);
+        state = RitualGameManager.GameState.DELETING;
         clearPedestals();
-        //TODO get the lobby world from manager
-        WorldUtil.teleportPlayersFromSameWorldToWorld(gameWorld,Universe.get().getWorld(WorldUtil.DEFAULT_LOBBY_NAME),(playerRef,ref, store)->{
+
+        WorldUtil.teleportPlayersFromSameWorldToWorld(gameWorld,RitualGameManager.getLobby(),(playerRef, ref, store)->{
             Player player = store.getComponent(ref, Player.getComponentType());
             assert player != null;
             // since the game isn't limited to one we don't need to wait for the old one to reset
+            RitualObjectPickupSystem.clearCarriedRitualObject(playerRef);
+            player.getHudManager().resetHud(playerRef);
             player.getHudManager().addCustomHud(playerRef, new DeprecatedStatusHud(playerRef, Constants.UI_IDLE, 0));
         }).thenRun(() -> {
             InstancesPlugin.safeRemoveInstance(gameWorld);
-            WipRitualGameManager.unregisterGame(this);
+            RitualGameManager.unregisterGame(this);
         });
     }
 
     public void startRitual(){
-        state = RitualGameManager.GameState.RITUAL_ACTIVE;
-        LOGGER.at(Level.INFO).log("Ritual started. Game state changed to RITUAL_ACTIVE.");
+        state = RitualGameManager.GameState.RITUAL;
+        LOGGER.at(Level.INFO).log("Ritual started. Game state changed to RITUAL.");
+        TICKING.cancel(false);
 
         RitualAnimationManager.play(gameWorld);
 
@@ -106,7 +123,7 @@ public class WipRitualGame {
     }
 
     public void onRitualComplete(){
-        state = RitualGameManager.GameState.RITUAL_COMPLETE;
+        state = RitualGameManager.GameState.ENDED;
 
         LOGGER.at(Level.INFO).log("Ritual complete. Game state changed to RITUAL_COMPLETE.");
 
@@ -164,7 +181,7 @@ public class WipRitualGame {
             timeRemaining--;
         } else {
             updateUI(Constants.UI_END_FAIL);
-            state = RitualGameManager.GameState.FAIL;
+            state = RitualGameManager.GameState.ENDED;
             HytaleServer.SCHEDULED_EXECUTOR.schedule(this::end, 2, TimeUnit.SECONDS);
         }
     }
@@ -174,6 +191,14 @@ public class WipRitualGame {
     private void playWarningSoundEvent(){
         int index = SoundEvent.getAssetMap().getIndex(CONFIG.getWarningSoundEvent());
         SoundUtil.playSoundEvent2d( index, SoundCategory.SFX, gameWorld.getEntityStore().getStore());
+        LOGGER.atInfo().log("Played warning sfx!");
+    }
+
+    //TODO make reference from config field
+    private void playEndSoundEvent(){
+        int index = SoundEvent.getAssetMap().getIndex(null);
+        SoundUtil.playSoundEvent2d( index, SoundCategory.SFX, gameWorld.getEntityStore().getStore());
+        LOGGER.atInfo().log("Played warning sfx!");
     }
 
     private void updateUI(String id){

@@ -38,36 +38,43 @@ public class GameConfig implements JsonAssetWithMap<String, DefaultAssetMap<Stri
                     (c,v) -> c.data = v,
             c ->c.data)
 
-            .append(new KeyedCodec<>("GameTime", Codec.INTEGER),
+            .appendInherited(new KeyedCodec<>("GameTime", Codec.INTEGER),
                     (c,v)->c.gameTime = v,
-                    c-> c.gameTime
-            ).addValidator(Validators.min(10)).add()
-            .append(new KeyedCodec<>("PossibleItems", new ArrayCodec<>(ItemModelPair.CODEC,ItemModelPair[]::new)),
+                    c-> c.gameTime,
+                    (c1,c2)->c1.gameTime = c2.gameTime
+            ).addValidator(Validators.min(120)).add()
+            .appendInherited(new KeyedCodec<>("PossibleItems", new ArrayCodec<>(ItemModelPair.CODEC,ItemModelPair[]::new)),
                     (c,v)->c.possibleItems = v,
-                    c-> c.possibleItems
+                    c-> c.possibleItems,
+                    (c1,c2)->c1.possibleItems = c2.possibleItems
             ).addValidator(Validators.nonEmptyArray()).addValidator(Validators.uniqueInArray()).add()
-            .append(new KeyedCodec<>("PossibleItemLocations", new ArrayCodec<>(CommentedLocation.CODEC,CommentedLocation[]::new)),
+            .appendInherited(new KeyedCodec<>("PossibleItemLocations", new ArrayCodec<>(CommentedLocation.CODEC,CommentedLocation[]::new)),
                     (c,v)->c.possibleItemLocations = v,
-                    c-> c.possibleItemLocations
+                    c-> c.possibleItemLocations,
+                    (c1,c2)->c1.possibleItemLocations = c2.possibleItemLocations
             ).addValidator(Validators.nonEmptyArray()).addValidator(Validators.uniqueInArray()).add()
-            .append(new KeyedCodec<>("SailorSpawnLocations", new ArrayCodec<>(CommentedLocation.CODEC,CommentedLocation[]::new)),
+            .appendInherited(new KeyedCodec<>("SailorSpawnLocations", new ArrayCodec<>(CommentedLocation.CODEC,CommentedLocation[]::new)),
                     (c,v)->c.sailorSpawnLocations = v,
-                    c-> c.sailorSpawnLocations
+                    c-> c.sailorSpawnLocations,
+                    (c1,c2)->c1.sailorSpawnLocations = c2.sailorSpawnLocations
             ).addValidator(Validators.nonEmptyArray()).addValidator(Validators.uniqueInArray()).add()
             //WARN animation is defined for the specific instance so others will fail
             //TODO resolve this by adding another asset for tha animation
-            .append(new KeyedCodec<>("MiniGameInstanceName", Codec.STRING),
+            .appendInherited(new KeyedCodec<>("MiniGameInstanceName", Codec.STRING),
                     (c,v)-> c.miniGameInstanceName = v,
-                    c -> c.miniGameInstanceName
-            ).addValidator(InstanceValidator.INSTANCE).add()
-            .append(new KeyedCodec<>("WarningTime", Codec.INTEGER),
+                    c -> c.miniGameInstanceName,
+                    (c1,c2)->c1.miniGameInstanceName = c2.miniGameInstanceName
+            ).addValidator(InstanceValidator.INSTANCE).addValidator(Validators.nonNull()).add()
+            .appendInherited(new KeyedCodec<>("WarningTime", Codec.INTEGER),
                     (c,v)->c.warningTime = v,
-                    c-> c.warningTime
+                    c-> c.warningTime,
+                    (c1,c2)->c1.warningTime = c2.warningTime
             ).addValidator(Validators.min(5)).add()
-            .append(new KeyedCodec<>("WarningSoundEvent", Codec.STRING),
+            .appendInherited(new KeyedCodec<>("WarningSoundEvent", Codec.STRING),
                     (c,v)->c.warningSoundEvent = v,
-                    c-> c.warningSoundEvent
-            ).addValidator(SoundEvent.VALIDATOR_CACHE.getValidator()).add()
+                    c-> c.warningSoundEvent,
+                    (c1,c2)->c1.warningSoundEvent = c2.warningSoundEvent
+            ).addValidator(SoundEvent.VALIDATOR_CACHE.getValidator()).addValidator(Validators.nonNull()).add()
             .build();
 
     private String id;

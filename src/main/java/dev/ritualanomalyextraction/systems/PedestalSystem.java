@@ -28,21 +28,16 @@ import com.hypixel.hytale.server.core.inventory.transaction.ItemStackSlotTransac
 import com.hypixel.hytale.server.core.modules.entity.component.*;
 import com.hypixel.hytale.server.core.modules.entity.tracker.NetworkId;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.ritualanomalyextraction.Constants;
+import dev.ritualanomalyextraction.RitualGame;
 import dev.ritualanomalyextraction.RitualGameManager;
-import dev.ritualanomalyextraction.WipRitualGame;
-import dev.ritualanomalyextraction.WipRitualGameManager;
 import dev.ritualanomalyextraction.components.RitualPedestalComponent;
 import com.hypixel.hytale.server.core.Message;
 
 import javax.annotation.Nonnull;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 
-import dev.ritualanomalyextraction.utils.WorldUtil;
 import org.joml.Vector3i;
 import org.joml.Vector3d;
 
@@ -51,25 +46,6 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
 
     public PedestalSystem() {
         super(UseBlockEvent.Post.class);
-    }
-
-    @Deprecated
-    private static final Map<BlockPosition, RitualPedestalComponent> pedestalStates = new HashMap<>(4);
-
-    @Deprecated
-    public static RitualPedestalComponent getOrCreatePedestal(BlockPosition pos) {
-        BlockPosition key = new BlockPosition(pos);
-        return pedestalStates.computeIfAbsent(key, ignored -> new RitualPedestalComponent());
-    }
-
-    @Deprecated
-    public static RitualPedestalComponent getPedestal(BlockPosition pos) {
-        return pedestalStates.get(new BlockPosition(pos));
-    }
-
-    @Deprecated
-    public static void removePedestal(BlockPosition pos) {
-        pedestalStates.remove(new BlockPosition(pos));
     }
 
     private static BlockPosition toBlockPosition(Vector3i pos) {
@@ -162,7 +138,7 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
         }
 
         String worldName = commandBuffer.getExternalData().getWorld().getName();
-        WipRitualGame game = WipRitualGameManager.gameFromWorldName(worldName);
+        RitualGame game = RitualGameManager.gameFromWorldName(worldName);
         if(game == null) return;
 
         Ref<EntityStore> entity = event.getContext().getEntity();
@@ -232,34 +208,12 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
         pedestal.setPlacedItemId(itemId);
         pedestal.setVisualItemEntity(visualItemEntity);
 
-        game.getRitualProgressTracker().onObjectRemoved(player,itemId);
+        game.getRitualProgressTracker().onObjectPlaced(player,itemId);
 
         if (RitualObjectPickupSystem.isRitualObjectItemId(itemId,game.getConfig())) {
             RitualObjectPickupSystem.clearCarriedRitualObjectIfMatches(player, itemId);
         }
 
-    }
-
-    @Deprecated
-    public static void reset(){
-        Universe.get().getWorld(WorldUtil.DEFAULT_MINIGAME_NAME).execute(()->{
-
-            pedestalStates.values().forEach(pedestal ->{
-                Ref<EntityStore> visualEntity = pedestal.getVisualItemEntity();
-
-                if (visualEntity == null) {
-                    return;
-                }
-
-                if (visualEntity.isValid()) {
-                    visualEntity.getStore().removeEntity(visualEntity, RemoveReason.REMOVE);
-                }
-            });
-
-        });
-
-        pedestalStates.clear();
-        LOGGER.atInfo().log("Reset Pedestals!");
     }
 
     public static class BreakListener extends EntityEventSystem<EntityStore, BreakBlockEvent> {
@@ -282,7 +236,7 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
             }
 
             String worldName = commandBuffer.getExternalData().getWorld().getName();
-            WipRitualGame game = WipRitualGameManager.gameFromWorldName(worldName);
+            final var game = RitualGameManager.gameFromWorldName(worldName);
             if(game == null) return;
 
             var pedestalMap = game.getPedestalStatesMap();
