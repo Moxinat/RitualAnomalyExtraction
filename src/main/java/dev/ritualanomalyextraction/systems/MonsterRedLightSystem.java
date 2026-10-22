@@ -21,33 +21,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * First draft: three red dynamic-light entities per monster.
+ * Three red dynamic-light entities per monster.
  *
- * Call registerMonster on the monster's world thread after NPC spawning.
- * Call registerMonster from the NPC spawn hook on the world thread.
- * The Ticker updates all registered lights once per world tick.
- * The lights are owned by their monster and are removed with it.
+ * Register monsters on their world thread after NPC spawning.
+ * The Ticker updates registered lights once per world tick.
+ * The lights are explicitly removed when their monster is unregistered.
  */
 public final class MonsterRedLightSystem {
 
     private static final HytaleLogger LOGGER =
             HytaleLogger.forEnclosingClass();
-
-    // TEMPORARY DEBUG: set to false after diagnosing the red-light issue.
-    private static final boolean DEBUG_RED_LIGHT = true;
-    private static final AtomicLong DEBUG_TICKS = new AtomicLong();
-
-    private static void debug(String message, Object... args) {
-        if (DEBUG_RED_LIGHT) {
-            LOGGER.atInfo().log(
-                    "%s",
-                    "[RedLight] " + String.format(message, args)
-            );
-        }
-    }
 
     private static final int LIGHT_COUNT = 3;
     private static final byte LIGHT_RADIUS = 4;
@@ -66,42 +51,33 @@ public final class MonsterRedLightSystem {
 
     public static void registerMonster(Ref<EntityStore> monster) {
         if (monster == null) {
-            debug("registerMonster skipped: null monster reference");
             return;
         }
 
         Store<EntityStore> store = monster.getStore();
         store.assertThread();
 
-        debug("registerMonster called: valid=%s, alreadyRegistered=%s",
-                monster.isValid(), LIGHTS.containsKey(monster));
         if (!monster.isValid()) {
-            debug("registerMonster skipped: invalid monster reference");
             return;
         }
         if (LIGHTS.containsKey(monster)) {
-            debug("registerMonster skipped: monster already registered");
             return;
         }
 
         TransformComponent monsterTransform =
                 store.getComponent(monster, TransformComponent.getComponentType());
         if (monsterTransform == null) {
-            debug("registerMonster skipped: missing monster TransformComponent");
+            LOGGER.atWarning().log("Cannot spawn Sailor red lights: monster has no TransformComponent.");
             return;
         }
-        debug("Monster transform: position=%s, yaw=%s",
-                monsterTransform.getPosition(), monsterTransform.getRotation().yaw());
 
         ModelAsset carrierAsset =
                 ModelAsset.getAssetMap().getAsset("LightCarrier");
 
         if (carrierAsset == null) {
-            debug("ERROR: LightCarrier ModelAsset not found!");
+            LOGGER.atWarning().log("Cannot spawn Sailor red lights: LightCarrier ModelAsset not found.");
             return;
         }
-
-        debug("LightCarrier ModelAsset loaded successfully");
 
         Vector3d[] positions = calculatePositions(monsterTransform);
         List<Ref<EntityStore>> lights = new ArrayList<>(LIGHT_COUNT);
@@ -109,7 +85,6 @@ public final class MonsterRedLightSystem {
         try {
             for (int i = 0; i < positions.length; i++) {
                 Vector3d position = positions[i];
-                debug("Creating light %d/%d at %s", i + 1, LIGHT_COUNT, position);
                 Holder<EntityStore> holder = EntityStore.REGISTRY.newHolder();
 
                 Model carrierModel = Model.createScaledModel(carrierAsset, 1F);
@@ -150,24 +125,19 @@ public final class MonsterRedLightSystem {
                         UUIDComponent.randomUUID()
                 );
 
-                // Parent ownership handles cleanup when the NPC is removed.
                 Ref<EntityStore> light = store.addEntity(holder, AddReason.SPAWN);
-                debug("Light %d spawn result: nonNull=%s, valid=%s",
-                        i + 1, light != null, light != null && light.isValid());
                 if (light == null) {
                     throw new IllegalStateException("Failed to spawn a Sailor red light.");
                 }
                 lights.add(light);
             }
         } catch (RuntimeException exception) {
-            debug("Light creation FAILED: %s: %s",
-                    exception.getClass().getSimpleName(), exception.getMessage());
+            LOGGER.atSevere().withCause(exception).log("Failed to create Sailor red lights.");
             removeLights(store, lights);
             throw exception;
         }
 
         LIGHTS.put(monster, List.copyOf(lights));
-        debug("Monster registered with %d light references", lights.size());
     }
 
     public static void updateMonster(Ref<EntityStore> monster) {
@@ -184,29 +154,22 @@ public final class MonsterRedLightSystem {
         }
 
         if (!monster.isValid()) {
-            debug("Update stopped: monster no longer valid");
-            LIGHTS.remove(monster); // Children were removed along with the monster.
+            LIGHTS.remove(monster);
             return;
         }
 
         TransformComponent monsterTransform =
                 store.getComponent(monster, TransformComponent.getComponentType());
         if (monsterTransform == null) {
-            debug("Update stopped: monster TransformComponent missing");
+            LOGGER.atWarning().log("Stopping Sailor red lights: monster has no TransformComponent.");
             unregisterMonster(monster);
             return;
         }
 
         Vector3d[] positions = calculatePositions(monsterTransform);
-        boolean logPositions = DEBUG_RED_LIGHT && DEBUG_TICKS.get() % 100 == 0;
-        if (logPositions) {
-            debug("Updating monster at %s; active lights=%d",
-                    monsterTransform.getPosition(), lights.size());
-        }
         for (int i = 0; i < LIGHT_COUNT; i++) {
             Ref<EntityStore> light = lights.get(i);
             if (!light.isValid()) {
-                debug("Update stopped: light %d reference invalid", i + 1);
                 unregisterMonster(monster);
                 return;
             }
@@ -214,28 +177,18 @@ public final class MonsterRedLightSystem {
             TransformComponent lightTransform =
                     store.getComponent(light, TransformComponent.getComponentType());
             if (lightTransform == null) {
-                debug("Update stopped: light %d missing TransformComponent", i + 1);
+                LOGGER.atWarning().log("Stopping Sailor red lights: light entity " + (i + 1) + " has no TransformComponent.");
                 unregisterMonster(monster);
                 return;
             }
 
             lightTransform.setPosition(positions[i]);
-            if (logPositions) {
-                debug("Light %d position updated to %s", i + 1, positions[i]);
-            }
         }
     }
 
     /** To be called once per update on the correct world thread. */
     public static void updateAll(Store<EntityStore> store) {
         store.assertThread();
-
-        if (DEBUG_RED_LIGHT && DEBUG_TICKS.incrementAndGet() % 100 == 0) {
-            long worldMonsters = LIGHTS.keySet().stream()
-                    .filter(monster -> monster.getStore() == store).count();
-            debug("Ticker running: registered monsters=%d, this world=%d",
-                    LIGHTS.size(), worldMonsters);
-        }
 
         for (Ref<EntityStore> monster : List.copyOf(LIGHTS.keySet())) {
             if (monster.getStore() == store) {
@@ -254,7 +207,6 @@ public final class MonsterRedLightSystem {
 
         List<Ref<EntityStore>> lights = LIGHTS.remove(monster);
         if (lights != null) {
-            debug("Unregistering monster; removing %d lights", lights.size());
             removeLights(store, lights);
         }
     }
@@ -317,12 +269,8 @@ public final class MonsterRedLightSystem {
                 return;
             }
 
-            debug("Sailor added to ECS: valid=%s", ref.isValid());
-
             commandBuffer.run(s -> {
-                debug("Deferred spawn callback running: valid=%s", ref.isValid());
                 if (!ref.isValid()) {
-                    debug("ERROR: Ref invalid after ECS add");
                     return;
                 }
 
@@ -338,11 +286,6 @@ public final class MonsterRedLightSystem {
                 CommandBuffer<EntityStore> commandBuffer) {
 
             if (LIGHTS.containsKey(ref)) {
-                debug(
-                        "Tracked monster removed: reason=%s, valid=%s",
-                        reason,
-                        ref.isValid()
-                );
                 commandBuffer.run(s ->
                         MonsterRedLightSystem.unregisterMonster(ref)
                 );
