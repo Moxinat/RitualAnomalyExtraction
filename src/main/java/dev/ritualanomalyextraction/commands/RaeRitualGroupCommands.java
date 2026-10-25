@@ -3,6 +3,8 @@ package dev.ritualanomalyextraction.commands;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
+import com.hypixel.hytale.server.core.command.system.arguments.system.DefaultArg;
+import com.hypixel.hytale.server.core.command.system.arguments.types.ArgTypes;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractCommandCollection;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractWorldCommand;
 import com.hypixel.hytale.server.core.universe.world.World;
@@ -47,14 +49,17 @@ public class RaeRitualGroupCommands extends AbstractCommandCollection {
 
     public static class PlayAndResetAnimationCommand extends AbstractWorldCommand {
 
+        private final DefaultArg<Integer> delay = this.withDefaultArg("resetDelay","", ArgTypes.INTEGER,16,"");
+
         public PlayAndResetAnimationCommand(String name, String description) {
             super(name, description);
         }
 
         @Override
         protected void execute(@NonNullDecl CommandContext context, @NonNullDecl World world, @NonNullDecl Store<EntityStore> store) {
+            var delay = context.get(this.delay);
             RitualAnimationManager.play(world);
-            HytaleServer.SCHEDULED_EXECUTOR.schedule(()->RitualAnimationManager.reset(world),16, TimeUnit.SECONDS);
+            HytaleServer.SCHEDULED_EXECUTOR.schedule(()->RitualAnimationManager.reset(world),delay, TimeUnit.SECONDS);
         }
     }
 }

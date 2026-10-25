@@ -10,5 +10,7 @@
         }
       }
     ]
-  }
+  },
+  "Infinite": true,
+  "Duration": 2
 }

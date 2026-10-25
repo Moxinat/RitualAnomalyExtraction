@@ -12,7 +12,8 @@
             "Min": 0.1,
             "Max": 0.1
           }
-        }
+        },
+        "Color": "#f200ff"
       },
       "20": {
         "Scale": {
@@ -36,7 +37,8 @@
             "Max": 1,
             "Min": 1
           }
-        }
+        },
+        "Color": "#ff0000"
       },
       "100": {
         "Scale": {
@@ -76,8 +78,8 @@
     "Max": 6
   },
   "SpawnRate": {
-    "Min": 16,
-    "Max": 16
+    "Min": 100,
+    "Max": 100
   },
   "VelocityStretchMultiplier": 6,
   "Shape": "Cube",
@@ -101,5 +103,9 @@
       "RadialImpulse": 2
     }
   ],
-  "LifeSpan": 5
+  "LifeSpan": 5,
+  "ParticleCollision": {
+    "BlockType": "Solid",
+    "Action": "Linger"
+  }
 }

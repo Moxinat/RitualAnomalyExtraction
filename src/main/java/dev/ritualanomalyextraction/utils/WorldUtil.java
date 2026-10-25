@@ -19,11 +19,13 @@ import com.hypixel.hytale.server.core.universe.world.SetBlockSettings;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.chunk.BlockOperations;
 import com.hypixel.hytale.server.core.universe.world.chunk.section.BlockSection;
+import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.universe.world.storage.GetChunkFlags;
 import com.hypixel.hytale.server.core.util.FillerBlockUtil;
 import dev.ritualanomalyextraction.RitualAnomalyPlugin;
 import dev.ritualanomalyextraction.RitualGameManager;
+import dev.ritualanomalyextraction.asset.GameConfig;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 import org.joml.Vector3d;
 import org.joml.Vector3i;
@@ -32,66 +34,41 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 import java.util.logging.Level;
+
+import static dev.ritualanomalyextraction.Constants.DEFAULT_LOBBY_NAME;
 
 public class WorldUtil {
 
     private static final HytaleLogger LOGGER = HytaleLogger.get("RAE|WorldUtil");
 
-    public static final String DEFAULT_LOBBY_NAME = "RAE-Lobby";
-    public static final String DEFAULT_MINIGAME_NAME = "RAE-Minigame";
-    private static boolean alreadySetUpLobby = false;
 
-    public static boolean generateInstance(World fromWorld, String instanceCreationName, String instanceFolderName, Transform returnPoint) {
+    public static CompletableFuture<World> generateInstance(@NonNullDecl World fromWorld, String instanceCreationName, String instanceFolderName, Transform returnPoint){
         LOGGER.atInfo().log("Trying to generate " + instanceCreationName);
-        if (fromWorld == null) {
-            LOGGER.atSevere().log("Source World is null!");
-            return false;
-        }
-
         CompletableFuture<World> worldFuture =  InstancesPlugin.get().spawnInstance(instanceFolderName, instanceCreationName, fromWorld, returnPoint);
-        if (instanceCreationName.equals(DEFAULT_LOBBY_NAME)) {
-            RitualGameManager.setLobbyWorldFuture(worldFuture);
-        }
-        if (instanceCreationName.equals(DEFAULT_MINIGAME_NAME)) {
-            RitualGameManager.setMiniGameWorld(worldFuture);
-        }
-
         LOGGER.atInfo().log("Created %s for Ritual Anomaly Extraction!", instanceCreationName);
-        return true;
+        return worldFuture;
     }
 
-    public static void trySetUpLobby() {
-        if (alreadySetUpLobby) {
-            return;
-        }
-        RaeConfig.RaeConfigManager raeConfig = RitualAnomalyPlugin.getInstance().getConfig();
+    public static CompletableFuture<World> trySetUpLobby() {
         World fromWorld = Universe.get().getDefaultWorld();
-
-        if (raeConfig.shouldCreateLobbyUponServerStart() && Universe.get().getWorld(DEFAULT_LOBBY_NAME) == null) {
-            TransformComponent transformComponent = new TransformComponent(new Vector3d(0,80,0), new Rotation3f(0,180,0));
-            if (generateInstance(fromWorld, DEFAULT_LOBBY_NAME, DEFAULT_LOBBY_NAME, transformComponent.getTransform())) {
-                alreadySetUpLobby = true;
-            } else {
-                LOGGER.atSevere().log("Failed creating the lobby for Ritual Anomaly Extraction!");
-            }
-        } else {
-            LOGGER.atInfo().log("Lobby either exists or shouldn't be created.");
-            alreadySetUpLobby = true;
+        if (Universe.get().getWorld(DEFAULT_LOBBY_NAME) == null) {
+            LOGGER.atInfo().log("Setting up Lobby.");
+            // maybe make the transform a bit different?
+            TransformComponent transformComponent = new TransformComponent(new Vector3d(0, 80, 0), new Rotation3f(0, 180, 0));
+            return generateInstance(fromWorld, DEFAULT_LOBBY_NAME, DEFAULT_LOBBY_NAME, transformComponent.getTransform());
         }
+        return null;
     }
 
-    public static void tryGenerateMinigameWorld() {
-        if (Universe.get().getWorld(DEFAULT_MINIGAME_NAME) == null) {
-            World fromWorld = Universe.get().getDefaultWorld();
-            TransformComponent transformComponent = new TransformComponent(new Vector3d(0,200,0), new Rotation3f(0,180,0));
-            if (!generateInstance(fromWorld,DEFAULT_MINIGAME_NAME, DEFAULT_MINIGAME_NAME, transformComponent.getTransform())) {
-                LOGGER.atSevere().log("Failed creating the Minigame for Ritual Anomaly Extraction!");
-            } else {
-                LOGGER.atInfo().log("Created the Minigame for Ritual Anomaly Extraction!");
-            }
+    public static CompletableFuture<World> tryGenerateMinigameWorld(GameConfig config,String name) {
+        if (Universe.get().getWorld(name) == null) {
+            Transform transform = new Transform(new Vector3d(0,200,0), new Rotation3f(0,180,0)); // Constant?
+            return generateInstance(RitualGameManager.getLobby(),name, config.getMiniGameInstanceName(),transform);
         } else {
             LOGGER.atInfo().log("Minigame world already exists!");
+            return null;
         }
     }
 
@@ -134,9 +111,7 @@ public class WorldUtil {
         Store<EntityStore> store = playerRef.getStore();
         World worldFrom = store.getExternalData().getWorld();
 
-        worldFrom.execute(() -> {
-                addTeleportComponent(worldFrom,worldTo,store,playerRef,resolveWorldType(worldTo));
-            });
+        worldFrom.execute(() -> addTeleportComponent(worldFrom,worldTo,store,playerRef,resolveWorldType(worldTo)));
     }
 
     //use this if the given players are in different world
@@ -150,66 +125,53 @@ public class WorldUtil {
             Store<EntityStore> store = ref.getStore();
             World worldFrom = store.getExternalData().getWorld();
 
-            worldFrom.execute(() -> {
-                addTeleportComponent(worldFrom, worldTo,store,ref,resolveWorldType(worldTo));
-            });
+            worldFrom.execute(() -> addTeleportComponent(worldFrom, worldTo,store,ref,resolveWorldType(worldTo)));
         }
     }
 
     //use this, if all given players are in the same world
     public static CompletableFuture<Void> teleportPlayersFromSameWorldToWorld(@Nonnull World worldFrom, @Nonnull World worldTo,@Nullable TriConsumer<PlayerRef,Ref<EntityStore>,Store<EntityStore>> additionalTask) {
-        return CompletableFuture.runAsync(()->{
-            worldFrom.execute(() -> {
-                Store<EntityStore> store = worldFrom.getEntityStore().getStore();
-                for(PlayerRef playerRef : worldFrom.getPlayerRefs()){
+        return CompletableFuture.runAsync(()-> worldFrom.execute(() -> {
+            Store<EntityStore> store = worldFrom.getEntityStore().getStore();
+            for(PlayerRef playerRef : worldFrom.getPlayerRefs()){
 
-                    Ref<EntityStore> ref = playerRef.getReference();
-                    if (ref == null || !ref.isValid()) {
-                        LOGGER.atSevere().log("Failed to teleport player to world! (Cause: Invalid Ref)");
-                        continue;
-                    }
-                    if(additionalTask != null){
-                        additionalTask.accept(playerRef,ref,store);
-                    }
-
-
-                    addTeleportComponent(worldFrom,worldTo,store,ref,resolveWorldType(worldTo));
+                Ref<EntityStore> ref = playerRef.getReference();
+                if (ref == null || !ref.isValid()) {
+                    LOGGER.atSevere().log("Failed to teleport player to world! (Cause: Invalid Ref)");
+                    continue;
                 }
-            });
-        });
-    }
+                if(additionalTask != null){
+                    additionalTask.accept(playerRef,ref,store);
+                }
 
 
-    public static CompletableFuture<Void> teleportPlayersFromMinigameToLobby(TriConsumer<PlayerRef,Ref<EntityStore>,Store<EntityStore>> additionalTask){
-        return teleportPlayersFromSameWorldToWorld(Universe.get().getWorld(DEFAULT_MINIGAME_NAME),Universe.get().getWorld(DEFAULT_LOBBY_NAME),additionalTask);
+                addTeleportComponent(worldFrom,worldTo,store,ref,resolveWorldType(worldTo));
+            }
+        }));
     }
 
-    public static CompletableFuture<Void> teleportPlayersFromLobbyToMinigame(){
-        return teleportPlayersFromSameWorldToWorld(Universe.get().getWorld(DEFAULT_LOBBY_NAME),Universe.get().getWorld(DEFAULT_MINIGAME_NAME),null);
-    }
 
     public static boolean shouldForceTp(){
         return RitualAnomalyPlugin.getInstance().getConfig().shouldForceTP();
     }
 
-    public static boolean setBlock(World world, Vector3i position, String block){
-        return setBlock(world,position.x,position.y,position.z,block);
+    public static void setBlock(World world, Vector3i position, String block,@Nullable Runnable onFinnish,@Nullable Runnable onFail){
+        setBlock(world,position.x,position.y,position.z,block,onFinnish,onFail);
     }
-    public static boolean setBlock(World world, Vector3i position, BlockType blockType){
-        return setBlock(world,position.x,position.y,position.z,blockType);
+    public static void setBlock(World world, Vector3i position, BlockType blockType,@Nullable Runnable onFinnish,@Nullable Runnable onFail){
+        setBlock(world,position.x,position.y,position.z,blockType,onFinnish,onFail);
     }
-    public static boolean setBlock(World world, int x, int y, int z, String block){
+    public static void setBlock(World world, int x, int y, int z, String block,@Nullable Runnable onFinnish,@Nullable Runnable onFail){
         final var blockType = BlockType.fromString(block);
-        if(blockType == null) return false;
-        return setBlock(world,x,y,z,blockType);
+        if(blockType == null) return;
+        setBlock(world,x,y,z,blockType,onFinnish,onFail);
     }
-    public static boolean setBlock(World world, int x, int y, int z,@NonNullDecl BlockType blockType){
+    public static void setBlock(World world, int x, int y, int z,@NonNullDecl BlockType blockType,@Nullable Runnable onFinnish,@Nullable Runnable onFail){
         final var chunkStore = world.getChunkStore();
-        final var b = new Object(){boolean success;};
-        chunkStore.getChunkSectionReferenceAtBlockAsync(x, y, z, GetChunkFlags.SET_TICKING).thenAcceptAsync(sectionRef -> {
+        chunkStore.getChunkSectionReferenceAtBlockAsync(x, y, z, GetChunkFlags.SET_TICKING).thenAccept(sectionRef -> {
             if (sectionRef == null || !sectionRef.isValid()) {
                 LOGGER.atWarning().log("Failed setting block at %s %s %s to %s",x,y,z,blockType.getId());
-                b.success = false;
+                if(onFail != null) onFail.run();
                 return;
             }
             BlockOperations.setBlock(
@@ -221,38 +183,77 @@ public class WorldUtil {
                     RotationTuple.NONE_INDEX,
                     FillerBlockUtil.NO_FILLER,
                     SetBlockSettings.NONE);
-            b.success = true;
-        }, world).exceptionally(t -> {
+            if(onFinnish != null) onFinnish.run();
+        }).exceptionally(t -> {
             LOGGER.at(Level.WARNING).withCause(t).log("Error while getting chunk section.");
-            b.success = false;
+            if(onFail != null) onFail.run();
             return null;
         });
-        return b.success;
     }
-    public static BlockType getBlockType(World world, int x, int y, int z){
-        return BlockType.getAssetMap().getAsset(getBlockID(world, x, y, z));
-    }
-    public static int getBlockID(World world, int x, int y, int z){
+
+    /**
+     * @param world world where the block resides in
+     * @param x x pos of block
+     * @param y y pos of block
+     * @param z z pos of block
+     * @param blockType block to set to
+     * @param onFinnish consumes the original block, fails if this is not null and the id is invalid
+     * @param onFail runs if the placement fails
+     */
+    public static void replaceBlock(World world, int x, int y, int z, @NonNullDecl BlockType blockType, @Nullable Consumer<Integer> onFinnish, @Nullable Runnable onFail){
         final var chunkStore = world.getChunkStore();
-        final var b = new Object(){int blockID;};
+        chunkStore.getChunkSectionReferenceAtBlockAsync(x, y, z, GetChunkFlags.SET_TICKING).thenAccept(sectionRef -> {
+            if (sectionRef == null || !sectionRef.isValid()) {
+                LOGGER.atWarning().log("Failed setting block at %s %s %s to %s",x,y,z,blockType.getId());
+                if(onFail != null) onFail.run();
+                return;
+            }
+            var originalBlock = getBlockID(chunkStore.getStore(),sectionRef,x,y,z);
+            if(originalBlock<0 && onFinnish !=null){
+                if(onFail!= null) onFail.run();
+                return;
+            }
+            BlockOperations.setBlock(
+                    chunkStore,
+                    sectionRef,
+                    x,y,z,
+                    BlockType.getAssetMap().getIndex(blockType.getId()),
+                    blockType,
+                    RotationTuple.NONE_INDEX,
+                    FillerBlockUtil.NO_FILLER,
+                    SetBlockSettings.NONE);
+            if(onFinnish != null) onFinnish.accept(originalBlock);
+        }).exceptionally(t -> {
+            LOGGER.at(Level.WARNING).withCause(t).log("Error while getting chunk section.");
+            if(onFail != null) onFail.run();
+            return null;
+        });
+    }
+
+    public static void getBlockID(World world, int x, int y, int z,@Nullable Consumer<Integer> onFinnish, @Nullable Runnable onFail){
+        final var chunkStore = world.getChunkStore();
         chunkStore.getChunkSectionReferenceAtBlockAsync(x, y, z, GetChunkFlags.SET_TICKING).thenAcceptAsync(sectionRef -> {
             if (sectionRef == null || !sectionRef.isValid()) {
                 LOGGER.atWarning().log("Failed getting block at %s %s %s",x,y,z);
                 return;
             }
 
-            var blockSection = chunkStore.getStore().getComponent(sectionRef, BlockSection.getComponentType());
-            if(blockSection == null){
-                LOGGER.atWarning().log("Failed getting BlockSection for %s %s %s",x,y,z);
-                return;
-            }
-
-            b.blockID  = blockSection.get(x, y, z);
+            var blockID  = WorldUtil.getBlockID(chunkStore.getStore(),sectionRef,x,y,z);
+            if(onFinnish != null) onFinnish.accept(blockID);
         }, world).exceptionally(t -> {
             LOGGER.at(Level.WARNING).withCause(t).log("Error while getting chunk section.");
+            if(onFail != null) onFail.run();
             return null;
         });
-        return b.blockID;
+    }
+
+    public static int getBlockID(@NonNullDecl Store<ChunkStore> store,@NonNullDecl Ref<ChunkStore> sectionRef,int x, int y, int z){
+        var blockSection = store.getComponent(sectionRef, BlockSection.getComponentType());
+        if(blockSection == null){
+            LOGGER.atWarning().log("Failed getting BlockSection for %s %s %s",x,y,z);
+            return -1;
+        }
+        return blockSection.get(x,y,z);
     }
 }
 

@@ -26,32 +26,23 @@
           }
         }
       },
-      "50": {
-        "Color": "#a100ff"
-      },
+      "50": {},
       "80": {
-        "Scale": {
-          "X": {
-            "Min": 1,
-            "Max": 1
-          },
-          "Y": {
-            "Max": 1,
-            "Min": 1
-          }
-        }
+        "Opacity": 1
       },
       "100": {
         "Scale": {
           "X": {
-            "Min": 0.1,
-            "Max": 0.1
+            "Min": 2,
+            "Max": 4
           },
           "Y": {
-            "Min": 0.1,
-            "Max": 0.1
+            "Min": 2,
+            "Max": 4
           }
-        }
+        },
+        "Color": "#a73bf5",
+        "Opacity": 0
       }
     },
     "InitialAnimationFrame": {
@@ -60,19 +51,20 @@
           "Min": 0.1,
           "Max": 0.6
         }
-      }
+      },
+      "Color": "#000000"
     },
     "ScaleRatioConstraint": "OneToOne"
   },
   "MaxConcurrentParticles": 600,
   "TrailSpawnerPositionMultiplier": 1,
   "TrailSpawnerRotationMultiplier": 1,
-  "RenderMode": "Erosion",
+  "RenderMode": "BlendAdd",
   "LinearFiltering": true,
   "ParticleRotationInfluence": "Billboard",
   "ParticleLifeSpan": {
-    "Min": 5,
-    "Max": 5
+    "Min": 4.8,
+    "Max": 4.8
   },
   "SpawnRate": {
     "Min": 40,
