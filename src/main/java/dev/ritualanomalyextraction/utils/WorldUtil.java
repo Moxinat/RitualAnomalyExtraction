@@ -19,6 +19,7 @@ import com.hypixel.hytale.server.core.universe.world.SetBlockSettings;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.chunk.BlockOperations;
 import com.hypixel.hytale.server.core.universe.world.chunk.section.BlockSection;
+import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.universe.world.storage.GetChunkFlags;
 import com.hypixel.hytale.server.core.util.FillerBlockUtil;
@@ -33,6 +34,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 
 import static dev.ritualanomalyextraction.Constants.DEFAULT_LOBBY_NAME;
@@ -109,9 +111,7 @@ public class WorldUtil {
         Store<EntityStore> store = playerRef.getStore();
         World worldFrom = store.getExternalData().getWorld();
 
-        worldFrom.execute(() -> {
-                addTeleportComponent(worldFrom,worldTo,store,playerRef,resolveWorldType(worldTo));
-            });
+        worldFrom.execute(() -> addTeleportComponent(worldFrom,worldTo,store,playerRef,resolveWorldType(worldTo)));
     }
 
     //use this if the given players are in different world
@@ -125,33 +125,29 @@ public class WorldUtil {
             Store<EntityStore> store = ref.getStore();
             World worldFrom = store.getExternalData().getWorld();
 
-            worldFrom.execute(() -> {
-                addTeleportComponent(worldFrom, worldTo,store,ref,resolveWorldType(worldTo));
-            });
+            worldFrom.execute(() -> addTeleportComponent(worldFrom, worldTo,store,ref,resolveWorldType(worldTo)));
         }
     }
 
     //use this, if all given players are in the same world
     public static CompletableFuture<Void> teleportPlayersFromSameWorldToWorld(@Nonnull World worldFrom, @Nonnull World worldTo,@Nullable TriConsumer<PlayerRef,Ref<EntityStore>,Store<EntityStore>> additionalTask) {
-        return CompletableFuture.runAsync(()->{
-            worldFrom.execute(() -> {
-                Store<EntityStore> store = worldFrom.getEntityStore().getStore();
-                for(PlayerRef playerRef : worldFrom.getPlayerRefs()){
+        return CompletableFuture.runAsync(()-> worldFrom.execute(() -> {
+            Store<EntityStore> store = worldFrom.getEntityStore().getStore();
+            for(PlayerRef playerRef : worldFrom.getPlayerRefs()){
 
-                    Ref<EntityStore> ref = playerRef.getReference();
-                    if (ref == null || !ref.isValid()) {
-                        LOGGER.atSevere().log("Failed to teleport player to world! (Cause: Invalid Ref)");
-                        continue;
-                    }
-                    if(additionalTask != null){
-                        additionalTask.accept(playerRef,ref,store);
-                    }
-
-
-                    addTeleportComponent(worldFrom,worldTo,store,ref,resolveWorldType(worldTo));
+                Ref<EntityStore> ref = playerRef.getReference();
+                if (ref == null || !ref.isValid()) {
+                    LOGGER.atSevere().log("Failed to teleport player to world! (Cause: Invalid Ref)");
+                    continue;
                 }
-            });
-        });
+                if(additionalTask != null){
+                    additionalTask.accept(playerRef,ref,store);
+                }
+
+
+                addTeleportComponent(worldFrom,worldTo,store,ref,resolveWorldType(worldTo));
+            }
+        }));
     }
 
 
@@ -195,30 +191,69 @@ public class WorldUtil {
         });
     }
 
-    public static BlockType getBlockType(World world, int x, int y, int z){
-        return BlockType.getAssetMap().getAsset(getBlockID(world, x, y, z));
-    }
-    public static int getBlockID(World world, int x, int y, int z){
+    /**
+     * @param world world where the block resides in
+     * @param x x pos of block
+     * @param y y pos of block
+     * @param z z pos of block
+     * @param blockType block to set to
+     * @param onFinnish consumes the original block, fails if this is not null and the id is invalid
+     * @param onFail runs if the placement fails
+     */
+    public static void replaceBlock(World world, int x, int y, int z, @NonNullDecl BlockType blockType, @Nullable Consumer<Integer> onFinnish, @Nullable Runnable onFail){
         final var chunkStore = world.getChunkStore();
-        final var b = new Object(){int blockID;};
+        chunkStore.getChunkSectionReferenceAtBlockAsync(x, y, z, GetChunkFlags.SET_TICKING).thenAccept(sectionRef -> {
+            if (sectionRef == null || !sectionRef.isValid()) {
+                LOGGER.atWarning().log("Failed setting block at %s %s %s to %s",x,y,z,blockType.getId());
+                if(onFail != null) onFail.run();
+                return;
+            }
+            var originalBlock = getBlockID(chunkStore.getStore(),sectionRef,x,y,z);
+            if(originalBlock<0 && onFinnish !=null){
+                if(onFail!= null) onFail.run();
+                return;
+            }
+            BlockOperations.setBlock(
+                    chunkStore,
+                    sectionRef,
+                    x,y,z,
+                    BlockType.getAssetMap().getIndex(blockType.getId()),
+                    blockType,
+                    RotationTuple.NONE_INDEX,
+                    FillerBlockUtil.NO_FILLER,
+                    SetBlockSettings.NONE);
+            if(onFinnish != null) onFinnish.accept(originalBlock);
+        }).exceptionally(t -> {
+            LOGGER.at(Level.WARNING).withCause(t).log("Error while getting chunk section.");
+            if(onFail != null) onFail.run();
+            return null;
+        });
+    }
+
+    public static void getBlockID(World world, int x, int y, int z,@Nullable Consumer<Integer> onFinnish, @Nullable Runnable onFail){
+        final var chunkStore = world.getChunkStore();
         chunkStore.getChunkSectionReferenceAtBlockAsync(x, y, z, GetChunkFlags.SET_TICKING).thenAcceptAsync(sectionRef -> {
             if (sectionRef == null || !sectionRef.isValid()) {
                 LOGGER.atWarning().log("Failed getting block at %s %s %s",x,y,z);
                 return;
             }
 
-            var blockSection = chunkStore.getStore().getComponent(sectionRef, BlockSection.getComponentType());
-            if(blockSection == null){
-                LOGGER.atWarning().log("Failed getting BlockSection for %s %s %s",x,y,z);
-                return;
-            }
-
-            b.blockID  = blockSection.get(x, y, z);
+            var blockID  = WorldUtil.getBlockID(chunkStore.getStore(),sectionRef,x,y,z);
+            if(onFinnish != null) onFinnish.accept(blockID);
         }, world).exceptionally(t -> {
             LOGGER.at(Level.WARNING).withCause(t).log("Error while getting chunk section.");
+            if(onFail != null) onFail.run();
             return null;
         });
-        return b.blockID;
+    }
+
+    public static int getBlockID(@NonNullDecl Store<ChunkStore> store,@NonNullDecl Ref<ChunkStore> sectionRef,int x, int y, int z){
+        var blockSection = store.getComponent(sectionRef, BlockSection.getComponentType());
+        if(blockSection == null){
+            LOGGER.atWarning().log("Failed getting BlockSection for %s %s %s",x,y,z);
+            return -1;
+        }
+        return blockSection.get(x,y,z);
     }
 }
 

@@ -1,9 +1,9 @@
 package dev.ritualanomalyextraction.systems;
 
 import com.hypixel.hytale.component.ArchetypeChunk;
+import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
-import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.EntityEventSystem;
 import com.hypixel.hytale.logger.HytaleLogger;
@@ -18,6 +18,7 @@ import javax.annotation.Nonnull;
 import java.util.Locale;
 import java.util.logging.Level;
 
+//TODO make it into an ui instead or make a cooldown to avoid creating multiple games when holding the button for longer (game needs 1s to set up)
 public class StartButtonSystem extends EntityEventSystem<EntityStore, UseBlockEvent.Post> {
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 

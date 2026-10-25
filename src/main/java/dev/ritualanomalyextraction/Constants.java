@@ -30,4 +30,6 @@ public class Constants {
 
     public static final Message MESSAGE_START1 = Message.raw("Ritual Anomaly Extraction started.");
     public static final Message MESSAGE_START2 = Message.raw("Find the ritual objects and place them on the pedestals.");
+
+    public static final Message NOT_A_GAME_WORLD = Message.raw("World is not associated with a game!");
 }

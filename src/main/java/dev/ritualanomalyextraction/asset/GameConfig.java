@@ -15,7 +15,7 @@ import com.hypixel.hytale.codec.schema.metadata.ui.UIPropertyTitle;
 import com.hypixel.hytale.codec.validation.Validators;
 import com.hypixel.hytale.math.vector.Transform;
 import com.hypixel.hytale.math.vector.Vector3iUtil;
-import com.hypixel.hytale.server.core.asset.type.item.config.Item;
+import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.asset.type.model.config.ModelAsset;
 import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
 import com.hypixel.hytale.server.core.command.system.CommandSender;
@@ -42,50 +42,66 @@ public class GameConfig implements JsonAssetWithMap<String, DefaultAssetMap<Stri
                     (c,v)->c.gameTime = v,
                     c-> c.gameTime,
                     (c1,c2)->c1.gameTime = c2.gameTime
-            ).addValidator(Validators.min(120)).add()
-            .appendInherited(new KeyedCodec<>("PossibleItems", new ArrayCodec<>(ItemModelPair.CODEC,ItemModelPair[]::new)),
-                    (c,v)->c.possibleItems = v,
-                    c-> c.possibleItems,
-                    (c1,c2)->c1.possibleItems = c2.possibleItems
-            ).addValidator(Validators.nonEmptyArray()).addValidator(Validators.uniqueInArray()).add()
-            .appendInherited(new KeyedCodec<>("PossibleItemLocations", new ArrayCodec<>(CommentedLocation.CODEC,CommentedLocation[]::new)),
-                    (c,v)->c.possibleItemLocations = v,
-                    c-> c.possibleItemLocations,
-                    (c1,c2)->c1.possibleItemLocations = c2.possibleItemLocations
-            ).addValidator(Validators.nonEmptyArray()).addValidator(Validators.uniqueInArray()).add()
-            .appendInherited(new KeyedCodec<>("SailorSpawnLocations", new ArrayCodec<>(CommentedLocation.CODEC,CommentedLocation[]::new)),
-                    (c,v)->c.sailorSpawnLocations = v,
-                    c-> c.sailorSpawnLocations,
-                    (c1,c2)->c1.sailorSpawnLocations = c2.sailorSpawnLocations
-            ).addValidator(Validators.nonEmptyArray()).addValidator(Validators.uniqueInArray()).add()
-            //WARN animation is defined for the specific instance so others will fail
-            //TODO resolve this by adding another asset for tha animation
-            .appendInherited(new KeyedCodec<>("MiniGameInstanceName", Codec.STRING),
-                    (c,v)-> c.miniGameInstanceName = v,
-                    c -> c.miniGameInstanceName,
-                    (c1,c2)->c1.miniGameInstanceName = c2.miniGameInstanceName
-            ).addValidator(InstanceValidator.INSTANCE).addValidator(Validators.nonNull()).add()
+            ).addValidator(Validators.min(120)).documentation("How long a game lasts in seconds. \n Min: 120s").add()
+            .appendInherited(new KeyedCodec<>("GameOverSoundEvent", Codec.STRING),
+                    (c,v)->c.gameOverSoundEvent = v,
+                    c-> c.gameOverSoundEvent,
+                    (c1,c2)->c1.gameOverSoundEvent = c2.gameOverSoundEvent
+            ).addValidator(SoundEvent.VALIDATOR_CACHE.getValidator()).addValidator(Validators.nonNull()).documentation("The sound event that is played when the time is up.").add()
             .appendInherited(new KeyedCodec<>("WarningTime", Codec.INTEGER),
                     (c,v)->c.warningTime = v,
                     c-> c.warningTime,
                     (c1,c2)->c1.warningTime = c2.warningTime
-            ).addValidator(Validators.min(5)).add()
+            ).addValidator(Validators.min(5)).documentation("How many second need to be left when the WarningSoundEvent is played.\n Min: 5").add()
             .appendInherited(new KeyedCodec<>("WarningSoundEvent", Codec.STRING),
                     (c,v)->c.warningSoundEvent = v,
                     c-> c.warningSoundEvent,
                     (c1,c2)->c1.warningSoundEvent = c2.warningSoundEvent
-            ).addValidator(SoundEvent.VALIDATOR_CACHE.getValidator()).addValidator(Validators.nonNull()).add()
+            ).addValidator(SoundEvent.VALIDATOR_CACHE.getValidator()).addValidator(Validators.nonNull()).documentation("The sound event that is played when the Warn time is reached.").add()
+            .appendInherited(new KeyedCodec<>("EndWaitingTime", Codec.INTEGER),
+                    (c,v)->c.endWaitingTime = v,
+                    c-> c.endWaitingTime,
+                    (c1,c2)->c1.endWaitingTime = c2.endWaitingTime
+            ).addValidator(Validators.min(2)).documentation("How long to wait until teleporting players back to the lobby/deleting the game. \n Min: 20").add()
+            .appendInherited(new KeyedCodec<>("PossibleItems", new ArrayCodec<>(ItemModelPair.CODEC,ItemModelPair[]::new)),
+                    (c,v)->c.possibleItems = v,
+                    c-> c.possibleItems,
+                    (c1,c2)->c1.possibleItems = c2.possibleItems
+            ).addValidator(Validators.nonEmptyArray()).addValidator(Validators.uniqueInArray()).documentation("Contains a list of viable Items and their model.\n A maximum of 4 is spawned at the same time").add()
+            .appendInherited(new KeyedCodec<>("PossibleItemLocations", new ArrayCodec<>(CommentedLocation.CODEC,CommentedLocation[]::new)),
+                    (c,v)->c.possibleItemLocations = v,
+                    c-> c.possibleItemLocations,
+                    (c1,c2)->c1.possibleItemLocations = c2.possibleItemLocations
+            ).addValidator(Validators.nonEmptyArray()).addValidator(Validators.uniqueInArray()).documentation("Where the Items can possibly spawn.").add()
+            .appendInherited(new KeyedCodec<>("SailorSpawnLocations", new ArrayCodec<>(CommentedLocation.CODEC,CommentedLocation[]::new)),
+                    (c,v)->c.sailorSpawnLocations = v,
+                    c-> c.sailorSpawnLocations,
+                    (c1,c2)->c1.sailorSpawnLocations = c2.sailorSpawnLocations
+            ).addValidator(Validators.nonEmptyArray()).addValidator(Validators.uniqueInArray()).documentation("Where the sailors get spawned").add()
+            .appendInherited(new KeyedCodec<>("MiniGameInstanceName", Codec.STRING),
+                    (c,v)-> c.miniGameInstanceName = v,
+                    c -> c.miniGameInstanceName,
+                    (c1,c2)->c1.miniGameInstanceName = c2.miniGameInstanceName
+            ).addValidator(InstanceValidator.INSTANCE).addValidator(Validators.nonNull()).documentation("Name of the instance that is used of the minigame.").add()
+            .appendInherited(new KeyedCodec<>("RitualAnimation", Codec.STRING),
+                    (c,v)-> c.ritualAnimation = v,
+                    c -> c.ritualAnimation,
+                    (c1,c2)->c1.ritualAnimation = c2.ritualAnimation
+            ).addValidator(Validators.nonNull()).addValidator(RitualAnimation.VALIDATOR_CACHE.getValidator()).documentation("The ritual that is played upon completion.").add()
             .build();
 
     private String id;
     private AssetExtraInfo.Data data;
     private int gameTime = 900;
+    private String gameOverSoundEvent;
+    private int warningTime = 60;
+    private String warningSoundEvent;
+    private int endWaitingTime = 2;
     private ItemModelPair[] possibleItems;
     private CommentedLocation[] possibleItemLocations;
     private CommentedLocation[] sailorSpawnLocations;
     private String miniGameInstanceName;
-    private int warningTime = 60;
-    private String warningSoundEvent;
+    private String ritualAnimation;
 
 
     private Map<String,String> itemIdModelIdMap;
@@ -130,6 +146,19 @@ public class GameConfig implements JsonAssetWithMap<String, DefaultAssetMap<Stri
     public int getGameTime() {
         return gameTime;
     }
+
+    public String getGameOverSoundEvent() {
+        return gameOverSoundEvent;
+    }
+
+    public int getEndWaitingTime() {
+        return endWaitingTime;
+    }
+
+    public RitualAnimation getRitualAnimation() {
+        return RitualAnimation.getAssetMap().getAsset(ritualAnimation);
+    }
+
     public List<Vector3i> getPossibleItemLocations(){
         if(itemLocations == null){
             itemLocations = new ArrayList<>(possibleItemLocations.length);
@@ -149,6 +178,26 @@ public class GameConfig implements JsonAssetWithMap<String, DefaultAssetMap<Stri
         return spawnLocations;
     }
 
+    private GameConfig(){}
+
+    public GameConfig(GameConfig other) {
+        this.id = other.id;
+        this.data = other.data;
+        this.gameTime = other.gameTime;
+        this.gameOverSoundEvent = other.gameOverSoundEvent;
+        this.warningTime = other.warningTime;
+        this.endWaitingTime = other.endWaitingTime;
+        this.warningSoundEvent = other.warningSoundEvent;
+        this.possibleItems = other.possibleItems;
+        this.possibleItemLocations = other.possibleItemLocations;
+        this.sailorSpawnLocations = other.sailorSpawnLocations;
+        this.miniGameInstanceName = other.miniGameInstanceName;
+        this.itemIdModelIdMap = other.itemIdModelIdMap;
+        this.itemLocations = other.itemLocations;
+        this.spawnLocations = other.spawnLocations;
+        this.ritualAnimation = other.ritualAnimation;
+    }
+
     @Override
     public String getId() {
         return id;
@@ -159,11 +208,11 @@ public class GameConfig implements JsonAssetWithMap<String, DefaultAssetMap<Stri
                 .append(new KeyedCodec<>("Item", Codec.STRING),
                     (c,v)->c.item = v,
                         c-> c.item
-                ).addValidator(Item.VALIDATOR_CACHE.getValidator()).add()
+                ).addValidator(BlockType.VALIDATOR_CACHE.getValidator()).documentation("A block/item that can spawn as a ritualItem").add()
                 .append(new KeyedCodec<>("Model", Codec.STRING),
                         (c,v)->c.model = v,
                         c-> c.model
-                ).addValidator(ModelAsset.VALIDATOR_CACHE.getValidator()).add()
+                ).addValidator(ModelAsset.VALIDATOR_CACHE.getValidator()).documentation("The associated model, when the item is placed on a pedestal").add()
                 .build();
 
         private String item;

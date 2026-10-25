@@ -58,6 +58,13 @@ public class RitualGameManager {
         return lobby;
     }
 
+
+    public static void shutdown() {
+        for (var game :GAME_REGISTRY.values()){
+            game.end();
+        }
+    }
+
     public enum GameState{
         BOOTING,
         RUNNING,

@@ -18,7 +18,7 @@
     "Particles": [
       {
         "SystemId": "Ritual_Animation_Main",
-        "Color": "#ff0000"
+        "ClearParticlesOnRemove": true
       }
     ]
   }

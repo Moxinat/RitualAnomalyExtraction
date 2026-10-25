@@ -42,5 +42,17 @@
   "ResourceStorage": {
     "Type": "Hytale"
   },
-  "Plugin": {}
+  "Plugin": {},
+    "ChunkConfig": {
+      "PregenerateRegion": {
+        "Min": {
+          "X": -4.0,
+          "Y": -4.0
+        },
+        "Max": {
+          "X": 4.0,
+          "Y": 4.0
+        }
+      }
+    }
 }

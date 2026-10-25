@@ -5,7 +5,6 @@ import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractCommandCollection;
 import com.hypixel.hytale.server.core.command.system.basecommands.CommandBase;
-import com.hypixel.hytale.server.core.util.Config;
 import dev.ritualanomalyextraction.RitualAnomalyPlugin;
 import dev.ritualanomalyextraction.utils.RaeConfig;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;

@@ -46,14 +46,14 @@ public class PlayerFirstJoinListener {
         }
 
         if (playerRef == null) {
-            LOGGER.at(Level.SEVERE).log("playerRef is null playerReadyListener");
+            LOGGER.at(Level.SEVERE).log("playerRef is null");
         }
 
         if(!WorldUtil.shouldForceTp()){
             return;
         }
 
-        //only teleport the player to the current game world, if they newly joined the server
+        //there should be a way where the lobby gets automatically created as the main world, right?
         if(NewPlayersList.checkAndConsumeNewPlayer(playerRef)){
             player.getHudManager().addCustomHud(playerRef, new DeprecatedStatusHud(playerRef, Constants.UI_IDLE,-1));
             WorldUtil.teleportPlayerToWorld(RitualGameManager.getLobby(),playerEntityRef);

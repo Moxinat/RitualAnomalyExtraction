@@ -1,12 +1,6 @@
 package dev.ritualanomalyextraction.systems;
 
-import com.hypixel.hytale.component.ArchetypeChunk;
-import com.hypixel.hytale.component.AddReason;
-import com.hypixel.hytale.component.CommandBuffer;
-import com.hypixel.hytale.component.Holder;
-import com.hypixel.hytale.component.Ref;
-import com.hypixel.hytale.component.RemoveReason;
-import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.EntityEventSystem;
 import com.hypixel.hytale.logger.HytaleLogger;
@@ -14,32 +8,36 @@ import com.hypixel.hytale.math.shape.Box;
 import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.protocol.BlockPosition;
 import com.hypixel.hytale.protocol.InteractionType;
+import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.asset.type.model.config.Model;
 import com.hypixel.hytale.server.core.asset.type.model.config.ModelAsset;
+import com.hypixel.hytale.server.core.entity.InteractionManager;
 import com.hypixel.hytale.server.core.entity.UUIDComponent;
+import com.hypixel.hytale.server.core.entity.effect.EffectControllerComponent;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.event.events.ecs.BreakBlockEvent;
 import com.hypixel.hytale.server.core.event.events.ecs.UseBlockEvent;
 import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 import com.hypixel.hytale.server.core.inventory.InventoryUtils;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
-import com.hypixel.hytale.server.core.inventory.transaction.ItemStackTransaction;
 import com.hypixel.hytale.server.core.inventory.transaction.ItemStackSlotTransaction;
+import com.hypixel.hytale.server.core.inventory.transaction.ItemStackTransaction;
 import com.hypixel.hytale.server.core.modules.entity.component.*;
 import com.hypixel.hytale.server.core.modules.entity.tracker.NetworkId;
+import com.hypixel.hytale.server.core.modules.interaction.InteractionModule;
+import com.hypixel.hytale.server.core.modules.interaction.InteractionSimulationHandler;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import dev.ritualanomalyextraction.Constants;
+import dev.ritualanomalyextraction.RitualAnomalyPlugin;
 import dev.ritualanomalyextraction.RitualGame;
 import dev.ritualanomalyextraction.RitualGameManager;
 import dev.ritualanomalyextraction.components.RitualPedestalComponent;
-import com.hypixel.hytale.server.core.Message;
+import org.joml.Vector3d;
+import org.joml.Vector3i;
 
 import javax.annotation.Nonnull;
 import java.util.logging.Level;
-
-import org.joml.Vector3i;
-import org.joml.Vector3d;
 
 public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent.Post> {
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
@@ -56,30 +54,23 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
         return new Vector3d(pos.x + 0.5, pos.y + 0.74, pos.z + 0.5);
     }
 
-    //TODO make it compatible with the asset
-    private static String resolveDisplayModelId(String itemId) {
+    private static String resolveDisplayModelId(String itemId,RitualGame game) {
         if (itemId == null || itemId.isBlank()) {
             return "RitualItemTest";
         }
 
-        return switch (itemId) {
-            case "Ritual_Active_Pentacle" -> "Ritual_Active_Pentacle_Display";
-            case "Ritual_Blood_Effigy" -> "Ritual_Blood_Effigy_Display";
-            case "Ritual_Ghost_Candle" -> "Ritual_Ghost_Candle_Display";
-            case "Ritual_Soul_Lantern" -> "Ritual_Soul_Lantern_Display";
-            default -> "RitualItemTest";
-        };
+        return game.getConfig().getItemIdModelIdMap().get(itemId);
     }
 
-    private static Ref<EntityStore> spawnVisualItemEntity(CommandBuffer<EntityStore> commandBuffer, String itemId, Vector3i blockPosition) {
+    private static Ref<EntityStore> spawnVisualItemEntity(CommandBuffer<EntityStore> commandBuffer, String modelId, Vector3i blockPosition) {
+        if(modelId == null) return null;
 
-        String modelId = resolveDisplayModelId(itemId);
 
         Holder<EntityStore> holder = EntityStore.REGISTRY.newHolder();
 
         ModelAsset modelAsset = ModelAsset.getAssetMap().getAsset(modelId);
         if (modelAsset == null) {
-            LOGGER.at(Level.WARNING).log("ModelAsset not found for item '" + itemId + "': " + modelId);
+            LOGGER.at(Level.WARNING).log("ModelAsset not found for modelId '%s'",modelId);
             return null;
         }
 
@@ -101,6 +92,12 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
         holder.addComponent(NetworkId.getComponentType(), new NetworkId(commandBuffer.getExternalData().takeNextNetworkId()));
 
         holder.ensureComponent(UUIDComponent.getComponentType());
+
+        holder.addComponent(InteractionModule.get().getInteractionManagerComponent(), new InteractionManager(null, new InteractionSimulationHandler()));
+
+        holder.ensureComponent(EffectControllerComponent.getComponentType());
+
+        holder.ensureComponent(RitualAnomalyPlugin.getInstance().getRitualDisplayEntityComponenttype());
 
         return commandBuffer.addEntity(holder, AddReason.SPAWN);
     }
@@ -183,6 +180,11 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
             return;
         }
 
+        String itemId = itemInHand.getItemId();
+        if(!game.getConfig().getItemIdModelIdMap().containsKey(itemId)){
+            return;
+        }
+
         byte activeSlot = InventoryUtils.getActiveSlot(entity, InventoryComponent.HOTBAR_SECTION_ID, store);
         if (activeSlot < 0) {
             return;
@@ -198,9 +200,10 @@ public class PedestalSystem extends EntityEventSystem<EntityStore, UseBlockEvent
             return;
         }
 
-        String itemId = itemInHand.getItemId();
-        Ref<EntityStore> visualItemEntity = spawnVisualItemEntity(commandBuffer, itemId, event.getTargetBlock());
-        if (visualItemEntity == null) {
+        String modelId = resolveDisplayModelId(itemId,game);
+        Ref<EntityStore> visualItemEntity = spawnVisualItemEntity(commandBuffer, modelId, event.getTargetBlock());
+
+        if(modelId == null|| visualItemEntity == null){
             Player.giveItem(new ItemStack(itemId, 1), entity, store);
             return;
         }

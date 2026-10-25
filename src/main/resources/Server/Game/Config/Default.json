@@ -167,5 +167,7 @@
     }
   ],
   "MiniGameInstanceName": "RAE-Minigame",
-  "WarningSoundEvent": "RAE_Time"
+  "WarningSoundEvent": "RAE_Time",
+  "GameOverSoundEvent": "RAE_Time_Up",
+  "RitualAnimation": "Default"
 }

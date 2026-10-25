@@ -1,0 +1,60 @@
+{
+  "Particle": {
+    "Texture": "Particles/Textures/Basic/Shape4.png",
+    "Animation": {
+      "50": {
+        "Color": "#e13a73"
+      },
+      "100": {
+        "Color": "#000000",
+        "Scale": {
+          "X": {
+            "Min": 0.1,
+            "Max": 0.1
+          },
+          "Y": {
+            "Min": 0.1,
+            "Max": 0.1
+          }
+        }
+      },
+      "20": {
+        "Scale": {
+          "X": {
+            "Min": 1,
+            "Max": 1
+          },
+          "Y": {
+            "Min": 2,
+            "Max": 2
+          }
+        }
+      }
+    },
+    "InitialAnimationFrame": {
+      "Scale": {
+        "X": {
+          "Min": 0.5,
+          "Max": 0.5
+        },
+        "Y": {
+          "Min": 6,
+          "Max": 6
+        }
+      },
+      "Color": "#9a012a",
+      "Rotation": {
+        "Y": {
+          "Max": 360
+        }
+      }
+    },
+    "ScaleRatioConstraint": "None"
+  },
+  "Parent": "Ritual_Animation_Sphere_Explosion",
+  "SpawnRate": {
+    "Min": 100,
+    "Max": 100
+  },
+  "RenderMode": "BlendLinear"
+}

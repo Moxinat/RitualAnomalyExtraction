@@ -9,6 +9,7 @@ import com.hypixel.hytale.math.vector.Transform;
 import com.hypixel.hytale.protocol.BlockPosition;
 import com.hypixel.hytale.protocol.SoundCategory;
 import com.hypixel.hytale.server.core.HytaleServer;
+import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.asset.type.soundevent.config.SoundEvent;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
@@ -19,57 +20,60 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.NPCPlugin;
 import dev.ritualanomalyextraction.asset.GameConfig;
 import dev.ritualanomalyextraction.components.RitualPedestalComponent;
-import dev.ritualanomalyextraction.systems.*;
+import dev.ritualanomalyextraction.systems.NewRitualProgressTracker;
+import dev.ritualanomalyextraction.systems.RitualAnimationManager;
+import dev.ritualanomalyextraction.systems.RitualObjectPickupSystem;
+import dev.ritualanomalyextraction.systems.RitualObjectSpawnManager;
 import dev.ritualanomalyextraction.ui.DeprecatedStatusHud;
 import dev.ritualanomalyextraction.utils.WorldUtil;
 import it.unimi.dsi.fastutil.Pair;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
+import org.joml.Vector3i;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 public class RitualGame {
-    public final static HytaleLogger LOGGER = RitualAnomalyPlugin.getInstance().getLogger().getSubLogger("Minigame");
+    public final static HytaleLogger MINIGAME_LOGGER = HytaleLogger.get("RAE|Minigame");
 
 
-    public HytaleLogger GAME_LOGGER;
-    private int ID;
-    private GameConfig CONFIG;
+    public HytaleLogger LOGGER;
+    private final int ID;
+    private final GameConfig CONFIG;
     private ScheduledFuture<?> TICKING;
     private RitualGameManager.GameState state;
     private int timeRemaining;
-    private int warnTime;
+    private final int warnTime;
 
     private World gameWorld;
 
     private final Map<BlockPosition, RitualPedestalComponent> pedestalStates = new HashMap<>(4);
-    private NewRitualProgressTracker ritualProgressTracker;
+    private final NewRitualProgressTracker ritualProgressTracker;
+
+    private final List<Pair<BlockType, Vector3i>> formerRitualBlocks = new ArrayList<>();
+    private final List<Pair<BlockType, Vector3i>> ritualItems = new ArrayList<>();
 
     public RitualGame(){
-        var config = GameConfig.getAssetMap().getAsset("Default");
-        assert config != null;
-        new RitualGame(config);
+        this(new GameConfig(GameConfig.getAssetMap().getAsset("Default")));
     }
 
     //TODO make the config a copy so id doesn't get accidentally deleted
     public RitualGame(@NonNullDecl GameConfig config){
         state = RitualGameManager.GameState.BOOTING;
-        CONFIG = config;
+        CONFIG = new GameConfig(config);
         ID = RitualGameManager.takeNextID();
         ritualProgressTracker = new NewRitualProgressTracker(this);
-        GAME_LOGGER = LOGGER.getSubLogger(String.valueOf(ID));
-        timeRemaining = config.getGameTime();
-        warnTime = config.getWarningTime();
-        Objects.requireNonNull(WorldUtil.tryGenerateMinigameWorld(config, config.getMiniGameInstanceName() + ID)).thenAccept((world -> {
+        LOGGER = MINIGAME_LOGGER.getSubLogger(String.valueOf(ID));
+        timeRemaining = CONFIG.getGameTime();
+        warnTime = CONFIG.getWarningTime();
+        Objects.requireNonNull(WorldUtil.tryGenerateMinigameWorld(CONFIG, CONFIG.getMiniGameInstanceName() + ID)).thenAccept((world -> {
             gameWorld = world;
             RitualGameManager.registerGame(this);
             spawnSailors();
 
-            gameWorld.execute(()-> RitualObjectSpawnManager.spawnRandomRitualObjects(gameWorld,CONFIG));
+            gameWorld.execute(()-> RitualObjectSpawnManager.spawnRandomRitualObjects(gameWorld,this));
 
             //I don't know why, but it needs some delay else I'm crashing with division by 0 (client only)
             HytaleServer.SCHEDULED_EXECUTOR.schedule(this::start,1,TimeUnit.SECONDS);
@@ -146,17 +150,45 @@ public class RitualGame {
         HytaleServer.SCHEDULED_EXECUTOR.schedule(this::end, 5, TimeUnit.SECONDS);
     }
 
-    private void clearPedestals(){
-        gameWorld.execute(()->{
-            pedestalStates.values().forEach(pedestal ->{
-                Ref<EntityStore> visualEntity = pedestal.getVisualItemEntity();
+    public void addFormerRitualBlock(Integer formerBlockID, Vector3i position){
+        formerRitualBlocks.add(Pair.of(BlockType.getAssetMap().getAsset(formerBlockID),position));
+    }
 
-                if (visualEntity != null && visualEntity.isValid()) {
-                    visualEntity.getStore().removeEntity(visualEntity, RemoveReason.REMOVE);
-                }
+    public List<Pair<BlockType, Vector3i>> consumeFormerRitualBlocks() {
+        var save = new ArrayList<>(formerRitualBlocks);
+        formerRitualBlocks.clear();
+        return save;
+    }
+
+    public void addRitualItemPosition(BlockType blockID,Vector3i position){
+        ritualItems.add(Pair.of(blockID,position));
+    }
+    public List<Pair<BlockType, Vector3i>> consumeRitualItemPositions() {
+        var save = new ArrayList<>(ritualItems);
+        ritualItems.clear();
+        return save;
+    }
+    public List<Pair<BlockType, Vector3i>> getRitualItemPositions() {
+        return ritualItems;
+    }
+
+    private void clearPedestals(){
+        if(gameWorld.isAlive()){
+            gameWorld.execute(()->{
+                pedestalStates.values().forEach(pedestal ->{
+                    Ref<EntityStore> visualEntity = pedestal.getVisualItemEntity();
+
+                    if (visualEntity != null && visualEntity.isValid()) {
+                        visualEntity.getStore().removeEntity(visualEntity, RemoveReason.REMOVE);
+                    }
+                });
+                pedestalStates.clear();
             });
+        }else{
+            LOGGER.atInfo().log("World is already in shutdown!");
             pedestalStates.clear();
-        });
+        }
+
     }
 
     private void spawnSailors() {
@@ -181,8 +213,9 @@ public class RitualGame {
             timeRemaining--;
         } else {
             updateUI(Constants.UI_END_FAIL);
+            playEndSoundEvent();
             state = RitualGameManager.GameState.ENDED;
-            HytaleServer.SCHEDULED_EXECUTOR.schedule(this::end, 2, TimeUnit.SECONDS);
+            HytaleServer.SCHEDULED_EXECUTOR.schedule(this::end, CONFIG.getEndWaitingTime(), TimeUnit.SECONDS);
         }
     }
 
@@ -194,9 +227,9 @@ public class RitualGame {
         LOGGER.atInfo().log("Played warning sfx!");
     }
 
-    //TODO make reference from config field
+
     private void playEndSoundEvent(){
-        int index = SoundEvent.getAssetMap().getIndex(null);
+        int index = SoundEvent.getAssetMap().getIndex(CONFIG.getGameOverSoundEvent());
         SoundUtil.playSoundEvent2d( index, SoundCategory.SFX, gameWorld.getEntityStore().getStore());
         LOGGER.atInfo().log("Played warning sfx!");
     }

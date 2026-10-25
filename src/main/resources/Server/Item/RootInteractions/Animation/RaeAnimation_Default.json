@@ -1,0 +1,13 @@
+{
+  "Interactions": [
+    {
+      "Type": "ApplyEffect",
+      "EffectId": "RAE_Dissolve",
+      "RunTime": 2.1,
+      "Next": {
+        "Type": "RemoveEntity",
+        "Entity": "Owner"
+      }
+    }
+  ]
+}

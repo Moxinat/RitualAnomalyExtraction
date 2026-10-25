@@ -10,6 +10,7 @@ import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.protocol.BlockPosition;
 import com.hypixel.hytale.protocol.InteractionType;
 import com.hypixel.hytale.server.core.Message;
+import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.event.events.ecs.DropItemEvent;
 import com.hypixel.hytale.server.core.event.events.ecs.UseBlockEvent;
@@ -17,7 +18,7 @@ import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.transaction.ItemStackTransaction;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
+import dev.ritualanomalyextraction.Constants;
 import dev.ritualanomalyextraction.RitualGameManager;
 import dev.ritualanomalyextraction.asset.GameConfig;
 import dev.ritualanomalyextraction.utils.WorldUtil;
@@ -31,7 +32,7 @@ import java.util.logging.Level;
 public class RitualObjectPickupSystem extends EntityEventSystem<EntityStore, UseBlockEvent.Post> {
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
-    //since a player is only in one game at the time we don't need to make it per game right?
+    //since a player is only in one game at the time we don't need to make it per game right? or is it better to keep bundling it in RitualGame?
     private static final Map<PlayerRef, String> carriedRitualObjects = new HashMap<>();
 
     public RitualObjectPickupSystem() {
@@ -130,7 +131,7 @@ public class RitualObjectPickupSystem extends EntityEventSystem<EntityStore, Use
         String worldName = commandBuffer.getExternalData().getWorld().getName();
         final var game = RitualGameManager.gameFromWorldName(worldName);
         if(game == null){
-            LOGGER.atWarning().log("World doesn't have a game");
+            LOGGER.atWarning().log(Constants.NOT_A_GAME_WORLD.getRawText());
             return;
         }
 
