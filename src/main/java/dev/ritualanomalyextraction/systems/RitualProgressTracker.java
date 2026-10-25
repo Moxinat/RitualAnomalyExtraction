@@ -7,7 +7,7 @@ import dev.ritualanomalyextraction.RitualGame;
 
 import java.util.logging.Level;
 
-public final class NewRitualProgressTracker {
+public final class RitualProgressTracker {
 
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
@@ -18,7 +18,7 @@ public final class NewRitualProgressTracker {
 
     private final RitualGame game;
 
-    public NewRitualProgressTracker(RitualGame game) {
+    public RitualProgressTracker(RitualGame game) {
         this.game = game;
     }
 

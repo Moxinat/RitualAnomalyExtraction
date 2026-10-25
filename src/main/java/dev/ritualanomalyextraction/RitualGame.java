@@ -20,7 +20,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.NPCPlugin;
 import dev.ritualanomalyextraction.asset.GameConfig;
 import dev.ritualanomalyextraction.components.RitualPedestalComponent;
-import dev.ritualanomalyextraction.systems.NewRitualProgressTracker;
+import dev.ritualanomalyextraction.systems.RitualProgressTracker;
 import dev.ritualanomalyextraction.systems.RitualAnimationManager;
 import dev.ritualanomalyextraction.systems.RitualObjectPickupSystem;
 import dev.ritualanomalyextraction.systems.RitualObjectSpawnManager;
@@ -50,7 +50,7 @@ public class RitualGame {
     private World gameWorld;
 
     private final Map<BlockPosition, RitualPedestalComponent> pedestalStates = new HashMap<>(4);
-    private final NewRitualProgressTracker ritualProgressTracker;
+    private final RitualProgressTracker ritualProgressTracker;
 
     private final List<Pair<BlockType, Vector3i>> formerRitualBlocks = new ArrayList<>();
     private final List<Pair<BlockType, Vector3i>> ritualItems = new ArrayList<>();
@@ -64,7 +64,7 @@ public class RitualGame {
         state = RitualGameManager.GameState.BOOTING;
         CONFIG = new GameConfig(config);
         ID = RitualGameManager.takeNextID();
-        ritualProgressTracker = new NewRitualProgressTracker(this);
+        ritualProgressTracker = new RitualProgressTracker(this);
         LOGGER = MINIGAME_LOGGER.getSubLogger(String.valueOf(ID));
         timeRemaining = CONFIG.getGameTime();
         warnTime = CONFIG.getWarningTime();
@@ -261,7 +261,7 @@ public class RitualGame {
         return CONFIG;
     }
 
-    public NewRitualProgressTracker getRitualProgressTracker() {
+    public RitualProgressTracker getRitualProgressTracker() {
         return ritualProgressTracker;
     }
 }
