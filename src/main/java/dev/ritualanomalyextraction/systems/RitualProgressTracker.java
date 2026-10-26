@@ -3,7 +3,7 @@ package dev.ritualanomalyextraction.systems;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import dev.ritualanomalyextraction.RitualGameManager;
+import dev.ritualanomalyextraction.RitualGame;
 
 import java.util.logging.Level;
 
@@ -11,19 +11,19 @@ public final class RitualProgressTracker {
 
     private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
-    private static final int REQUIRED_OBJECTS = 4;
-    private static int placedObjectCount = 0;
-    private static boolean ritualStarted = false;
-    private static RitualGameManager gameManager;
+    private final int REQUIRED_OBJECTS = 4;
+    private int placedObjectCount = 0;
+    private boolean ritualStarted = false;
 
-    private RitualProgressTracker() {
+
+    private final RitualGame game;
+
+    public RitualProgressTracker(RitualGame game) {
+        this.game = game;
     }
 
-    public static void setGameManager(RitualGameManager manager) {
-        gameManager = manager;
-    }
 
-    public static void onObjectPlaced(PlayerRef player, String objectId) {
+    public void onObjectPlaced(PlayerRef player, String objectId) {
         if (ritualStarted) {
             return;
         }
@@ -37,11 +37,11 @@ public final class RitualProgressTracker {
         if (placedObjectCount >= REQUIRED_OBJECTS) {
             ritualStarted = true;
             LOGGER.at(Level.INFO).log("Ritual started.");
-            gameManager.onRitualCelebrationStart();
+            game.startRitual();
         }
     }
 
-    public static void onObjectRemoved(PlayerRef player, String objectId) {
+    public void onObjectRemoved(PlayerRef player, String objectId) {
         if (ritualStarted) {
             return;
         }
@@ -53,28 +53,22 @@ public final class RitualProgressTracker {
         sendProgressMessage(player);
     }
 
-    private static void sendProgressMessage(PlayerRef player) {
+    private void sendProgressMessage(PlayerRef player) {
         sendMessage(player, "Ritual progress: " + placedObjectCount + "/" + REQUIRED_OBJECTS);
     }
 
-    private static void sendMessage(PlayerRef player, String text) {
+    private void sendMessage(PlayerRef player, String text) {
         if (player == null) {
             return;
         }
         player.sendMessage(Message.raw(text));
     }
 
-    public static int getPlacedObjectCount() {
+    public int getPlacedObjectCount() {
         return placedObjectCount;
     }
 
-    public static boolean hasRitualStarted() {
+    public boolean hasRitualStarted() {
         return ritualStarted;
-    }
-
-    public static void reset() {
-        placedObjectCount = 0;
-        ritualStarted = false;
-        LOGGER.at(Level.INFO).log("Ritual progress reset.");
     }
 }

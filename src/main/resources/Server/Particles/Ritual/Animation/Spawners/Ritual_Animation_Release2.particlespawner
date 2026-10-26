@@ -12,7 +12,8 @@
             "Min": 0.1,
             "Max": 0.1
           }
-        }
+        },
+        "Color": "#f200ff"
       },
       "20": {
         "Scale": {
@@ -36,7 +37,8 @@
             "Max": 1,
             "Min": 1
           }
-        }
+        },
+        "Color": "#ff0000"
       },
       "100": {
         "Scale": {
@@ -108,5 +110,9 @@
       "Max": 1
     }
   },
-  "LifeSpan": 4
+  "LifeSpan": 4,
+  "ParticleCollision": {
+    "BlockType": "Solid",
+    "Action": "Linger"
+  }
 }

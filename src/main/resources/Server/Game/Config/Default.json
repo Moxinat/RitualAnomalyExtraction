@@ -1,0 +1,173 @@
+{
+  "PossibleItems": [
+    {
+      "Item": "Ritual_Active_Pentacle",
+      "Model": "Ritual_Active_Pentacle_Display"
+    },
+    {
+      "Item": "Ritual_Blood_Effigy",
+      "Model": "Ritual_Blood_Effigy_Display"
+    },
+    {
+      "Item": "Ritual_Ghost_Candle",
+      "Model": "Ritual_Ghost_Candle_Display"
+    },
+    {
+      "Item": "Ritual_Soul_Lantern",
+      "Model": "Ritual_Soul_Lantern_Display"
+    }
+  ],
+  "GameTime": 900,
+  "PossibleItemLocations": [
+    {
+      "Comment": "church back",
+      "Location": {
+        "X": 46,
+        "Y": 134,
+        "Z": -14
+      }
+    },
+    {
+      "Comment": "windmill",
+      "Location": {
+        "X": -24,
+        "Y": 107,
+        "Z": -213
+      }
+    },
+    {
+      "Comment": "ruined house",
+      "Location": {
+        "X": 35,
+        "Y": 105,
+        "Z": -159
+      }
+    },
+    {
+      "Comment": "school under the roof",
+      "Location": {
+        "X": -149,
+        "Y": 118,
+        "Z": -158
+      }
+    },
+    {
+      "Comment": "boat house",
+      "Location": {
+        "X": -259,
+        "Y": 103,
+        "Z": -56
+      }
+    },
+    {
+      "Comment": "tavern",
+      "Location": {
+        "X": -198,
+        "Y": 108,
+        "Z": -151
+      }
+    },
+    {
+      "Comment": "top of lighthouse",
+      "Location": {
+        "X": -77,
+        "Y": 153,
+        "Z": 131
+      }
+    },
+    {
+      "Comment": "outhouse",
+      "Location": {
+        "X": -106,
+        "Y": 113,
+        "Z": -90
+      }
+    },
+    {
+      "Comment": "well",
+      "Location": {
+        "X": -114,
+        "Y": 102,
+        "Z": -214
+      }
+    }
+  ],
+  "SailorSpawnLocations": [
+    {
+      "Comment": "church cliff",
+      "Location": {
+        "X": 46,
+        "Y": 134,
+        "Z": 18
+      }
+    },
+    {
+      "Comment": "lighthouse path",
+      "Location": {
+        "X": -110,
+        "Y": 120,
+        "Z": 111
+      }
+    },
+    {
+      "Comment": "lighthouse end island",
+      "Location": {
+        "X": -124,
+        "Y": 119,
+        "Z": 75
+      }
+    },
+    {
+      "Comment": "lone island",
+      "Location": {
+        "X": -296,
+        "Y": 102,
+        "Z": -254
+      }
+    },
+    {
+      "Comment": "windmill path north",
+      "Location": {
+        "X": -37,
+        "Y": 105,
+        "Z": -207
+      }
+    },
+    {
+      "Comment": "windmill island east",
+      "Location": {
+        "X": 129,
+        "Y": 104,
+        "Z": -184
+      }
+    },
+    {
+      "Comment": "center windmill hill",
+      "Location": {
+        "X": -68,
+        "Y": 126,
+        "Z": -118
+      }
+    },
+    {
+      "Comment": "center middle dock",
+      "Location": {
+        "X": -248,
+        "Y": 103,
+        "Z": -66
+      }
+    },
+    {
+      "Comment": "library entrance",
+      "Location": {
+        "X": -97,
+        "Y": 104,
+        "Z": -217
+      }
+    }
+  ],
+  "MiniGameInstanceName": "RAE-Minigame",
+  "WarningSoundEvent": "RAE_Time",
+  "GameOverSoundEvent": "RAE_Time_Up",
+  "RitualAnimation": "Default"
+}
